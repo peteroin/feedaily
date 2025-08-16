@@ -1,0 +1,239 @@
+/* StatsPage.css - Hand-drawn pen style */
+
+.stats-container {
+  padding: 30px;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+  font-family: "Kalam", cursive, sans-serif;
+  background-image: 
+    linear-gradient(90deg, #e5e7eb 1px, transparent 1px),
+    linear-gradient(180deg, #e5e7eb 1px, transparent 1px);
+  background-size: 20px 20px;
+  position: relative;
+}
+
+/* Notebook margin line */
+.notebook-margin {
+  position: absolute;
+  left: 80px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #ef4444;
+  opacity: 0.6;
+}
+
+/* Title section */
+.title-section {
+  text-align: left;
+  margin-bottom: 40px;
+  margin-left: 100px;
+  position: relative;
+}
+
+.main-title {
+  font-size: 2.8rem;
+  color: #1a1a1a;
+  font-family: "Permanent Marker", cursive;
+  transform: rotate(-1.5deg);
+  margin: 0 0 15px 0;
+  text-shadow: 2px 2px 0px #1e3a8a;
+}
+
+.pen-emoji {
+  position: absolute;
+  top: -10px;
+  right: 50px;
+  font-size: 1.5rem;
+  transform: rotate(25deg);
+}
+
+/* Stats cards container */
+.stats-cards {
+  display: flex;
+  gap: 25px;
+  margin: 30px 0 30px 100px;
+  flex-wrap: wrap;
+}
+
+.stat-card {
+  flex: 1;
+  min-width: 250px;
+  background: #fafafa;
+  border-radius: 0px;
+  padding: 25px;
+  border: 2px solid #1a1a1a;
+  position: relative;
+  box-shadow: 4px 4px 0px #1e3a8a;
+}
+
+.stat-card-1 {
+  transform: rotate(-1deg);
+}
+
+.stat-card-2 {
+  transform: rotate(1deg);
+}
+
+.stat-card-3 {
+  transform: rotate(-0.5deg);
+}
+
+.card-divider {
+  border-bottom: 2px dashed #1e3a8a;
+  padding-bottom: 15px;
+  margin-bottom: 15px;
+}
+
+.card-title {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #1a1a1a;
+  font-family: "Permanent Marker", cursive;
+}
+
+.card-title-1 {
+  transform: rotate(0.5deg);
+}
+
+.card-title-2 {
+  transform: rotate(-0.5deg);
+}
+
+.card-title-3 {
+  transform: rotate(0.3deg);
+}
+
+.card-number {
+  font-size: 2.8rem;
+  font-weight: bold;
+  font-family: "Permanent Marker", cursive;
+  text-align: center;
+}
+
+.card-number-1 {
+  color: #1e3a8a;
+  transform: rotate(-0.5deg);
+}
+
+.card-number-2 {
+  color: #0f172a;
+  transform: rotate(0.8deg);
+}
+
+.card-number-3 {
+  color: #1e3a8a;
+  transform: rotate(-0.3deg);
+}
+
+.card-note {
+  font-size: 0.9rem;
+  color: #666;
+  text-align: center;
+  margin-top: 8px;
+  font-style: italic;
+  font-family: "Kalam", cursive;
+}
+
+/* Charts container */
+.charts-container {
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
+  margin: 40px 0 40px 100px;
+}
+
+.chart-container {
+  background: #fafafa;
+  padding: 25px;
+  border: 3px solid #1a1a1a;
+  position: relative;
+  box-shadow: 6px 6px 0px #1e3a8a;
+}
+
+.chart-container-1 {
+  flex: 2;
+  min-width: 400px;
+  transform: rotate(0.5deg);
+}
+
+.chart-container-2 {
+  flex: 1;
+  min-width: 300px;
+  transform: rotate(-1deg);
+}
+
+.chart-label {
+  position: absolute;
+  background: #1e3a8a;
+  color: white;
+  padding: 5px 15px;
+  font-size: 0.8rem;
+  font-family: "Permanent Marker", cursive;
+}
+
+.chart-label-1 {
+  top: -15px;
+  right: 20px;
+  transform: rotate(-8deg);
+}
+
+.chart-label-2 {
+  top: -15px;
+  left: 20px;
+  background: #0f172a;
+  transform: rotate(5deg);
+}
+
+.chart-label-3 {
+  top: -15px;
+  left: 30px;
+  transform: rotate(-3deg);
+}
+
+/* Line chart container */
+.line-chart-container {
+  margin: 40px 0 40px 100px;
+  background: #fafafa;
+  padding: 30px;
+  border: 3px solid #1a1a1a;
+  transform: rotate(-0.3deg);
+  position: relative;
+  box-shadow: 8px 8px 0px #1e3a8a;
+}
+
+/* Paper clip decoration */
+.paper-clip {
+  position: absolute;
+  top: -10px;
+  right: 50px;
+  width: 20px;
+  height: 40px;
+  border: 3px solid #666;
+  border-radius: 10px 10px 0 0;
+  transform: rotate(15deg);
+}
+
+/* Loading and footer */
+.loading-text {
+  text-align: center;
+  padding: 50px;
+  color: #666;
+  font-size: 1.2rem;
+  font-family: "Kalam", cursive;
+}
+
+.footer {
+  text-align: center;
+  margin-top: 50px;
+  padding: 20px;
+  margin-left: 100px;
+}
+
+.footer-text {
+  font-size: 1.2rem;
+  color: #1a1a1a;
+  font-family: "Permanent Marker", cursive;
+  transform: rotate(-1deg);
+  margin: 20px 0;
+}

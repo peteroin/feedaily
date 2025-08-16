@@ -1,0 +1,134 @@
+.dashboard-container {
+  background: white;
+  color: black;
+  min-height: 100vh;
+  padding: 20px;
+  font-family: 'Arial', sans-serif;
+}
+
+.dashboard-title {
+  text-align: center;
+  font-size: 2rem;
+  padding: 15px;
+  background: black;
+  color: white;
+  margin-bottom: 20px;
+}
+
+.dashboard-sections {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.form-section, .list-section {
+  flex: 1 1 400px;
+  background: white;
+  border: 2px solid black;
+  padding: 20px;
+  border-radius: 6px;
+  box-shadow: 5px 5px 0 black;
+}
+
+.donation-form input,
+.donation-form select,
+.donation-form textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 2px solid black;
+  background: white;
+  color: black;
+  font-size: 1rem;
+}
+
+.donation-form button {
+  background: black;
+  color: white;
+  padding: 12px;
+  border: none;
+  width: 100%;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.donation-form button:hover {
+  background: #444;
+}
+
+.donations-list {
+  list-style: none;
+  padding: 0;
+}
+
+.donations-list li {
+  border-bottom: 1px solid black;
+  padding: 10px 0;
+}
+
+.donations-list li strong {
+  font-size: 1.2rem;
+}
+
+.donations-list li .date {
+  display: block;
+  font-size: 0.8rem;
+  color: #444;
+}
+
+.msg {
+  margin-bottom: 10px;
+  color: green;
+}
+
+.donations-list li p {
+  margin: 4px 0;
+}
+
+.donations-list li button {
+  background: black;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.donations-list li button:hover {
+  background: #555;
+}
+
+.webcam-container {
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.capture-btn {
+  margin-top: 8px;
+  padding: 8px 16px;
+  font-size: 1rem;
+  background: black;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.capture-btn:hover {
+  background-color: #444;
+}
+
+.captured-image {
+  max-width: 100%;
+  border-radius: 8px;
+  border: 2px solid black;
+}
+
+.donation-image {
+  max-width: 200px;
+  margin-top: 10px;
+  border-radius: 6px;
+  border: 1px solid black;
+}

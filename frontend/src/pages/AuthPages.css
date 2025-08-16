@@ -1,0 +1,88 @@
+/* AuthPages.css */
+
+.auth-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(90deg, black 50%, white 50%);
+  color: black;
+  font-family: 'Arial', sans-serif;
+}
+
+.auth-form {
+  background-color: white;
+  color: black;
+  padding: 30px 30px;
+  border-radius: 20px;
+  box-shadow: 0px 0px 15px rgba(0,0,0,0.3);
+  min-width: 320px;
+  max-width: 400px;
+}
+
+.auth-form h2 {
+  margin-bottom: 20px;
+  text-align: center;
+  color: black;
+  font-weight: 700;
+}
+
+.auth-form input,
+.auth-form select {
+  display: block;
+  width: 100%;
+  padding: 12px 15px;
+  margin-bottom: 20px;
+  border: 1.5px solid black;
+  border-radius: 10px;
+  font-size: 1rem;
+  background: white;
+  color: black;
+  outline: none;
+  transition: border-color 0.3s ease;
+  box-sizing: border-box;
+}
+
+.auth-form input:focus,
+.auth-form select:focus {
+  border-color: #222;
+}
+
+.auth-form button {
+  width: 100%;
+  padding: 12px;
+  font-size: 1.1rem;
+  background-color: black;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.auth-form button:hover {
+  background-color: #333;
+}
+
+.auth-error {
+  color: red;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+/* body, .auth-container {
+  background-color: white;
+  
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40"><rect width="40" height="40" fill="%23fff"/><circle cx="10" cy="10" r="5" stroke="black" stroke-width="1.5" fill="none" /><rect x="25" y="25" width="10" height="5" fill="black" /></svg>');
+  background-repeat: repeat;
+  background-size: 40px 40px;
+} */
+
+.auth-container {
+  background-image: url('https://media.istockphoto.com/id/647858726/vector/hand-drawn-food.jpg?s=612x612&w=0&k=20&c=uMb7Xe6OX0KwsPASxQxuD4euBvu24OnTCAV72WjLTN0=');
+  background-repeat: repeat;
+  background-size: contain;
+}
+

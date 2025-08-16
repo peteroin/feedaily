@@ -1,0 +1,39 @@
+.layout-container {
+  display: flex;
+  height: 100vh;
+}
+
+.sidebar {
+  width: 200px;
+  background: #2f3542;
+  color: white;
+  padding: 20px;
+}
+
+.sidebar h2 {
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+}
+
+.sidebar nav {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar nav a {
+  color: white;
+  padding: 8px;
+  text-decoration: none;
+  margin-bottom: 5px;
+  border-radius: 4px;
+}
+
+.sidebar nav a:hover {
+  background: #57606f;
+}
+
+.main-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}

@@ -1,0 +1,11 @@
+.ranking-table th, .ranking-table td {
+  border: 1px solid #000;
+  padding: 10px;
+  background: #fff;
+  color: #111;
+}
+
+.ranking-table th {
+  background: #f3f3f3;
+  font-weight: 600;
+}
