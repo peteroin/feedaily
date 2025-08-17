@@ -1,4 +1,4 @@
-// const GEOAPIFY_API_KEY = "5d90eb12d82b4a0f89c7a04b82faab81"; // Replace with your key
+const GEOAPIFY_API_KEY = "5d90eb12d82b4a0f89c7a04b82faab81"; // Replace with your key
 
 async function getPlaceNameFromCoords(lat, lon) {
   try {

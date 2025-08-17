@@ -1,7 +1,7 @@
 import twilio from 'twilio';
 
-// const accountSid = 'AC1e2ac2816bc52d77d8d22e9fa7c45a3d';   
-// const authToken  = 'cdb1e6a45d9de813de060cb3ad7a736c';    
+const accountSid = 'AC1e2ac2816bc52d77d8d22e9fa7c45a3d';   
+const authToken  = 'cdb1e6a45d9de813de060cb3ad7a736c';    
 const client     = twilio(accountSid, authToken);
 
 const twilioSandboxNumber = 'whatsapp:+14155238886'; // Twilio sandbox number

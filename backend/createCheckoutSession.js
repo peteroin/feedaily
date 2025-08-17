@@ -5,7 +5,7 @@ import { generateOtp } from "./otpService.js";
 import { sendEmail } from "./emailService.js";
 
 const router = express.Router();
-// const stripe = new Stripe('sk_test_51RmVXrAWOstO0AeCoPU4OHcORGcR02IN6i5Jdo3HUH1EVU0wntm5pzV0zurFWAF1z5kfX4rfpXiNJO7NlxEPqtsa00dSSouXFF'); // Replace with your secret key
+const stripe = new Stripe('sk_test_51RmVXrAWOstO0AeCoPU4OHcORGcR02IN6i5Jdo3HUH1EVU0wntm5pzV0zurFWAF1z5kfX4rfpXiNJO7NlxEPqtsa00dSSouXFF'); // Replace with your secret key
 
 router.post("/create-checkout-session", async (req, res) => {
   const { amount, productName, donationId, receiverEmail } = req.body;
@@ -31,8 +31,8 @@ router.post("/create-checkout-session", async (req, res) => {
         },
       ],
       mode: "payment",
-      success_url: "http://localhost:3000/success?session_id={CHECKOUT_SESSION_ID}",
-      cancel_url: "http://localhost:3000/cancel",
+      success_url: "http://localhost:5173/success?session_id={CHECKOUT_SESSION_ID}",
+      cancel_url: "http://localhost:5173/cancel",
       customer_email: receiverEmail,
       metadata: {
         donationId: String(donationId),

@@ -355,6 +355,28 @@ app.get('/api/donations/requested', (req, res) => {
   });
 });
 
+const ONE_WEEK_AGO = () => {
+  const d = new Date(Date.now() - 7*24*60*60*1000);
+  return d.toISOString();
+};
+
+app.get('/api/sender-weekly-rankings', (req, res) => {
+  db.all(`
+    SELECT u.id, u.name, u.contact, u.email, SUM(d.quantity) as weeklyTotalSent
+    FROM donations d
+    LEFT JOIN users u ON d.userId = u.id
+    WHERE d.status IN ('Requested', 'Delivered')
+      AND d.requestedAt >= datetime('now', '-7 days')
+    GROUP BY d.userId
+    ORDER BY weeklyTotalSent DESC
+    LIMIT 20
+  `, (err, rows) => {
+    if (err) return res.status(500).json({ message: 'Database error' });
+    res.json(rows);
+  });
+});
+
+
 
 app.get('/api/deliveries', (req, res) => {
   const { donorId, receiverId, status } = req.query;
