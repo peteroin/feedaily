@@ -158,6 +158,7 @@ const FloatingImage = () => {
               id="realm-btn"
               title="discover prologue"
               containerClass="mt-5"
+              to="/dashboard"
             />
           </div>
         </div>
