@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import Webcam from "react-webcam";
+import TMImagePredictor from '../components/TMImagePredictor';
 import "./DashboardPage.css";
 
 export default function DashboardPage() {
@@ -16,17 +17,12 @@ export default function DashboardPage() {
   const webcamRef = useRef(null);
   const [location, setLocation] = useState(null);
 
-  // New states for delivery method modal
+  // Delivery/payment states
   const [deliveryMethodChoice, setDeliveryMethodChoice] = useState(null);
   const [currentRequestDonationId, setCurrentRequestDonationId] = useState(null);
-
-// Now you can safely use storedUser?.email, storedUser?.id, etc.
-
-
-  // Google Pay UI:
   const [showPayment, setShowPayment] = useState(false);
   const [pendingDeliveryDonId, setPendingDeliveryDonId] = useState(null);
-  const [deliveryCharge, setDeliveryCharge] = useState(50); // demo - can be dynamic
+  const [deliveryCharge, setDeliveryCharge] = useState(50);
   const storedUser = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
@@ -127,13 +123,12 @@ export default function DashboardPage() {
     );
   };
 
-  // Open modal to choose delivery method
+  // Modal & payment logic unchanged...
   const openRequestChoice = (donationId) => {
     setCurrentRequestDonationId(donationId);
     setDeliveryMethodChoice(null);
   };
 
-  // Confirm request with delivery method choice
   const confirmRequest = async () => {
     if (!deliveryMethodChoice) {
       alert("Please select delivery or pickup.");
@@ -160,7 +155,6 @@ export default function DashboardPage() {
           deliveryMethod: deliveryMethodChoice,
         };
 
-        // If delivery chosen, do not show or send OTP, just request and redirect to payment
         if (deliveryMethodChoice === "delivery") {
           const res = await fetch(`http://localhost:5000/api/request-food/${currentRequestDonationId}`, {
             method: "POST",
@@ -170,21 +164,15 @@ export default function DashboardPage() {
           const data = await res.json();
           alert(data.message);
           if (res.ok) {
-            // fetchDonations();
-            // // Redirect to payment page or component for Google Pay integration
-            // // Pass donationId and user location as query params or state
-            // window.location.href = `/payment?donationId=${currentRequestDonationId}&lat=${position.coords.latitude}&lng=${position.coords.longitude}`;
             setPendingDeliveryDonId(currentRequestDonationId);
             setShowPayment(true);
           }
-          // Reset modal state
           setCurrentRequestDonationId(null);
           setDeliveryMethodChoice(null);
           fetchDonations();
           return;
         }
 
-        // If pickup chosen, proceed as usual (show OTP popup)
         if (deliveryMethodChoice === "pickup") {
           const res = await fetch(`http://localhost:5000/api/request-food/${currentRequestDonationId}`, {
             method: "POST",
@@ -203,30 +191,29 @@ export default function DashboardPage() {
       }
     );
   };
-    const handleStripePayment = async () => {
+
+  const handleStripePayment = async () => {
     const res = await fetch("http://localhost:5000/api/create-checkout-session", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        amount: deliveryCharge, // Amount in INR rupees
+        amount: deliveryCharge, // INR rupees
         productName: "Delivery Charge",
-         donationId: pendingDeliveryDonId,
-         receiverEmail: storedUser?.email
+        donationId: pendingDeliveryDonId,
+        receiverEmail: storedUser?.email
       }),
     });
     const data = await res.json();
     if (data.url) {
-      window.location = data.url; // Redirects to Stripe's secure payment page
+      window.location = data.url;
     } else {
       alert("Could not start payment. Try again.");
     }
   };
 
-
   return (
     <div className="dashboard-container">
       <h1 className="dashboard-title">🍽 Feedaily Dashboard</h1>
-
       <div className="dashboard-sections">
         {/* Form Section */}
         <div className="form-section">
@@ -282,10 +269,7 @@ export default function DashboardPage() {
                     />
                     <button
                       type="button"
-                      onClick={() => {
-                        capture();
-                        setIsCameraOn(false);
-                      }}
+                      onClick={capture}
                       className="capture-btn"
                     >
                       Capture Image
@@ -311,8 +295,10 @@ export default function DashboardPage() {
                   </button>
                 </>
               )}
-            </div>
 
+              {/* Pass captured image to predictor (shows prediction below webcam) */}
+              <TMImagePredictor imageSrc={capturedImage} />
+            </div>
             <button type="submit">Submit Donation</button>
           </form>
         </div>
@@ -371,6 +357,7 @@ export default function DashboardPage() {
         </div>
       </div>
 
+      {/* Delivery selection modal */}
       {currentRequestDonationId && (
         <div
           style={{
@@ -465,7 +452,6 @@ export default function DashboardPage() {
           </div>
         </div>
       )}
-
     </div>
   );
 }
