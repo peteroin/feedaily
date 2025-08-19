@@ -27,7 +27,7 @@ db.run(`
     contact TEXT,
     foodType TEXT,
     quantity TEXT,
-    freshness TEXT,
+    freshness INTEGER,
     notes TEXT,
     status TEXT DEFAULT 'Available',
     image TEXT,

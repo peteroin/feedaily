@@ -1,3 +1,4 @@
+// UserDonationStats.jsx
 import React, { useEffect, useState } from "react";
 import { Chart } from "react-google-charts";
 import CertificateGenerator from "./CertificateGenerator";
@@ -31,7 +32,6 @@ function UserDonationStats() {
   const [user, setUser] = useState(null);
   const [userDonations, setUserDonations] = useState([]);
   const [userReceived, setUserReceived] = useState([]);
-
   const [showRedeem, setShowRedeem] = useState(false);
   const [redeemingSwag, setRedeemingSwag] = useState(null);
   const [deliveryAddress, setDeliveryAddress] = useState("");
@@ -98,6 +98,7 @@ function UserDonationStats() {
   const unlockedBadges = BADGE_LEVELS.filter(
     (b) => overall >= b.minKg || totalReceived >= b.minKg
   );
+
   const lastAchievedIdx = unlockedBadges.length
     ? BADGE_LEVELS.findIndex(
         (b) => b.label === unlockedBadges[unlockedBadges.length - 1].label
@@ -108,7 +109,6 @@ function UserDonationStats() {
   );
   const donated = Math.max(overall, totalReceived);
   const toNext = nextBadge ? Math.max(0, nextBadge.minKg - donated) : 0;
-
 
   const handleRedeemClick = (swag) => {
     setRedeemingSwag(swag);
@@ -576,3 +576,4 @@ function UserDonationStats() {
 }
 
 export default UserDonationStats;
+

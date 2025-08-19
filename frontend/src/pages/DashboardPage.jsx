@@ -95,7 +95,7 @@ export default function DashboardPage() {
             contact,
             foodType,
             quantity,
-            freshness,
+            freshness: parseInt(freshness, 10),
             notes,
             image: capturedImage,
             locationLat: coords.lat,
@@ -240,13 +240,14 @@ export default function DashboardPage() {
               required
             />
 
-            <select value={freshness} onChange={(e) => setFreshness(e.target.value)} required>
-              <option value="">-- Freshness --</option>
-              <option value="Safe to eat now">Safe to eat now</option>
-              <option value="Safe for 2 hours">Safe for 2 hours</option>
-              <option value="Safe for 4 hours">Safe for 4 hours</option>
-              <option value="Others">Others</option>
-            </select>
+            <input
+              type="number"
+              placeholder="Freshness (in hours)*"
+              value={freshness}
+              onChange={(e) => setFreshness(e.target.value)}
+              min="0"
+              required
+            />
 
             <textarea
               placeholder="Additional Notes (pickup info, etc.)"
@@ -305,16 +306,18 @@ export default function DashboardPage() {
 
         {/* Donations List */}
         <div className="list-section">
-          <h2>All Donations</h2>
+          <h2>Available Donations</h2>
           {donations.length === 0 ? (
             <p>No donations yet.</p>
           ) : (
             <ul className="donations-list">
-              {donations.map((donation) => (
+              {donations
+              .filter(donation => donation.status !== "Expired")
+              .map((donation) => (
                 <li key={donation.id}>
                   <strong>{donation.foodType}</strong> — {donation.quantity}
                   <br />
-                  <small>{donation.freshness}</small>
+                  <small>Fresh for {donation.freshness} hour(s)</small>
                   <p><b>Donor:</b> {donation.donorName}</p>
                   <p><b>Contact:</b> {donation.contact}</p>
                   {donation.notes && <p>{donation.notes}</p>}
@@ -343,13 +346,15 @@ export default function DashboardPage() {
                   )}
                   <span className="date">{new Date(donation.createdAt).toLocaleString()}</span>
                   <br />
-                  {donation.status === "Available" ? (
-                    <button onClick={() => openRequestChoice(donation.id)}>
-                      Request This Food
-                    </button>
-                  ) : (
-                    <span style={{ color: "red" }}>Already Requested</span>
-                  )}
+                  {donation.status === "Expired" ? (
+                      <span style={{ color: "gray" }}>Expired</span>
+                    ) : donation.status === "Available" ? (
+                      <button onClick={() => openRequestChoice(donation.id)}>
+                        Request This Food
+                      </button>
+                    ) : (
+                      <span style={{ color: "red" }}>Already Requested</span>
+                    )}
                 </li>
               ))}
             </ul>

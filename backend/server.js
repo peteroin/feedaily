@@ -125,6 +125,11 @@ app.post('/api/donate-food', (req, res) => {
 
 
 
+// Helper: Convert UTC Date object to IST Date object
+function toIST(date) {
+  return new Date(date.getTime() + 5.5 * 60 * 60 * 1000); // add 5 hrs 30 mins
+}
+
 app.get("/api/donations", (req, res) => {
   const userId = req.query.userId;
 
@@ -144,7 +149,6 @@ app.get("/api/donations", (req, res) => {
     query += " WHERE d.userId = ?";
     params.push(userId);
   }
-
   query += " ORDER BY d.createdAt DESC";
 
   db.all(query, params, (err, rows) => {
@@ -152,10 +156,60 @@ app.get("/api/donations", (req, res) => {
       console.error(err);
       return res.status(500).json({ message: "Database error" });
     }
+
+    // Add expiryTimeIST for frontend display
+    rows.forEach(row => {
+      if (row.freshness) {
+        const createdAtUTC = new Date(row.createdAt);
+        const expiryTimeUTC = new Date(createdAtUTC.getTime() + row.freshness * 60 * 60 * 1000);
+        row.expiryTimeIST = toIST(expiryTimeUTC).toISOString();
+
+       
+      }
+    });
+
     res.json(rows);
   });
 });
 
+// Background task to expire donations whose expiry has passed
+const expireOldDonations = () => {
+   const nowUTC = new Date();
+
+  console.log(`Current UTC time: ${nowUTC.toISOString()}`);
+
+  db.all("SELECT * FROM donations", [], (err, rows) => {
+    if (err) {
+      console.error('Error fetching donations:', err);
+      return;
+    }
+
+    rows.forEach(row => {
+      if (row.freshness) {
+        const createdAtUTC = new Date(row.createdAt);
+        const expiryTimeUTC = new Date(createdAtUTC.getTime() + row.freshness * 60 * 60 * 1000);
+        console.log(`Donation ID ${row.id} - Donated At: ${createdAtUTC.toISOString()} - Expires At: ${expiryTimeUTC.toISOString()}`);
+      }
+    });
+  });
+  const query = `
+  UPDATE donations
+  SET status = 'Expired'
+  WHERE status = 'Available'
+    AND datetime(createdAt, '+' || freshness || ' hours') <= datetime('now')
+  `;
+
+  db.run(query, (err) => {
+    if (err) console.error('Error expiring donations:', err);
+    else console.log('Expired donations updated at', new Date().toISOString());
+  });
+};
+
+// Run expiry check every 5 minutes
+setInterval(expireOldDonations, 5 * 60 * 1000);
+
+// Run once on server start to clean up old entries
+expireOldDonations();
 
 
 
