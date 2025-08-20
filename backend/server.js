@@ -117,7 +117,7 @@ app.post('/api/donate-food', (req, res) => {
         Location: ${locationText}`;
 
         // Change number to one that has joined your Twilio sandbox
-        // sendWhatsAppNotification('+919060268964', notificationMessage);
+        sendWhatsAppNotification('+919060268964', notificationMessage);
 
       res.json({ message: 'Food donation recorded successfully', donationId: this.lastID });
     }

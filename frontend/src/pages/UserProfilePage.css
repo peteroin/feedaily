@@ -1,118 +1,537 @@
+/* UserProfilePage.css */
 .profile-container {
-  max-width: 700px;
-  margin: 40px auto;
-  padding: 24px 36px;
-  background-color: #fff;
-  color: #000;
-  border: 1px solid #000;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  box-shadow: 0 0 8px rgba(0,0,0,0.08);
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Inter', sans-serif;
 }
 
-.profile-container h1,
-.profile-container h2 {
-  border-bottom: 1px solid #000;
-  padding-bottom: 8px;
-  margin-bottom: 24px;
-  font-weight: 600;
-}
-
-.user-info p {
-  margin: 8px 0;
-  font-size: 1.05rem;
-}
-
-.loading, .no-user, .no-donations {
-  text-align: center;
-  margin: 30px 0;
-  font-size: 1.15rem;
-  font-weight: 500;
-}
-
-.donations-cards {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 18px;
-  padding-bottom: 20px;
-  margin-bottom: 10px;
-}
-
-.donation-card {
-  background: #fff;
-  border: 1px solid #000;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-  width: 260px;
-  min-height: 260px;
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 8px;
+/* Header Section */
+.profile-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 16px;
+  padding: 32px;
+  color: white;
+  margin-bottom: 32px;
+  position: relative;
   overflow: hidden;
-  transition: box-shadow 0.2s;
 }
 
-.donation-card:hover {
-  box-shadow: 0 4px 18px rgba(0,0,0,0.14);
+.profile-header::before {
+  content: '';
+  position: absolute;
+  top: -50px;
+  right: -50px;
+  width: 200px;
+  height: 200px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
 }
 
-.donation-image-wrapper {
-  width: 100%;
-  height: 150px;
-  background: #000;
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  position: relative;
+  z-index: 2;
+}
+
+.profile-header h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin: 0 0 8px 0;
+}
+
+.profile-header p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  margin: 0;
+}
+
+.edit-profile-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.edit-profile-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Content Layout */
+.profile-content {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 32px;
+}
+
+/* Sidebar Styles */
+.profile-sidebar {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e5e7eb;
+  height: fit-content;
+}
+
+.user-avatar {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.avatar-circle {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  color: white;
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.avatar-info {
+  margin-left: 16px;
+}
+
+.avatar-info h2 {
+  margin: 0 0 4px 0;
+  color: #1f2937;
+}
+
+.avatar-info p {
+  margin: 0;
+  color: #6b7280;
+}
+
+.user-details {
+  margin-bottom: 24px;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+  color: #4b5563;
+}
+
+.detail-item svg {
+  margin-right: 12px;
+  width: 18px;
+  height: 18px;
+}
+
+.impact-card {
+  background: #f9fafb;
+  border-radius: 12px;
+  padding: 16px;
+  border: 1px solid #e5e7eb;
+}
+
+.impact-card h3 {
+  font-size: 1rem;
+  margin: 0 0 12px 0;
+  color: #374151;
+}
+
+.impact-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-number {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #4f46e5;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+/* Edit Form */
+.edit-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.save-btn {
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.save-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
+/* Main Content */
+.profile-main {
+  display: flex;
+  flex-direction: column;
+}
+
+.tab-navigation {
+  display: flex;
+  margin-bottom: 24px;
+  background: white;
+  border-radius: 12px;
+  padding: 4px;
+  border: 1px solid #e5e7eb;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 12px;
+  background: transparent;
+  color: #6b7280;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tab-btn.active {
+  background: #4f46e5;
+  color: white;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 24px 0;
+  color: #1f2937;
+}
+
+/* Donations Grid */
+.donations-grid {
+  display: grid;
+  gap: 20px;
+}
+
+.donation-card {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e5e7eb;
+  position: relative;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.donation-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.status-badge {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: white;
+}
+
+.status-delivered {
+  background: #10b981;
+}
+
+.status-requested {
+  background: #f59e0b;
+}
+
+.status-available {
+  background: #3b82f6;
+}
+
+.status-expired {
+  background: #9ca3af;
+}
+
+.donation-content {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 20px;
+  align-items: start;
 }
 
 .donation-image {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-  background: #fff;
-  padding: 6px;
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 12px;
 }
 
-.donation-info {
-  padding: 12px 16px 12px 16px;
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  gap: 6px;
-}
-
-.food-type {
+.donation-info h3 {
+  font-size: 1.2rem;
   font-weight: 700;
-  font-size: 1.09rem;
+  margin: 0 0 8px 0;
+  color: #1f2937;
 }
 
 .quantity {
   font-weight: 600;
-  margin-left: 2px;
+  color: #6b7280;
+  margin-left: 8px;
+}
+
+.donation-details {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.detail {
+  display: flex;
+  align-items: center;
+  color: #6b7280;
+  gap: 8px;
 }
 
 .donation-date {
-  color: #333;
-  font-style: italic;
-  font-size: 0.94rem;
-  margin-top: 4px;
-}
-
-.requester-info {
-  margin-top: 12px;
-  padding: 10px;
-  border-top: 1px solid #000;
-  background-color: #f6f6f6;
-  color: #111;
   font-size: 0.9rem;
+  color: #9ca3af;
+  margin-bottom: 16px;
 }
 
-.requester-info h4 {
-  margin-bottom: 6px;
+.delivery-info {
+  display: flex;
+  align-items: center;
+  color: #10b981;
   font-weight: 600;
+  gap: 8px;
 }
 
-.requester-info a {
-  color: #000;
-  text-decoration: underline;
+/* OTP Section */
+.otp-section {
+  margin-top: 16px;
+  padding: 16px;
+  background: #f0f9ff;
+  border-radius: 12px;
+  border: 1px solid #bae6fd;
 }
 
+.otp-section h4 {
+  font-size: 1rem;
+  margin: 0 0 12px 0;
+  color: #0369a1;
+}
+
+.otp-form {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.otp-input {
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 1rem;
+  width: 120px;
+}
+
+.otp-submit-btn {
+  background: #10b981;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.otp-submit-btn:hover {
+  background: #059669;
+}
+
+.otp-help {
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+/* Map Link */
+.map-link {
+  display: inline-flex;
+  align-items: center;
+  color: #4f46e5;
+  text-decoration: none;
+  font-weight: 600;
+  margin-top: 12px;
+  gap: 8px;
+  transition: color 0.2s ease;
+}
+
+.map-link:hover {
+  color: #3730a3;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  background: white;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+}
+
+.empty-icon {
+  margin-bottom: 16px;
+  color: #9ca3af;
+  width: 48px;
+  height: 48px;
+}
+
+.empty-state h3 {
+  color: #6b7280;
+  margin: 0 0 8px 0;
+}
+
+.empty-state p {
+  color: #9ca3af;
+  margin: 0;
+}
+
+/* Loading State */
+.profile-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
+  color: #6b7280;
+  gap: 10px;
+}
+
+/* No User State */
+.profile-no-user {
+  text-align: center;
+  padding: 40px;
+  color: #6b7280;
+}
+
+.no-user-icon {
+  margin-bottom: 16px;
+  width: 48px;
+  height: 48px;
+}
+
+/* Animation */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Responsive Design */
+@media (max-width: 968px) {
+  .profile-content {
+    grid-template-columns: 1fr;
+  }
+  
+  .donation-content {
+    grid-template-columns: 1fr;
+  }
+  
+  .donation-image {
+    width: 100%;
+    height: 200px;
+  }
+}
+
+@media (max-width: 640px) {
+  .profile-header {
+    padding: 24px 20px;
+  }
+  
+  .header-content {
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .profile-header h1 {
+    font-size: 2rem;
+  }
+  
+  .tab-navigation {
+    flex-direction: column;
+  }
+  
+  .impact-stats {
+    grid-template-columns: 1fr;
+  }
+  
+  .user-avatar {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .avatar-info {
+    margin-left: 0;
+    margin-top: 16px;
+  }
+}
