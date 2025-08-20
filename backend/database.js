@@ -42,7 +42,9 @@ db.run(`
     deliveryMethod TEXT,
     otp TEXT,
     deliveredAt DATETIME,
-    emailSent INTEGER DEFAULT 0
+    emailSent INTEGER DEFAULT 0,
+    expiryReason TEXT,
+    expiredAt DATETIME
     )
 `);
 
@@ -72,4 +74,5 @@ db.run(`
 //   db.run(`DROP TABLE IF EXISTS deliveries;`);
 //   console.log('Both tables dropped ');
 //   db.close();});
+  
 export default db;

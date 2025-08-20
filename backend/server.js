@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import fetch from 'node-fetch';
 import db from "./database.js";
 import { getPlaceNameFromCoords } from "./geocodeHelper.js";
 import { sendWhatsAppNotification } from './twilioService.mjs';
@@ -500,14 +501,39 @@ app.post("/api/confirm-pickup", (req, res) => {
   db.get("SELECT otp FROM donations WHERE id = ?", [donationId], (err, row) => {
     if (err || !row || !row.otp) return res.status(400).json({ message: "OTP not found!" });
 
-    // Use trim and strict compare for safety:
     if (otp.trim() === row.otp.trim()) {
       db.run(
         "UPDATE donations SET status = 'Delivered', deliveredAt = ?, otp = NULL WHERE id = ?",
         [new Date().toISOString(), donationId],
         (err) => {
           if (err) return res.status(500).json({ message: "Error updating status." });
-          res.json({ message: "Pickup confirmed. Status is now Delivered." });
+          // Fetch full delivery info
+          db.get(`
+            SELECT d.*, 
+                   donor.name AS donorName, donor.contact AS donorContact, donor.email AS donorEmail,
+                   receiver.name AS receiverName, receiver.contact AS receiverContact, receiver.email AS receiverEmail
+            FROM donations d
+            LEFT JOIN users donor ON d.userId = donor.id
+            LEFT JOIN users receiver ON d.requesterId = receiver.id
+            WHERE d.id = ?;
+          `, [donationId], async (err, deliveryDetails) => {
+            if (err || !deliveryDetails) {
+              return res.json({ message: "Pickup confirmed but details unavailable." });
+            }
+
+            // Internal backend POST: send details (do not expose to user)
+            try {
+              await fetch('http://localhost:5000/api/record-delivery', {
+                method: 'POST',
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(deliveryDetails),
+              });
+            } catch (e) {
+              console.error('Failed to send delivery details internally:', e);
+            }
+
+            res.json({ message: "Pickup confirmed. Status is now Delivered." });
+          });
         }
       );
     } else {
@@ -516,6 +542,32 @@ app.post("/api/confirm-pickup", (req, res) => {
   });
 });
 
+app.put('/api/expire-donation/:id', (req, res) => {
+  const donationId = req.params.id;
+  const { reason } = req.body;
+
+  // You can ignore 'reason' for now or log it elsewhere if needed
+
+  const now = new Date().toISOString();
+
+  const query = `
+    UPDATE donations
+    SET status = 'Expired',
+        expiredAt = ?
+    WHERE id = ? AND status = 'Available'
+  `;
+
+  db.run(query, [now, donationId], function (err) {
+    if (err) {
+      console.error("DB error expiring donation:", err);
+      return res.status(500).json({ message: "Database error" });
+    }
+    if (this.changes === 0) {
+      return res.status(404).json({ message: "Donation not found or not available" });
+    }
+    res.json({ message: "Donation expired successfully" });
+  });
+});
 
 
 
