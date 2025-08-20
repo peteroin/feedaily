@@ -20,7 +20,7 @@ import SenderRankingPage from "./pages/SenderRankingPage";
 import DeliveryPage from "./pages/DeliveryPage";
 import DashboardLayout from "./components/DashboardLayout";
 import PaymentSuccess from "./pages/PaymentSuccess";
-
+import AdminDeliveryRequestsPage from "./pages/AdminDeliveryRequestsPage";
 // Wrapper for LandingPage (to use navigation)
 function LandingPageWrapper() {
   const navigate = useNavigate();
@@ -108,6 +108,9 @@ function App() {
         {/* Payment */}
         <Route path="/success" element={<PaymentSuccess />} />
         {/* <Route path="/cancel" element={<PaymentCancel />} /> */}
+
+        <Route path="/admin/delivery-requests" element={<AdminDeliveryRequestsPage />} />
+
       </Routes>
     </main>
   );
