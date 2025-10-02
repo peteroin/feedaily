@@ -1,6 +1,6 @@
 <div align="center">
     <picture>
-      <img alt="feedaily logo" src="resources/feedaily.svg" width="100">
+      <img alt="feedaily logo" src="assets/feedaily.svg" width="100">
     </picture>
   </a>
   <h1>Feedaily</h1>
@@ -8,7 +8,7 @@
 
 <div align="center">
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)   [![GitHub issues](https://img.shields.io/github/issues/peteroin/feedaily)](https://github.com/peteroin/feedaily/issues)   [![GitHub stars](https://img.shields.io/github/stars/peteroin/feedaily)](https://github.com/peteroin/feedaily/stargazers)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)   [![GitHub issues](https://img.shields.io/github/issues/peteroin/feedaily)](https://github.com/peteroin/feedaily/issues)    [![GitHub stars](https://img.shields.io/github/stars/peteroin/feedaily)](https://github.com/peteroin/feedaily/stargazers)
 </div>
 
 ## Table of Contents
@@ -34,7 +34,7 @@ Feedaily is a platform aimed at reducing food waste by connecting those who have
 
 <div align="center">
     <picture>
-      <img alt="feedaily logo" src="resources/DiagramFeedaily.jpg" width="850">
+      <img alt="feedaily logo" src="assets/DiagramFeedaily.jpg" width="850">
     </picture>
   </a>
 </div>
