@@ -48,6 +48,15 @@ export default function LoginPage() {
         <div className="auth-pattern"></div>
         <div className="auth-overlay"></div>
       </div>
+
+      {/* Debug logging for layout inspection */}
+      {console.log('Auth container dimensions:', {
+        container: document.querySelector('.auth-container')?.getBoundingClientRect(),
+        content: document.querySelector('.auth-content')?.getBoundingClientRect(),
+        card: document.querySelector('.auth-card')?.getBoundingClientRect(),
+        hero: document.querySelector('.auth-hero')?.getBoundingClientRect(),
+        stats: document.querySelector('.hero-stats')?.getBoundingClientRect()
+      })}
       
       <div className="auth-content">
         <div className="auth-card">
