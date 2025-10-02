@@ -42,6 +42,12 @@ export default function RegisterPage() {
       setError("Passwords do not match!");
       return;
     }
+    const phoneRegex = /^[0-9]{10}$/;
+    if (!phoneRegex.test(contact)) {
+    setError("Please enter a valid 10-digit phone number");
+    return;
+    }
+
     setError("");
     setIsLoading(true);
 
