@@ -1,13 +1,13 @@
 /* AuthPages.css */
 .auth-container {
-  display: flex;
+    display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   position: relative;
-  overflow: hidden;
-  padding: 20px;
+  padding: 0;                 
 }
 
 .auth-background {
@@ -40,13 +40,23 @@
 .auth-content {
   display: flex;
   max-width: 1000px;
-  width: 100%;
+  width: 95%;
   background: white;
   border-radius: 20px;
-  overflow: hidden;
   box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
   z-index: 1;
+
+  transform: scale(0.7);
+  transform-origin: center;
 }
+
+@media (max-width: 800px) {
+  .auth-content {
+    transform: scale(0.85);
+    width: 100%;
+  }
+}
+
 
 .auth-card {
   flex: 1;
