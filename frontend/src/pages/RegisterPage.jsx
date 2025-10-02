@@ -1,9 +1,9 @@
 // RegisterPage.jsx
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { 
-  FiUser, FiMail, FiLock, FiEye, FiEyeOff, 
-  FiPhone, FiMapPin, FiArrowRight 
+import {
+  FiUser, FiMail, FiLock, FiEye, FiEyeOff,
+  FiPhone, FiMapPin, FiArrowRight
 } from "react-icons/fi";
 import "./AuthPages.css";
 
@@ -61,6 +61,7 @@ export default function RegisterPage() {
       }
     } catch (error) {
       setError("Network error. Please try again.");
+      console.log(error);
     } finally {
       setIsLoading(false);
     }
@@ -72,7 +73,7 @@ export default function RegisterPage() {
         <div className="auth-pattern"></div>
         <div className="auth-overlay"></div>
       </div>
-      
+
       <div className="auth-content">
         <div className="auth-card register-card">
           <div className="auth-header">
@@ -195,8 +196,8 @@ export default function RegisterPage() {
               </button>
             </div>
 
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               className="auth-button"
               disabled={isLoading}
             >
