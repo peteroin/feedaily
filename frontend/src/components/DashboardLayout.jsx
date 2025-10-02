@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { 
   FiHome, 
   FiBarChart2, 
@@ -15,6 +15,7 @@ import "./DashboardLayout.css";
 export default function DashboardLayout({ children }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate(); // Add useNavigate hook
 
   const menuItems = [
     { path: "/dashboard", label: "Dashboard", icon: <FiHome /> },
@@ -26,6 +27,14 @@ export default function DashboardLayout({ children }) {
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  // Add logout handler function
+  const handleLogout = () => {
+    // Clear the user data from localStorage
+    localStorage.removeItem("user");
+    // Navigate to login page
+    navigate("/login");
   };
 
   return (
@@ -61,7 +70,8 @@ export default function DashboardLayout({ children }) {
         </nav>
 
         <div className="sidebar-footer">
-          <button className="logout-btn">
+          {/* Add onClick handler to the logout button */}
+          <button className="logout-btn" onClick={handleLogout}>
             <FiLogOut />
             <span>Logout</span>
           </button>
