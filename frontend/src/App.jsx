@@ -1,15 +1,5 @@
 import { Routes, Route, useNavigate } from "react-router-dom";
 
-// Vite main sections
-import About from "./components/About";
-import Hero from "./components/Hero";
-import NavBar from "./components/Navbar";
-import Features from "./components/Features";
-import Story from "./components/Story";
-import Contact from "./components/Contact";
-import Footer from "./components/Footer";
-
-// CRA pages/components
 import LandingPage from "./components/LandingPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
@@ -42,24 +32,7 @@ function App() {
   return (
     <main className="relative min-h-screen w-screen overflow-x-hidden">
       <Routes>
-        {/* Vite Home (your Hero + About + etc.) */}
-        <Route
-          path="/"
-          element={
-            <>
-              <NavBar />
-              <Hero />
-              <About />
-              <Features />
-              <Story />
-              <Contact />
-              <Footer />
-            </>
-          }
-        />
-
-        {/* CRA Landing Page (optional, if you want to keep it) */}
-        <Route path="/landing" element={<LandingPageWrapper />} />
+        <Route path="/" element={<LandingPageWrapper />} />
 
         {/* Auth pages */}
         <Route path="/login" element={<LoginPage />} />
@@ -108,10 +81,7 @@ function App() {
           }
         />
 
-        {/* Payment */}
         <Route path="/success" element={<PaymentSuccess />} />
-        {/* <Route path="/cancel" element={<PaymentCancel />} /> */}
-
         <Route path="/admin/delivery-requests" element={
           <ProtectedAdminRoute>
             <AdminDeliveryRequestsPage />
