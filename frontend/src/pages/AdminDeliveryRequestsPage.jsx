@@ -39,6 +39,11 @@ export default function AdminDeliveryRequestsPage() {
     { label: "Delivered", data: delivered, color: "#28a745" },
   ];
 
+  const handleLogout = () => {
+    localStorage.removeItem("adminUser");
+    window.location.href = "/admin-login"; // Or navigate
+  };
+
   const TableHeader = () => (
   <thead style={{ backgroundColor: "#f2f2f2" }}>
     <tr>
@@ -185,7 +190,12 @@ export default function AdminDeliveryRequestsPage() {
 
   return (
     <div style={{ maxWidth: 1100, margin: "2rem auto", background: "#fff", padding: "2rem", borderRadius: 10, fontFamily: "Arial, sans-serif" }}>
-      <h1 style={{ marginBottom: '1rem' }}>📋 Admin: Delivery Requests</h1>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+        <h1>📋 Admin: Delivery Requests</h1>
+        <button onClick={handleLogout} style={{ background: '#dc3545', color: 'white', border: 'none', padding: '8px 16px', borderRadius: 4, cursor:'pointer' }}>
+          Logout
+        </button>
+      </div>
 
       {/* Tab Navigation */}
       <div style={{ display: "flex", marginBottom: 20, borderBottom: "2px solid #ddd" }}>
