@@ -25,7 +25,6 @@ export default function DeliveryPage() {
   const [editingDelivery, setEditingDelivery] = useState(null);
   const [editForm, setEditForm] = useState({});
 
-  // Fetch deliveries (with optional status filter)
   const fetchDeliveries = async () => {
     try {
       let url = "http://localhost:5000/api/deliveries";
@@ -48,7 +47,6 @@ export default function DeliveryPage() {
     fetchDeliveries();
   }, [filterStatus]);
 
-  // Update delivery status
   const updateDeliveryStatus = async (id, newStatus) => {
     try {
       const res = await fetch(`http://localhost:5000/api/deliveries/${id}`, {
@@ -69,7 +67,6 @@ export default function DeliveryPage() {
     }
   };
 
-  // Update delivery details
   const updateDeliveryDetails = async (e) => {
     e.preventDefault();
     try {
@@ -93,7 +90,6 @@ export default function DeliveryPage() {
     }
   };
 
-  // Filter deliveries based on search term
   const filteredDeliveries = deliveries.filter(delivery =>
     delivery.donorName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     delivery.receiverName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -104,21 +100,21 @@ export default function DeliveryPage() {
 
   const getStatusIcon = (status) => {
     switch (status) {
-      case 'pending': return <FiClock className="status-icon pending" />;
-      case 'in-transit': return <FiTruck className="status-icon in-transit" />;
-      case 'delivered': return <FiCheckCircle className="status-icon delivered" />;
-      case 'cancelled': return <FiXCircle className="status-icon cancelled" />;
+      case 'pending': return <FiClock className="status-icon" />;
+      case 'in-transit': return <FiTruck className="status-icon" />;
+      case 'delivered': return <FiCheckCircle className="status-icon" />;
+      case 'cancelled': return <FiXCircle className="status-icon" />;
       default: return <FiClock className="status-icon" />;
     }
   };
 
-  const getStatusColor = (status) => {
+  const getStatusClass = (status) => {
     switch (status) {
-      case 'pending': return '#f59e0b';
-      case 'in-transit': return '#3b82f6';
-      case 'delivered': return '#10b981';
-      case 'cancelled': return '#ef4444';
-      default: return '#6b7280';
+      case 'pending': return 'pending';
+      case 'in-transit': return 'in-transit';
+      case 'delivered': return 'delivered';
+      case 'cancelled': return 'cancelled';
+      default: return 'pending';
     }
   };
 
@@ -177,7 +173,7 @@ export default function DeliveryPage() {
       {/* Stats Overview */}
       <div className="stats-overview">
         <div className="stat-card">
-          <div className="stat-icon total">
+          <div className="stat-icon">
             <FiTruck />
           </div>
           <div className="stat-content">
@@ -186,7 +182,7 @@ export default function DeliveryPage() {
           </div>
         </div>
         <div className="stat-card">
-          <div className="stat-icon pending">
+          <div className="stat-icon">
             <FiClock />
           </div>
           <div className="stat-content">
@@ -195,7 +191,7 @@ export default function DeliveryPage() {
           </div>
         </div>
         <div className="stat-card">
-          <div className="stat-icon in-transit">
+          <div className="stat-icon">
             <FiTruck />
           </div>
           <div className="stat-content">
@@ -204,7 +200,7 @@ export default function DeliveryPage() {
           </div>
         </div>
         <div className="stat-card">
-          <div className="stat-icon delivered">
+          <div className="stat-icon">
             <FiCheckCircle />
           </div>
           <div className="stat-content">
@@ -233,10 +229,7 @@ export default function DeliveryPage() {
               <div key={delivery.id} className="delivery-card">
                 <div className="card-header">
                   <div className="delivery-id">Order #{delivery.id}</div>
-                  <div 
-                    className="status-badge"
-                    style={{ backgroundColor: getStatusColor(delivery.status) }}
-                  >
+                  <div className={`status-badge ${getStatusClass(delivery.status)}`}>
                     {getStatusIcon(delivery.status)}
                     <span>{delivery.status.charAt(0).toUpperCase() + delivery.status.slice(1)}</span>
                   </div>
@@ -303,7 +296,6 @@ export default function DeliveryPage() {
                     value={delivery.status}
                     onChange={(e) => updateDeliveryStatus(delivery.id, e.target.value)}
                     className="status-select"
-                    style={{ borderColor: getStatusColor(delivery.status) }}
                   >
                     {STATUS_OPTIONS.map((opt) => (
                       <option key={opt} value={opt}>

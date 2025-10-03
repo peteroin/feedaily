@@ -2,6 +2,8 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import Webcam from "react-webcam";
 import TMImagePredictor from '../components/TMImagePredictor';
+import Carousel from "react-multi-carousel";
+import "react-multi-carousel/lib/styles.css";
 import { 
   FiCamera, 
   FiRefreshCw, 
@@ -9,7 +11,6 @@ import {
   FiClock, 
   FiUser, 
   FiPhone,
-  FiMail,
   FiPlus,
   FiCheck,
   FiTruck,
@@ -18,6 +19,12 @@ import {
   FiX
 } from "react-icons/fi";
 import "./DashboardPage.css";
+
+const responsive = {
+  desktop: { breakpoint: { max: 3000, min: 1024 }, items: 3, partialVisibilityGutter: 40 },
+  tablet: { breakpoint: { max: 1024, min: 768 }, items: 2, partialVisibilityGutter: 30 },
+  mobile: { breakpoint: { max: 768, min: 0 }, items: 1, partialVisibilityGutter: 30 }
+};
 
 export default function DashboardPage() {
   const [donorName, setDonorName] = useState("");
@@ -33,6 +40,7 @@ export default function DashboardPage() {
   const webcamRef = useRef(null);
   const [location, setLocation] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [currentStep, setCurrentStep] = useState(1);
 
   // Delivery/payment states
   const [deliveryMethodChoice, setDeliveryMethodChoice] = useState(null);
@@ -87,6 +95,24 @@ export default function DashboardPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (currentStep < 4) {
+      // Validate current step
+      if (currentStep === 1 && (!donorName || !contact)) {
+        setMessage("Please fill all required fields.");
+        return;
+      }
+      if (currentStep === 2 && (!foodType || !quantity || !freshness)) {
+        setMessage("Please fill all required fields.");
+        return;
+      }
+      // Move to next step
+      setCurrentStep(currentStep + 1);
+      setMessage("");
+      return;
+    }
+    
+    // Final submission on step 4
     setIsLoading(true);
 
     if (!donorName || !contact || !foodType || !quantity || !freshness) {
@@ -137,6 +163,7 @@ export default function DashboardPage() {
           setNotes("");
           setCapturedImage(null);
           setLocation(null);
+          setCurrentStep(1);
           fetchDonations();
         }
         setIsLoading(false);
@@ -236,321 +263,351 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="dashboard-container">
-      <div className="dashboard-header">
-        <h1 className="dashboard-title">
-          <span className="dashboard-icon">🍽</span>
-          Feedaily Dashboard
-        </h1>
-        <p className="dashboard-subtitle">Make a difference with every donation</p>
-      </div>
+    <div className="dashboard-page">
+      <div className="content-grid-swiper">
+        {/* Form Section */}
+        <div className="form-section-swiper">
+          <div className="section-header">
+            <h2 className="section-title">Add Donation</h2>
+            <p className="section-subtitle">Share surplus food with your community</p>
+          </div>
 
-      <div className="dashboard-content">
-        {/* Stats Overview */}
-        <div className="stats-overview">
-          <div className="stat-card">
-            <div className="stat-icon">
-              <FiPackage />
+          {/* Step Indicator */}
+          <div className="step-indicator">
+            <div className={`step ${currentStep >= 1 ? 'active' : ''} ${currentStep > 1 ? 'completed' : ''}`}>
+              <div className="step-circle">{currentStep > 1 ? <FiCheck /> : '1'}</div>
+              <span className="step-label">Contact</span>
             </div>
-            <div className="stat-content">
-              <h3>{donations.length}</h3>
-              <p>Active Donations</p>
+            <div className="step-line"></div>
+            <div className={`step ${currentStep >= 2 ? 'active' : ''} ${currentStep > 2 ? 'completed' : ''}`}>
+              <div className="step-circle">{currentStep > 2 ? <FiCheck /> : '2'}</div>
+              <span className="step-label">Food Info</span>
+            </div>
+            <div className="step-line"></div>
+            <div className={`step ${currentStep >= 3 ? 'active' : ''} ${currentStep > 3 ? 'completed' : ''}`}>
+              <div className="step-circle">{currentStep > 3 ? <FiCheck /> : '3'}</div>
+              <span className="step-label">Image</span>
+            </div>
+            <div className="step-line"></div>
+            <div className={`step ${currentStep >= 4 ? 'active' : ''}`}>
+              <div className="step-circle">4</div>
+              <span className="step-label">Review</span>
             </div>
           </div>
-          <div className="stat-card">
-            <div className="stat-icon">
-              <FiUser />
-            </div>
-            <div className="stat-content">
-              <h3>{donations.filter(d => d.status === "Requested").length}</h3>
-              <p>Requests Made</p>
-            </div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-icon">
-              <FiCheck />
-            </div>
-            <div className="stat-content">
-              <h3>{donations.filter(d => d.status === "Completed").length}</h3>
-              <p>Successful Donations</p>
-            </div>
-          </div>
-        </div>
 
-        <div className="dashboard-grid">
-          {/* Form Section */}
-          <div className="form-section">
-            <div className="section-header">
-              <h2>Add Food Donation</h2>
-              <p>Share your surplus food with those in need</p>
+          {message && (
+            <div className={`alert ${message.includes("success") ? "alert-success" : "alert-error"}`}>
+              {message}
             </div>
-
-            {message && (
-              <div className={`message ${message.includes("success") ? "success" : "error"}`}>
-                {message}
-              </div>
-            )}
+          )}
 
             <form onSubmit={handleSubmit} className="donation-form">
-              <div className="form-group">
-                <label>Your Name</label>
-                <div className="input-with-icon">
-                  <FiUser />
-                  <input 
-                    type="text" 
-                    value={donorName} 
-                    readOnly 
-                    className="readonly-input"
-                  />
-                </div>
-              </div>
+              {/* Step 1: Contact Information */}
+              {currentStep === 1 && (
+                <div className="form-step">
+                  <div className="form-group">
+                    <label><FiUser className="label-icon" /> Your Name *</label>
+                    <input 
+                      type="text" 
+                      value={donorName} 
+                      readOnly 
+                      className="form-input readonly-input"
+                    />
+                  </div>
 
-              <div className="form-group">
-                <label>Contact Information</label>
-                <div className="input-with-icon">
-                  <FiPhone />
-                  <input 
-                    type="text" 
-                    value={contact} 
-                    readOnly 
-                    className="readonly-input"
-                  />
+                  <div className="form-group">
+                    <label><FiPhone className="label-icon" /> Contact Information *</label>
+                    <input 
+                      type="text" 
+                      value={contact} 
+                      readOnly 
+                      className="form-input readonly-input"
+                    />
+                  </div>
                 </div>
-              </div>
+              )}
 
-              <div className="form-group">
-                <label>Food Type *</label>
-                <div className="input-with-icon">
-                  <FiPackage />
-                  <input
-                    type="text"
-                    placeholder="e.g., Pizza, Rice, Sandwiches"
-                    value={foodType}
-                    onChange={(e) => setFoodType(e.target.value)}
-                    required
-                  />
+              {/* Step 2: Food Details */}
+              {currentStep === 2 && (
+                <div className="form-step">
+                  <div className="form-group">
+                    <label><FiPackage className="label-icon" /> Food Type *</label>
+                    <input
+                      type="text"
+                      placeholder="e.g., Pizza, Rice, Sandwiches"
+                      value={foodType}
+                      onChange={(e) => setFoodType(e.target.value)}
+                      className="form-input"
+                      required
+                    />
+                  </div>
+
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label><FiPackage className="label-icon" /> Quantity *</label>
+                      <input
+                        type="text"
+                        placeholder="e.g., 5 plates, 2kg"
+                        value={quantity}
+                        onChange={(e) => setQuantity(e.target.value)}
+                        className="form-input"
+                        required
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label><FiClock className="label-icon" /> Freshness (hours) *</label>
+                      <input
+                        type="number"
+                        placeholder="Hours"
+                        value={freshness}
+                        onChange={(e) => setFreshness(e.target.value)}
+                        className="form-input"
+                        min="0"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-group">
+                    <label>Additional Notes</label>
+                    <textarea
+                      placeholder="Pickup instructions, special notes, etc."
+                      value={notes}
+                      onChange={(e) => setNotes(e.target.value)}
+                      rows="3"
+                      className="form-textarea"
+                    />
+                  </div>
                 </div>
-              </div>
+              )}
 
-              <div className="form-row">
-                <div className="form-group">
-                  <label>Quantity *</label>
-                  <input
-                    type="text"
-                    placeholder="e.g., 5 plates, 2kg"
-                    value={quantity}
-                    onChange={(e) => setQuantity(e.target.value)}
-                    required
-                  />
+              {/* Step 3: Image Capture */}
+              {currentStep === 3 && (
+                <div className="form-step">
+                  <div className="form-group">
+                    <label><FiCamera className="label-icon" /> Food Image</label>
+                    <div className="webcam-container">
+                      {!capturedImage ? (
+                        isCameraOn ? (
+                          <div className="camera-active">
+                            <Webcam
+                              audio={false}
+                              height={240}
+                              ref={webcamRef}
+                              screenshotFormat="image/jpeg"
+                              width={320}
+                              videoConstraints={videoConstraints}
+                              mirrored
+                              className="webcam-feed"
+                            />
+                            <button
+                              type="button"
+                              onClick={capture}
+                              className="btn btn-primary"
+                            >
+                              <FiCamera />
+                              Capture Image
+                            </button>
+                          </div>
+                        ) : (
+                          <button 
+                            type="button" 
+                            onClick={() => setIsCameraOn(true)}
+                            className="btn btn-secondary btn-block"
+                          >
+                            <FiCamera />
+                            Open Camera
+                          </button>
+                        )
+                      ) : (
+                        <div className="captured-content">
+                          <img src={capturedImage} alt="Captured" className="captured-image" />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setCapturedImage(null);
+                              setIsCameraOn(true);
+                            }}
+                            className="btn btn-secondary"
+                          >
+                            <FiRefreshCw />
+                            Retake Photo
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                    <TMImagePredictor imageSrc={capturedImage} />
+                  </div>
                 </div>
-                <div className="form-group">
-                  <label>Freshness (hours) *</label>
-                  <input
-                    type="number"
-                    placeholder="Hours"
-                    value={freshness}
-                    onChange={(e) => setFreshness(e.target.value)}
-                    min="0"
-                    required
-                  />
-                </div>
-              </div>
+              )}
 
-              <div className="form-group">
-                <label>Additional Notes</label>
-                <textarea
-                  placeholder="Pickup instructions, special notes, etc."
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                  rows="3"
-                />
-              </div>
+              {/* Step 4: Review & Submit */}
+              {currentStep === 4 && (
+                <div className="form-step review-step">
+                  <h3 className="review-title">Review Your Donation</h3>
+                  
+                  <div className="review-section">
+                    <h4 className="review-section-title"><FiUser /> Contact Information</h4>
+                    <div className="review-item">
+                      <span className="review-label">Name:</span>
+                      <span className="review-value">{donorName}</span>
+                    </div>
+                    <div className="review-item">
+                      <span className="review-label">Contact:</span>
+                      <span className="review-value">{contact}</span>
+                    </div>
+                  </div>
 
-              <div className="form-group">
-                <label>Food Image</label>
-                <div className="webcam-container">
-                  {!capturedImage ? (
-                    isCameraOn ? (
-                      <div className="camera-active">
-                        <Webcam
-                          audio={false}
-                          height={240}
-                          ref={webcamRef}
-                          screenshotFormat="image/jpeg"
-                          width={320}
-                          videoConstraints={videoConstraints}
-                          mirrored
-                          className="webcam-feed"
-                        />
-                        <button
-                          type="button"
-                          onClick={capture}
-                          className="capture-btn primary"
-                        >
-                          <FiCamera />
-                          Capture Image
-                        </button>
+                  <div className="review-section">
+                    <h4 className="review-section-title"><FiPackage /> Food Details</h4>
+                    <div className="review-item">
+                      <span className="review-label">Food Type:</span>
+                      <span className="review-value">{foodType}</span>
+                    </div>
+                    <div className="review-item">
+                      <span className="review-label">Quantity:</span>
+                      <span className="review-value">{quantity}</span>
+                    </div>
+                    <div className="review-item">
+                      <span className="review-label">Freshness:</span>
+                      <span className="review-value">{freshness} hours</span>
+                    </div>
+                    {notes && (
+                      <div className="review-item">
+                        <span className="review-label">Notes:</span>
+                        <span className="review-value">{notes}</span>
                       </div>
-                    ) : (
-                      <button 
-                        type="button" 
-                        onClick={() => setIsCameraOn(true)}
-                        className="capture-btn secondary"
-                      >
-                        <FiCamera />
-                        Open Camera
-                      </button>
-                    )
-                  ) : (
-                    <div className="captured-content">
-                      <img src={capturedImage} alt="Captured" className="captured-image" />
-                      <div className="capture-actions">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setCapturedImage(null);
-                            setIsCameraOn(true);
-                          }}
-                          className="capture-btn secondary"
-                        >
-                          <FiRefreshCw />
-                          Retake
-                        </button>
-                      </div>
+                    )}
+                  </div>
+
+                  {capturedImage && (
+                    <div className="review-section">
+                      <h4 className="review-section-title"><FiCamera /> Food Image</h4>
+                      <img src={capturedImage} alt="Food" className="review-image" />
                     </div>
                   )}
                 </div>
-                <TMImagePredictor imageSrc={capturedImage} />
-              </div>
+              )}
 
-              <button 
-                type="submit" 
-                className="submit-btn"
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <div className="loading-spinner"></div>
-                ) : (
-                  <>
-                    <FiPlus />
-                    Submit Donation
-                  </>
+              {/* Navigation Buttons */}
+              <div className="form-navigation">
+                {currentStep > 1 && (
+                  <button 
+                    type="button"
+                    onClick={() => {
+                      setCurrentStep(currentStep - 1);
+                      setMessage("");
+                    }}
+                    className="btn btn-secondary"
+                  >
+                    Back
+                  </button>
                 )}
-              </button>
+                
+                <button 
+                  type="submit" 
+                  className="btn btn-primary"
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <div className="spinner"></div>
+                  ) : currentStep === 4 ? (
+                    <>
+                      <FiPlus />
+                      Submit Donation
+                    </>
+                  ) : (
+                    'Next'
+                  )}
+                </button>
+              </div>
             </form>
           </div>
 
           {/* Donations List */}
-          <div className="list-section">
-            <div className="section-header">
-              <h2>Available Donations</h2>
-              <button onClick={fetchDonations} className="refresh-btn">
-                <FiRefreshCw />
-                Refresh
-              </button>
-            </div>
-
-            {isLoading ? (
-              <div className="loading-state">
-                <div className="loading-spinner"></div>
-                <p>Loading donations...</p>
-              </div>
-            ) : donations.length === 0 ? (
-              <div className="empty-state">
-                <FiPackage className="empty-icon" />
-                <h3>No donations available</h3>
-                <p>Be the first to share food with your community!</p>
-              </div>
-            ) : (
-              <div className="donations-grid">
-                {donations
-                  .filter(donation => donation.status !== "Expired")
-                  .map((donation) => (
-                    <div key={donation.id} className="donation-card">
-                      <div className="donation-header">
-                        <h3>{donation.foodType}</h3>
-                        <span className={`status-badge ${donation.status?.toLowerCase()}`}>
-                          {donation.status}
-                        </span>
-                      </div>
-                      
-                      <div className="donation-details">
-                        <div className="detail-item">
-                          <FiPackage />
-                          <span>{donation.quantity}</span>
-                        </div>
-                        <div className="detail-item">
-                          <FiClock />
-                          <span>Fresh for {donation.freshness} hours</span>
-                        </div>
-                        <div className="detail-item">
-                          <FiUser />
-                          <span>{donation.donorName}</span>
-                        </div>
-                        <div className="detail-item">
-                          <FiPhone />
-                          <span>{donation.contact}</span>
-                        </div>
-                      </div>
-
-                      {donation.notes && (
-                        <div className="donation-notes">
-                          <p>{donation.notes}</p>
-                        </div>
-                      )}
-
-                      {donation.image && (
-                        <img src={donation.image} alt="Donation" className="donation-image" />
-                      )}
-
-                      <div className="donation-location">
-                        <div className="detail-item">
-                          <FiMapPin />
-                          {donation.locationName ? (
-                            <span>{donation.locationName}</span>
-                          ) : donation.locationLat && donation.locationLng ? (
-                            <span>Lat {donation.locationLat.toFixed(4)}, Lng {donation.locationLng.toFixed(4)}</span>
-                          ) : (
-                            <span>Location not provided</span>
-                          )}
-                        </div>
-                        {donation.locationLat && donation.locationLng && (
-                          <button
-                            onClick={() => {
-                              const url = `https://www.google.com/maps/search/?api=1&query=${donation.locationLat},${donation.locationLng}`;
-                              window.open(url, "_blank");
-                            }}
-                            className="map-btn"
-                          >
-                            <FiMapPin />
-                            View Map
-                          </button>
-                        )}
-                      </div>
-
-                      <div className="donation-footer">
-                        <span className="donation-date">
-                          {new Date(donation.createdAt).toLocaleString()}
-                        </span>
-                        
-                        {donation.status === "Expired" ? (
-                          <span className="expired-text">Expired</span>
-                        ) : donation.status === "Available" ? (
-                          <button 
-                            onClick={() => openRequestChoice(donation.id)}
-                            className="request-btn"
-                          >
-                            Request Food
-                          </button>
-                        ) : (
-                          <span className="requested-text">Already Requested</span>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-              </div>
-            )}
+                  <div className="list-section-swiper">
+          <div className="section-header">
+            <h2 className="section-title">Available Donations</h2>
+            <button onClick={fetchDonations} className="btn btn-ghost btn-sm"><FiRefreshCw /> Refresh</button>
           </div>
+
+          {isLoading ? (
+            <div className="empty-state">
+              <span className="spinner"></span>
+              <p className="empty-text">Loading donations...</p>
+            </div>
+          ) : donations.length === 0 ? (
+            <div className="empty-state">
+              <FiPackage className="empty-icon" />
+              <h3 className="empty-title">No donations yet</h3>
+              <p className="empty-text">Be the first to share food!</p>
+            </div>
+          ) : (
+            <Carousel
+              responsive={responsive}
+              infinite={false}
+              containerClass="carousel-container"
+              itemClass="carousel-item-padding-40-px"
+              swipeable={true}
+              draggable={true}
+              showDots={true}
+              keyBoardControl={true}
+            >
+              {donations.filter(d => d.status !== "Expired").map(donation => (
+                <div key={donation.id} className="donation-card-carousel">
+                  <div className="card-header">
+                    <h3 className="card-title">{donation.foodType}</h3>
+                    <span className={`badge badge-${donation.status?.toLowerCase()}`}>{donation.status}</span>
+                  </div>
+                  <div className="card-details">
+                    <div className="detail-row"><FiPackage className="detail-icon" /><span>{donation.quantity}</span></div>
+                    <div className="detail-row"><FiClock className="detail-icon" /><span>Fresh for {donation.freshness}h</span></div>
+                    <div className="detail-row"><FiUser className="detail-icon" /><span>{donation.donorName}</span></div>
+                    <div className="detail-row"><FiPhone className="detail-icon" /><span>{donation.contact}</span></div>
+                  </div>
+                  {donation.notes && <div className="card-notes"><p>{donation.notes}</p></div>}
+                  {donation.image && <img src={donation.image} alt="Food" className="card-image" />}
+                  <div className="card-location">
+                    <div className="detail-row">
+                      <FiMapPin className="detail-icon" />
+                      {donation.locationName ? donation.locationName : donation.locationLat && donation.locationLng ? `${donation.locationLat.toFixed(4)}, ${donation.locationLng.toFixed(4)}` : "Location not provided"}
+                    </div>
+                    {donation.locationLat && donation.locationLng && (
+                      <button onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${donation.locationLat},${donation.locationLng}`, "_blank")} className="btn btn-ghost btn-xs">
+                        <FiMapPin /> Map
+                      </button>
+                    )}
+                  </div>
+                  <div className="card-footer">
+                    <span className="card-date">{new Date(donation.createdAt).toLocaleDateString()}</span>
+                    {donation.status === "Expired" ? (
+                      <span className="status-text expired">Expired</span>
+                    ) : donation.status === "Available" ? (
+                      <button onClick={() => openRequestChoice(donation.id)} className="btn btn-primary btn-sm">Request</button>
+                    ) : (
+                      <span className="status-text requested">Requested</span>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </Carousel>
+          )}
+        </div>
+      </div>
+
+      {/* Stats Overview - Moved to Bottom */}
+      <div className="stats-grid">
+        <div className="stat-card">
+          <div className="stat-icon"><FiPackage /></div>
+          <div className="stat-info"><div className="stat-value">{donations.length}</div><div className="stat-label">Active Donations</div></div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-icon"><FiUser /></div>
+          <div className="stat-info"><div className="stat-value">{donations.filter(d => d.status === "Requested").length}</div><div className="stat-label">Requests Made</div></div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-icon"><FiCheck /></div>
+          <div className="stat-info"><div className="stat-value">{donations.filter(d => d.status === "Completed").length}</div><div className="stat-label">Completed</div></div>
         </div>
       </div>
 

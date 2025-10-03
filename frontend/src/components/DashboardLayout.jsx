@@ -1,91 +1,103 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { 
-  FiHome, 
-  FiBarChart2, 
-  FiUser, 
-  FiAward, 
+import {
+  FiHome,
+  FiBarChart2,
+  FiUser,
+  FiAward,
   FiTruck,
-  FiMenu,
-  FiX,
-  FiLogOut
+  FiLogOut,
 } from "react-icons/fi";
 import "./DashboardLayout.css";
 
 export default function DashboardLayout({ children }) {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
   const location = useLocation();
-  const navigate = useNavigate(); // Add useNavigate hook
+  const [scrolled, setScrolled] = useState(false);
 
-  const menuItems = [
+  const navItems = [
     { path: "/dashboard", label: "Dashboard", icon: <FiHome /> },
     { path: "/stats", label: "Stats", icon: <FiBarChart2 /> },
-    { path: "/profile", label: "My Profile", icon: <FiUser /> },
-    { path: "/sender-rankings", label: "Sender Rankings", icon: <FiAward /> },
+    { path: "/profile", label: "Profile", icon: <FiUser /> },
+    { path: "/sender-rankings", label: "Rankings", icon: <FiAward /> },
     { path: "/delivery", label: "Delivery", icon: <FiTruck /> },
   ];
 
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
-  // Add logout handler function
   const handleLogout = () => {
-    // Clear the user data from localStorage
-    localStorage.removeItem("user");
-    // Navigate to login page
-    navigate("/login");
+    const mainElement = document.querySelector('.main-content');
+    if (mainElement) {
+      mainElement.style.opacity = '0';
+      mainElement.style.transform = 'scale(0.98)';
+    }
+    
+    setTimeout(() => {
+      navigate("/login");
+    }, 200);
   };
 
   return (
-    <div className="dashboard-layout">
-      {/* Mobile Header */}
-      <div className="mobile-header">
-        <button className="menu-toggle" onClick={toggleMobileMenu}>
-          {isMobileMenuOpen ? <FiX /> : <FiMenu />}
-        </button>
-        <h2 className="logo">🍽 Feedaily</h2>
-        <div className="placeholder"></div>
-      </div>
-
-      {/* Sidebar */}
-      <aside className={`sidebar ${isMobileMenuOpen ? "sidebar-open" : ""}`}>
-        <div className="sidebar-header">
-          <h2 className="logo">🍽 Feedaily</h2>
-          <p className="tagline">Zero Waste Starts Here</p>
-        </div>
-
-        <nav className="sidebar-nav">
-          {menuItems.map((item) => (
-            <Link
-              key={item.path}
-              to={item.path}
-              className={`nav-item ${location.pathname === item.path ? "active" : ""}`}
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              <span className="nav-icon">{item.icon}</span>
-              <span className="nav-label">{item.label}</span>
-            </Link>
-          ))}
-        </nav>
-
-        <div className="sidebar-footer">
-          {/* Add onClick handler to the logout button */}
-          <button className="logout-btn" onClick={handleLogout}>
+    <div className="dashboard-container">
+      <header className={`dashboard-header${scrolled ? " header-scrolled" : ""}`}>
+        <div className="header-content">
+          <Link to="/" className="logo">
+            Feedaily
+          </Link>
+          
+          <nav className="nav">
+            {navItems.map(({ path, label, icon }) => {
+              const isActive = location.pathname === path;
+              return (
+                <Link
+                  key={path}
+                  to={path}
+                  className={`nav-link${isActive ? " nav-link-active" : ""}`}
+                  onMouseEnter={(e) => {
+                    if (!isActive) {
+                      e.currentTarget.style.color = '#000';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive) {
+                      e.currentTarget.style.color = '#666';
+                    }
+                  }}
+                >
+                  <span className="nav-icon">{icon}</span>
+                  <span className="nav-label">{label}</span>
+                </Link>
+              );
+            })}
+          </nav>
+          
+          <button 
+            className="logout-btn"
+            onClick={handleLogout}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = '#000';
+              e.currentTarget.style.transform = 'translateX(2px)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = '#666';
+              e.currentTarget.style.transform = 'translateX(0)';
+            }}
+          >
             <FiLogOut />
-            <span>Logout</span>
           </button>
         </div>
-      </aside>
+      </header>
 
-      {/* Overlay for mobile when menu is open */}
-      {isMobileMenuOpen && (
-        <div className="sidebar-overlay" onClick={toggleMobileMenu}></div>
-      )}
-
-      {/* Main Content */}
       <main className="main-content">
-        <div className="content-container">{children}</div>
+        <div className="content-wrapper">
+          {children}
+        </div>
       </main>
     </div>
   );

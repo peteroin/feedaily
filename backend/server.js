@@ -257,58 +257,87 @@ app.post("/api/request-food/:id", async (req, res) => {
   const contextId = `donation-${donationId}`;
   const otp = (deliveryMethod === "pickup") ? generateOtp() : null;
 
-  const query = `
-  UPDATE donations
-  SET status = 'Requested',
-      requesterId = ?,
-      requesterLat = ?,
-      requesterLng = ?,
-      requestedAt = ?,
-      deliveryMethod = ?,
-      otp = ?
-  WHERE id = ? AND status = 'Available'
-`;
-
-  db.run(query, [requesterId, requesterLat || null, requesterLng || null, now, deliveryMethod || null, otp, donationId], async function(err) {
+  // First, get the donation details to check coordinates
+  db.get("SELECT locationLat, locationLng FROM donations WHERE id = ? AND status = 'Available'", [donationId], async (err, donation) => {
     if (err) return res.status(500).json({ message: "Database error" });
-    // Fetch donation & user details for email
-    db.get(`
-      SELECT d.*, donor.email AS donorEmail, donor.name AS donorName, req.name AS requesterName, req.email AS requesterEmail
-      FROM donations d
-      LEFT JOIN users donor ON d.userId = donor.id
-      LEFT JOIN users req ON d.requesterId = req.id
-      WHERE d.id = ?
-    `, [donationId], async (err, row) => {
-      if (err || !row) return;
-      // Compose emails
-      if (deliveryMethod === "pickup" && otp) {
-        const subject = "Feedaily In-person Pickup Confirmation";
-        const requesterText = `
-        Hello ${row.requesterName},
-        Your OTP for in-person pickup of food "${row.foodType}" from donor ${row.donorName} is: ${otp}
-        Show this OTP to the donor at the time of pickup.
-        Details:
-        Food: ${row.foodType}
-        Quantity: ${row.quantity}
-        Pickup location: ${row.locationLat},${row.locationLng}
-        Thank you for helping reduce food waste!
-        `;
-                const donorText = `
-        Hello ${row.donorName},
-        Your food donation has been requested for in-person pickup by ${row.requesterName}.
-        The requester will provide you OTP.
-        Confirm the pickup by entering this code at Feedaily website to mark as delivered.
-        Details:
-        Food: ${row.foodType}
-        Quantity: ${row.quantity}
-        Pickup location: ${row.locationLat},${row.locationLng}
-        Thank you for your generosity!
-        `;
-        if (row.requesterEmail) await sendEmail(row.requesterEmail, subject, requesterText);
-        if (row.donorEmail) await sendEmail(row.donorEmail, subject, donorText);
-      }
+    if (!donation) return res.status(404).json({ message: "Donation not found or not available" });
+    
+    // Import the distance calculation function
+    const { calculateDistance } = await import('./geocodeHelper.js');
+    
+    // Calculate distance between donator and requester
+    const distance = calculateDistance(
+      donation.locationLat, 
+      donation.locationLng, 
+      requesterLat, 
+      requesterLng
+    );
+    
+    // Check if distance is within 50 KM
+    if (distance > 50) {
+      return res.status(400).json({ 
+        message: "This donation is not available for you as it's more than 50 KM away from your location.",
+        distance: distance.toFixed(2)
+      });
+    }
+
+    const query = `
+    UPDATE donations
+    SET status = 'Requested',
+        requesterId = ?,
+        requesterLat = ?,
+        requesterLng = ?,
+        requestedAt = ?,
+        deliveryMethod = ?,
+        otp = ?
+    WHERE id = ? AND status = 'Available'
+    `;
+
+    db.run(query, [requesterId, requesterLat || null, requesterLng || null, now, deliveryMethod || null, otp, donationId], async function(err) {
+      if (err) return res.status(500).json({ message: "Database error" });
+      // Fetch donation & user details for email
+      db.get(`
+        SELECT d.*, donor.email AS donorEmail, donor.name AS donorName, req.name AS requesterName, req.email AS requesterEmail
+        FROM donations d
+        LEFT JOIN users donor ON d.userId = donor.id
+        LEFT JOIN users req ON d.requesterId = req.id
+        WHERE d.id = ?
+      `, [donationId], async (err, row) => {
+        if (err || !row) return;
+        // Compose emails
+        if (deliveryMethod === "pickup" && otp) {
+          const subject = "Feedaily In-person Pickup Confirmation";
+          const requesterText = `
+          Hello ${row.requesterName},
+          Your OTP for in-person pickup of food "${row.foodType}" from donor ${row.donorName} is: ${otp}
+          Show this OTP to the donor at the time of pickup.
+          Details:
+          Food: ${row.foodType}
+          Quantity: ${row.quantity}
+          Pickup location: ${row.locationLat},${row.locationLng}
+          Thank you for helping reduce food waste!
+          `;
+                  const donorText = `
+          Hello ${row.donorName},
+          Your food donation has been requested for in-person pickup by ${row.requesterName}.
+          The requester will provide you OTP.
+          Confirm the pickup by entering this code at Feedaily website to mark as delivered.
+          Details:
+          Food: ${row.foodType}
+          Quantity: ${row.quantity}
+          Pickup location: ${row.locationLat},${row.locationLng}
+          Thank you for your generosity!
+          `;
+          if (row.requesterEmail) await sendEmail(row.requesterEmail, subject, requesterText);
+          if (row.donorEmail) await sendEmail(row.donorEmail, subject, donorText);
+        }
+      });
+      res.json({ 
+        message: "Request recorded. OTP sent for pickup.", 
+        requestedAt: now,
+        distance: distance.toFixed(2) + " KM"
+      });
     });
-    res.json({ message: "Request recorded. OTP sent for pickup.", requestedAt: now });
   });
 });
 
