@@ -1,31 +1,38 @@
 <div align="center">
   <img alt="Feedaily Logo" src="assets/feedaily.svg" width="120">
-  <h1>Feedaily</h1>
-  <p>Connecting people to save food, fight hunger, and reduce waste.</p>
+  <h1>feedaily</h1>
+  <p><em>Connecting people to save food, fight hunger, and reduce waste.</em></p>
   
-  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) 
-  [![GitHub issues](https://img.shields.io/github/issues/peteroin/feedaily)](https://github.com/peteroin/feedaily/issues)  
-  [![GitHub stars](https://img.shields.io/github/stars/peteroin/feedaily)](https://github.com/peteroin/feedaily/stargazers)
+[![License](https://img.shields.io/badge/License-MIT-8BC34A.svg)](LICENSE)
+[![Issues](https://img.shields.io/github/issues/peteroin/feedaily?color=FF7043)](https://github.com/peteroin/feedaily/issues)
+[![Stars](https://img.shields.io/github/stars/peteroin/feedaily?style=flat&color=FFD54F)](https://github.com/peteroin/feedaily/stargazers)
+[![Forks](https://img.shields.io/github/forks/peteroin/feedaily?color=4DD0E1)](https://github.com/peteroin/feedaily/network/members)
+[![Contributors](https://img.shields.io/github/contributors/peteroin/feedaily?color=BA68C8)](https://github.com/peteroin/feedaily/graphs/contributors)
+
 </div>
 
 ## Table of Contents
 
 - [About](#about)  
-- [Demo](#demo)  
+- [Demo](#flow-diagram)  
 - [Features](#features)  
-- [Architecture / Tech Stack](#architecture--tech-stack)  
+- [Tech Stack](#tech-stack)  
 - [Getting Started](#getting-started)  
+  - [Prerequisites](#prerequisites)  
+  - [Installation](#installation)  
+  - [Running Locally](#running-locally) 
 - [Usage](#usage)  
 - [Contributing](#contributing)  
 - [Issue Labels](#issue-labels)  
 - [License](#license)  
-- [Contact / Contributors](#contact--contributors)  
+- [Contact](#contact)  
+- [Contributors](#contributors)  
 
 ## About
 
 Feedaily is a platform aimed at reducing food waste by connecting those who have excess food with those in need. It empowers communities to share, donate, or redistribute surplus food, helping to fight hunger and promote sustainability.
 
-## Demo
+## Flow Diagram
 
 <div align="center">
     <picture>
@@ -35,45 +42,60 @@ Feedaily is a platform aimed at reducing food waste by connecting those who have
 
 ## Features
 
-- User authentication & profiles  
-- Create listings of surplus food  
-- Browse nearby food offers  
-- Claim / reserve food  
-- Image classification to validate food  
-- Notifications / status tracking  
-- Admin moderation  
+- User Authentication & Profiles  
+- Create listings of Surplus Food  
+- Browse nearby Food Offers  
+- Claim / Reserve food  
+- Image classification to Validate Food  
+- Notifications / Status tracking  
+- Admin Moderation  
 - Email Service Integration  
 - WhatsApp Bot Integration  
 - Payment Gateway Integration (Stripe)  
 - Live location tracking
 
-## Architecture / Tech Stack
+## Tech Stack
 
-- **Frontend**: Vite + React + Tailwind CSS  
-- **Backend**: Node.js / Express  
-- **Database**: SQLite (or your choice)  
-- **Other Tools / Libraries**:  
-  - CNN / Image classification model  
-  - API routing, file uploads, etc.
+```text
+┌─────────────────────────────────────────────────────────────────┐
+│                        FULL STACK ARCHITECTURE                  │
+├─────────────────┬─────────────────┬─────────────────────────────┤
+│    FRONTEND     │     BACKEND     │        AI/ML COMPONENTS     │
+├─────────────────┼─────────────────┼─────────────────────────────┤
+│ • React         │ • Express.js    │ • CNN Image Classification  │
+│ • Vite          │ • Node.js       │ • TensorFlow Models         │
+│ • Tailwind CSS  │ • SQLite        │ • File Processing           │
+│ • GSAP Animations│ • REST APIs    │ • Image Recognition         │
+│ • React Router  │ • File Uploads  │                             │
+│ • Google Charts │ • Authentication│        INTEGRATIONS         │
+│ • jsPDF Export  │ • bcrypt        ├─────────────────────────────┤
+│ • React Webcam  │ • Sessions      │ • WhatsApp API              │
+│                 │ • Nodemailer    │ • Twilio SMS                │
+│                 │                 │ • Stripe Payments           │
+└─────────────────┴─────────────────┴─────────────────────────────┘
+```
+
+</p>
 
 ## Getting Started
 
-### Prerequisites
 
-- Node.js (v16 or newer)  
-- npm or yarn  
-- SQLite (optional if using file-based DB)  
+### Prerequisites
+Before you get started, ensure you have the following installed:
+- **Node.js** (v16 or newer)  
+- **npm** or **yarn**  
+- **SQLite** (optional if using file-based database)
 
 ### Installation
 
-Clone the repository:
+1. Clone the repository:
 
 ```bash
 git clone https://github.com/peteroin/feedaily.git
 cd feedaily
 ```
 
-Install dependencies:
+2. Install dependencies:
 
 ```bash
 # frontend
@@ -87,20 +109,20 @@ npm install
 
 ### Running Locally
 
-Run **frontend**:
+3. Run **frontend**:
 
 ```bash
 cd frontend
 npm run dev
-# Open http://localhost:5173
+# default: http://localhost:5173
 ```
 
-Run **backend**:
+4. Run **backend**:
 
 ```bash
 cd backend
 node server.js
-# API runs on http://localhost:5000
+# API runs on: http://localhost:5000
 ```
 
 The frontend should now communicate with the backend API.
@@ -120,12 +142,12 @@ The frontend should now communicate with the backend API.
   
 ## Contributing
 
-We welcome contributions! 🙌 Whether it’s fixing bugs, adding features, improving docs, or writing tests - all help is appreciated.
+We welcome contributions! 🙌 Whether it’s fixing bugs, adding features, improving docs, or writing tests all help is appreciated.
 
 Steps to contribute:
 
 1. **Fork** the repo  
-2. Create a feature branch  
+2. Create a branch  
 ```bash
 git checkout -b feature/my-feature
 ```
@@ -133,6 +155,7 @@ git checkout -b feature/my-feature
 4. Commit & push  
 5. Open a **Pull Request**  
 
+> Note: We follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) for all commit messages.    
 Check [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
 ## Issue Labels
@@ -148,17 +171,31 @@ We use labels to organize issues:
 | `documentation`    | Documentation improvements        |
 | `question`         | Questions or clarifications       |
 
-## Contact / Contributors
+## Contact  
+<p align="center">
+  <strong>Maintainers</strong>  
+  <br>
+  <a href="https://github.com/peteroin">Peter</a> • <a href="https://github.com/ictorv">Victor</a>
+</p>
 
-- **Maintainer / Owner**: [Peter](https://github.com/peteroin) , [Victor](https://github.com/ictorv) 
-- Contributors: **you!** 
 
-Open an **issue** or **PR** if you have ideas or want to help.
+## Contributors
+<p align="center">
+<a href="https://github.com/peteroin/feedaily/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=peteroin/feedaily" />
+</a>
+</p> 
 
-## Mission
+<p align="center">
+Open an <a href="https://github.com/peteroin/feedaily/issues"><strong>issue</strong></a> or a <strong>PR</strong> if you have ideas or want to help.  
+</p>
 
-----------------------------------------------------
-“Connecting people to save food, fight hunger, and reduce waste.”  
-----------------------------------------------------
 
-✌️ Thank you for checking out **Feedaily** - together we can make an impact! 🚀
+
+<p align="center">
+<strong><em>Connecting people to save food, fight hunger, and reduce waste.</em></strong>  
+</p>
+
+<p align="center">
+💚 Thank you for checking out <strong>feedaily</strong> - together we can make an impact!
+</p>
