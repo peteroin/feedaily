@@ -261,6 +261,16 @@
   font-size: 0.9rem;
 }
 
+.admin-login-link {
+  margin-top: 15px;  
+  text-align: center; 
+}
+
+.admin-login-link .auth-link {
+  font-weight: 700; 
+}
+
+
 .forgot-link:hover {
   color: #667eea;
   text-decoration: underline;

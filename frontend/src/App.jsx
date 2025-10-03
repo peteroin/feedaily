@@ -21,6 +21,8 @@ import DeliveryPage from "./pages/DeliveryPage";
 import DashboardLayout from "./components/DashboardLayout";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import AdminDeliveryRequestsPage from "./pages/AdminDeliveryRequestsPage";
+import AdminLoginPage from "./pages/AdminLoginPage";
+import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
 // Wrapper for LandingPage (to use navigation)
 function LandingPageWrapper() {
   const navigate = useNavigate();
@@ -62,6 +64,7 @@ function App() {
         {/* Auth pages */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/admin-login" element={<AdminLoginPage />} />
 
         {/* Dashboard & sub-pages with layout */}
         <Route
@@ -109,7 +112,11 @@ function App() {
         <Route path="/success" element={<PaymentSuccess />} />
         {/* <Route path="/cancel" element={<PaymentCancel />} /> */}
 
-        <Route path="/admin/delivery-requests" element={<AdminDeliveryRequestsPage />} />
+        <Route path="/admin/delivery-requests" element={
+          <ProtectedAdminRoute>
+            <AdminDeliveryRequestsPage />
+          </ProtectedAdminRoute>
+        } />
 
       </Routes>
     </main>

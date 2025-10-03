@@ -25,7 +25,7 @@ export default function LoginPage() {
       const res = await fetch("http://localhost:5000/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ email, password }),
       });
 
       const data = await res.json();
@@ -50,14 +50,18 @@ export default function LoginPage() {
       </div>
 
       {/* Debug logging for layout inspection */}
-      {console.log('Auth container dimensions:', {
-        container: document.querySelector('.auth-container')?.getBoundingClientRect(),
-        content: document.querySelector('.auth-content')?.getBoundingClientRect(),
-        card: document.querySelector('.auth-card')?.getBoundingClientRect(),
-        hero: document.querySelector('.auth-hero')?.getBoundingClientRect(),
-        stats: document.querySelector('.hero-stats')?.getBoundingClientRect()
+      {console.log("Auth container dimensions:", {
+        container: document
+          .querySelector(".auth-container")
+          ?.getBoundingClientRect(),
+        content: document
+          .querySelector(".auth-content")
+          ?.getBoundingClientRect(),
+        card: document.querySelector(".auth-card")?.getBoundingClientRect(),
+        hero: document.querySelector(".auth-hero")?.getBoundingClientRect(),
+        stats: document.querySelector(".hero-stats")?.getBoundingClientRect(),
       })}
-      
+
       <div className="auth-content">
         <div className="auth-card">
           <div className="auth-header">
@@ -103,11 +107,7 @@ export default function LoginPage() {
               </button>
             </div>
 
-            <button 
-              type="submit" 
-              className="auth-button"
-              disabled={isLoading}
-            >
+            <button type="submit" className="auth-button" disabled={isLoading}>
               {isLoading ? (
                 <div className="spinner"></div>
               ) : (
@@ -125,7 +125,14 @@ export default function LoginPage() {
                   Sign up now
                 </Link>
               </p>
-              <a href="#" className="forgot-link">Forgot password?</a>
+              <a href="#" className="forgot-link">
+                Forgot password?
+              </a>
+              <div className="admin-login-link">
+                <Link to="/admin-login" className="auth-link">
+                  Login as Admin
+                </Link>
+              </div>
             </div>
           </form>
         </div>
@@ -133,7 +140,9 @@ export default function LoginPage() {
         <div className="auth-hero">
           <div className="hero-content">
             <h3>Every Plate Matters</h3>
-            <p>Join thousands of users fighting food waste one meal at a time</p>
+            <p>
+              Join thousands of users fighting food waste one meal at a time
+            </p>
             <div className="hero-stats">
               <div className="stat">
                 <span className="stat-number">10K+</span>
