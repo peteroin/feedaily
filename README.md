@@ -1,16 +1,14 @@
 <div align="center">
   <img alt="Feedaily Logo" src="assets/feedaily.svg" width="120">
   <h1>Feedaily</h1>
-  <p>✨ Connecting people to save food, fight hunger, and reduce waste.</p>
+  <p>Connecting people to save food, fight hunger, and reduce waste.</p>
   
   [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) 
   [![GitHub issues](https://img.shields.io/github/issues/peteroin/feedaily)](https://github.com/peteroin/feedaily/issues)  
   [![GitHub stars](https://img.shields.io/github/stars/peteroin/feedaily)](https://github.com/peteroin/feedaily/stargazers)
 </div>
 
----
-
-## 📑 Table of Contents
+## Table of Contents
 
 - [About](#about)  
 - [Demo](#demo)  
@@ -23,42 +21,33 @@
 - [License](#license)  
 - [Contact / Contributors](#contact--contributors)  
 
----
-
-## 🌟 About
+## About
 
 Feedaily is a platform aimed at reducing food waste by connecting those who have excess food with those in need. It empowers communities to share, donate, or redistribute surplus food, helping to fight hunger and promote sustainability.
 
----
-
-## 🎬 Demo
+## Demo
 
 <div align="center">
     <picture>
       <img alt="feedaily logo" src="assets/DiagramFeedaily.jpg" width="850">
     </picture>
-  </a>
 </div>
 
----
+## Features
 
-## 🚀 Features
+- User authentication & profiles  
+- Create listings of surplus food  
+- Browse nearby food offers  
+- Claim / reserve food  
+- Image classification to validate food  
+- Notifications / status tracking  
+- Admin moderation  
+- Email Service Integration  
+- WhatsApp Bot Integration  
+- Payment Gateway Integration (Stripe)  
+- Live location tracking
 
-- 👤 User authentication & profiles  
-- 🥘 Create listings of surplus food  
-- 📍 Browse nearby food offers  
-- ✅ Claim / reserve food  
-- 🖼️ Image classification to validate food  
-- 🔔 Notifications / status tracking  
-- 🛠️ Admin moderation  
-- ✉️ Email Service Integration  
-- 💬 WhatsApp Bot Integration  
-- 💳 Payment Gateway Integration (Stripe)  
-- 📡 Live location tracking 
-
----
-
-## 🛠️ Architecture / Tech Stack
+## Architecture / Tech Stack
 
 - **Frontend**: Vite + React + Tailwind CSS  
 - **Backend**: Node.js / Express  
@@ -67,9 +56,7 @@ Feedaily is a platform aimed at reducing food waste by connecting those who have
   - CNN / Image classification model  
   - API routing, file uploads, etc.
 
----
-
-## ⚡ Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -118,9 +105,7 @@ node server.js
 
 The frontend should now communicate with the backend API.
 
----
-
-## 📖 Usage
+## Usage
 
 1. Sign up / log in  
 2. Create a new food listing (name, description, image, quantity, etc.)  
@@ -128,12 +113,12 @@ The frontend should now communicate with the backend API.
 4. Claim or reserve a listing  
 5. Track status, notifications, or updates  
 
-### Possible Extensions
-- 🔍 Search / filtering  
-- ⭐ Ratings & feedback  
-- 🗺️ Map integration for location-based matching
+## Possible Extensions
+- Search / filtering  
+- Ratings & feedback  
+- Map integration for location-based matching
   
-## 🤝 Contributing
+## Contributing
 
 We welcome contributions! 🙌 Whether it’s fixing bugs, adding features, improving docs, or writing tests - all help is appreciated.
 
@@ -150,9 +135,7 @@ git checkout -b feature/my-feature
 
 Check [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
----
-
-## 🏷️ Issue Labels
+## Issue Labels
 
 We use labels to organize issues:
 
@@ -165,23 +148,17 @@ We use labels to organize issues:
 | `documentation`    | Documentation improvements        |
 | `question`         | Questions or clarifications       |
 
----
-
-## 📬 Contact / Contributors
+## Contact / Contributors
 
 - **Maintainer / Owner**: [Peter](https://github.com/peteroin) , [Victor](https://github.com/ictorv) 
 - Contributors: **you!** 
 
 Open an **issue** or **PR** if you have ideas or want to help.
 
----
+## Mission
 
-## ✨ Mission
-
-===================================================
-✨ “Connecting people to save food, fight hunger, and reduce waste.”  
-===================================================
-
----
+----------------------------------------------------
+“Connecting people to save food, fight hunger, and reduce waste.”  
+----------------------------------------------------
 
 ✌️ Thank you for checking out **Feedaily** - together we can make an impact! 🚀
