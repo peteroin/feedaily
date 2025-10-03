@@ -53,7 +53,7 @@ export default function AdminLoginPage() {
         <div className="auth-card">
           <div className="auth-header">
             <div className="auth-logo">
-              <span>🔐</span> 
+            <FiLock size={24} /> 
               <h1>Feedaily Admin</h1>
             </div>
             <h2>Admin Login</h2>
@@ -120,22 +120,7 @@ export default function AdminLoginPage() {
           </form>
         </div>
 
-        <div className="auth-hero">
-          <div className="hero-content">
-            <h3>Admin Access</h3>
-            <p>Manage deliveries and monitor platform activity</p>
-            <div className="hero-stats">
-              <div className="stat">
-                <span className="stat-number">📋</span>
-                <span className="stat-label">Delivery Requests</span>
-              </div>
-              <div className="stat">
-                <span className="stat-number">🚚</span>
-                <span className="stat-label">Active Deliveries</span>
-              </div>
-            </div>
-          </div>
-        </div>
+        
       </div>
     </div>
   );

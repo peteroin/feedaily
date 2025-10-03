@@ -278,47 +278,48 @@ export default function RegisterPage() {
             </div>
 
             {/* Navigation buttons */}
-            <div className="auth-form-nav" style={{ gridColumn: "1 / -1", marginTop: "1.5rem", display: "flex", justifyContent: "space-between" }}>
-              {currentStep > 1 ? (
-                <button
-                  type="button"
-                  className="auth-button prev"
-                  onClick={handlePrev}
-                  style={{ background: "#6c757d", boxShadow: "none" }}
-                >
-                  <FiArrowLeft style={{ marginRight: "0.3rem" }} />
-                  Previous
-                </button>
-              ) : <div />}
+           {/* Navigation buttons */}
+<div className="nav-buttons">
+  {currentStep > 1 ? (
+    <button
+      type="button"
+      className="nav-button"
+      onClick={handlePrev}
+    >
+      <FiArrowLeft />
+    </button>
+  ) : (
+    <div />
+  )}
 
-              {currentStep < totalSteps ? (
-                <button
-                  type="button"
-                  className="auth-button"
-                  onClick={handleNext}
-                  disabled={isLoading}
-                >
-                  Next
-                  <FiArrowRight style={{ marginLeft: "0.3rem" }} />
-                </button>
-              ) : (
-                <button
-                  type="submit"
-                  className="auth-button"
-                  disabled={isLoading}
-                  aria-busy={isLoading}
-                >
-                  {isLoading ? (
-                    <div className="spinner" aria-hidden="true"></div>
-                  ) : (
-                    <>
-                      Create Account
-                      <FiArrowRight style={{ marginLeft: "0.3rem" }} />
-                    </>
-                  )}
-                </button>
-              )}
-            </div>
+  {currentStep < totalSteps ? (
+    <button
+      type="button"
+      className="nav-button"
+      onClick={handleNext}
+      disabled={isLoading}
+    >
+      <FiArrowRight />
+    </button>
+  ) : (
+    <button
+      type="submit"
+      className="auth-button"
+      disabled={isLoading}
+      aria-busy={isLoading}
+    >
+      {isLoading ? (
+        <div className="spinner" aria-hidden="true"></div>
+      ) : (
+        <>
+          Create Account
+          <FiArrowRight style={{ marginLeft: "0.3rem" }} />
+        </>
+      )}
+    </button>
+  )}
+</div>
+
 
             <div className="auth-footer" style={{ gridColumn: "1 / -1", marginTop: "1rem" }}>
               <p>

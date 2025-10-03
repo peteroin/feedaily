@@ -236,3 +236,11 @@
     padding: 1.5rem;
   }
 }
+
+.form-step .input-group {
+  margin-bottom: 1rem; /* adds space between fields */
+}
+
+.form-step .input-group:last-child {
+  margin-bottom: 0; /* remove extra space at the end */
+}
