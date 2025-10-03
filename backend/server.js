@@ -50,18 +50,39 @@ app.post("/api/login", (req, res) => {
   );
 });
 
-// ADMIN LOGIN endpoint
-app.post("/api/admin-login", (req, res) => {
-  const { email, password } = req.body;
-  db.get(
-    "SELECT * FROM users WHERE email = ? AND password = ? AND type = 'Admin'",
-    [email, password],
-    (err, row) => {
-      if (err) return res.status(500).json({ message: "DB error" });
-      if (!row) return res.json({ message: "Invalid admin credentials" });
-      res.json({ message: "Admin login successful", user: row });
+// Update user profile
+app.put("/api/users/:id", (req, res) => {
+  const userId = req.params.id;
+  const { name, email, contact, address, password } = req.body;
+
+  const query = `
+    UPDATE users
+    SET name = COALESCE(?, name),
+        email = COALESCE(?, email),
+        contact = COALESCE(?, contact),
+        address = COALESCE(?, address),
+        password = COALESCE(?, password)
+    WHERE id = ?
+  `;
+
+  db.run(query, [name, email, contact, address, password, userId], function (err) {
+    if (err) {
+      console.error("DB error updating user:", err);
+      return res.status(500).json({ message: "Database error" });
     }
-  );
+    if (this.changes === 0) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // fetch updated user and return
+    db.get("SELECT * FROM users WHERE id = ?", [userId], (err, row) => {
+      if (err) {
+        console.error("DB fetch error:", err);
+        return res.status(500).json({ message: "Database fetch error" });
+      }
+      res.json(row);
+    });
+  });
 });
 
 app.post('/api/donate-food', (req, res) => {
