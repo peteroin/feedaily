@@ -1,7 +1,4 @@
-// LandingPage.jsx
-import React, { useEffect, useRef, useState } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import React, { useState, useEffect } from "react";
 import { 
   FiArrowRight, 
   FiUsers, 
@@ -9,138 +6,22 @@ import {
   FiGlobe, 
   FiAward,
   FiShield,
-  FiTrendingUp
+  FiTrendingUp,
+  FiMail,
+  FiPhone,
+  FiMapPin
 } from "react-icons/fi";
 import "./LandingPage.css";
 
-// Register GSAP plugins
-gsap.registerPlugin(ScrollTrigger);
-
 export default function LandingPage({ onLoginClick, onGetStartedClick }) {
-  const containerRef = useRef(null);
-  const [isAnimating, setIsAnimating] = useState(false);
-  
-  // Refs for animations
-  const leftHalfRef = useRef(null);
-  const rightHalfRef = useRef(null);
-  const brandLogoRef = useRef(null);
-  const buttonsRef = useRef(null);
-  const centerImageRef = useRef(null);
-  const featuresRef = useRef(null);
+  const [hoveredFeature, setHoveredFeature] = useState(null);
+  const [scrollY, setScrollY] = useState(0);
 
-  // Safe GSAP animation with error handling
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (!containerRef.current) return;
-      
-      setIsAnimating(true);
-      
-      try {
-        // Main animation timeline
-        const tl = gsap.timeline({
-          onComplete: () => setIsAnimating(false)
-        });
-
-        // Split screen animation
-        tl.fromTo([leftHalfRef.current, rightHalfRef.current], 
-          { width: 0, opacity: 0 },
-          {
-            duration: 1.2,
-            width: "50%",
-            opacity: 1,
-            stagger: 0.2,
-            ease: "power3.inOut"
-          }
-        )
-        .fromTo(brandLogoRef.current, 
-          { y: -50, opacity: 0 },
-          {
-            duration: 0.8,
-            y: 0,
-            opacity: 1,
-            ease: "back.out(1.7)"
-          }, 
-          "-=0.5"
-        )
-        .fromTo(buttonsRef.current.children, 
-          { y: 30, opacity: 0 },
-          {
-            duration: 0.6,
-            y: 0,
-            opacity: 1,
-            stagger: 0.15,
-            ease: "power2.out"
-          }, 
-          "-=0.3"
-        );
-
-        // Center image animation
-        if (centerImageRef.current) {
-          tl.fromTo(centerImageRef.current, 
-            { scale: 0, rotation: -15, opacity: 0 },
-            {
-              duration: 1,
-              scale: 1,
-              rotation: 0,
-              opacity: 1,
-              ease: "back.out(1.7)"
-            }, 
-            "-=0.5"
-          );
-        }
-
-        // Features animation
-        if (featuresRef.current) {
-          gsap.fromTo(featuresRef.current.children, 
-            {
-              y: 50,
-              opacity: 0
-            },
-            {
-              y: 0,
-              opacity: 1,
-              duration: 0.8,
-              stagger: 0.2,
-              ease: "power2.out",
-              scrollTrigger: {
-                trigger: featuresRef.current,
-                start: "top 80%",
-                toggleActions: "play none none reverse"
-              }
-            }
-          );
-        }
-
-      } catch (error) {
-        console.error("Animation error:", error);
-        setIsAnimating(false);
-      }
-    }, 100);
-    
-    return () => clearTimeout(timer);
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  const handleButtonHover = (e) => {
-    if (isAnimating) return;
-    
-    gsap.to(e.target, {
-      duration: 0.3,
-      scale: 1.05,
-      boxShadow: "0 10px 25px rgba(0, 0, 0, 0.15)",
-      ease: "power1.out"
-    });
-  };
-
-  const handleButtonLeave = (e) => {
-    if (isAnimating) return;
-    
-    gsap.to(e.target, {
-      duration: 0.3,
-      scale: 1,
-      boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-      ease: "power1.out"
-    });
-  };
 
   const features = [
     { icon: <FiUsers />, title: "Community Driven", desc: "Join thousands fighting food waste" },
@@ -151,129 +32,205 @@ export default function LandingPage({ onLoginClick, onGetStartedClick }) {
     { icon: <FiTrendingUp />, title: "Track Progress", desc: "Monitor your impact in real-time" }
   ];
 
+  const stats = [
+    { number: "10K+", label: "Meals Saved" },
+    { number: "2K+", label: "Active Users" },
+    { number: "500+", label: "Partners" },
+    { number: "50+", label: "Communities" }
+  ];
+
+  const partners = [
+    "World Food Programme",
+    "Akshay Patra Foundation",
+    "Feeding India",
+    "Robin Hood Army"
+  ];
+
   return (
-    <div className="landing-container" ref={containerRef}>
-      {/* Animated background elements */}
-      <div className="floating-element floating-element-1"></div>
-      <div className="floating-element floating-element-2"></div>
-      <div className="floating-element floating-element-3"></div>
-      
-      {/* Top section split black/white */}
-      <div className="top-section">
-        <div className="left-half center-content" ref={leftHalfRef}>
+    <div className="landing-page">
+      {/* Navigation */}
+      <nav className={`landing-nav ${scrollY > 50 ? 'scrolled' : ''}`}>
+        <div className="nav-container">
+          <div className="brand-name">feedaily</div>
+          
+          <div className="nav-buttons">
+            <button onClick={onLoginClick} className="btn-login">
+              Login
+            </button>
+            <button onClick={onGetStartedClick} className="btn-primary">
+              Get Started
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      {/* Hero Section */}
+      <section className="hero-section">
+        <div className="hero-container">
           <div className="hero-content">
-            <h1 className="brand-logo" ref={brandLogoRef}>feedaily</h1>
-            <p className="tagline">Rescue food, reduce waste</p>
+            <h1 className="hero-title">
+              Rescue food,<br />
+              <span className="hero-highlight">reduce waste</span>
+            </h1>
+            
             <p className="hero-description">
               Join the movement to eliminate food waste and feed communities in need. 
               Every plate matters in our mission to create a sustainable future.
             </p>
-          </div>
-        </div>
-        
-        <div className="right-half center-content" ref={rightHalfRef}>
-          <div className="auth-buttons" ref={buttonsRef}>
-            <button 
-              className="login-btn" 
-              onClick={onLoginClick}
-              onMouseEnter={handleButtonHover}
-              onMouseLeave={handleButtonLeave}
-              disabled={isAnimating}
-            >
-              Login
-            </button>
-            <button 
-              className="register-btn" 
-              onClick={onGetStartedClick}
-              onMouseEnter={handleButtonHover}
-              onMouseLeave={handleButtonLeave}
-              disabled={isAnimating}
-            >
-              Get Started
-              <FiArrowRight className="btn-icon" />
-            </button>
-          </div>
-        </div>
 
-        {/* Image centered between black and white halves */}
-        <img
-          ref={centerImageRef}
-          src="https://static.vecteezy.com/system/resources/thumbnails/016/733/232/small_2x/hand-drawn-fried-chicken-rice-or-thai-food-illustration-png.png"
-          alt="Delicious food illustration"
-          className="center-image"
-          onError={(e) => {
-            e.target.style.display = 'none';
-          }}
-        />
+            <div className="hero-buttons">
+              <button onClick={onGetStartedClick} className="btn-hero-primary">
+                Start Your Journey
+                <FiArrowRight className="btn-icon" />
+              </button>
+              <button onClick={onLoginClick} className="btn-hero-secondary">
+                Learn More
+              </button>
+            </div>
+          </div>
+
+          <div className="hero-image-container">
+            <div className="hero-image-wrapper">
+              <img
+                src="https://static.vecteezy.com/system/resources/thumbnails/016/733/232/small_2x/hand-drawn-fried-chicken-rice-or-thai-food-illustration-png.png"
+                alt="Food illustration"
+                className="hero-image"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Divider */}
+      <div className="section-divider">
+        <div className="divider-line" />
       </div>
 
-      {/* Features Section */}
-      <div className="features-section">
-        <div className="container">
-          <div className="section-header">
-            <h2>Why Choose Feedaily?</h2>
-            <p>Join a platform that makes saving food simple and rewarding</p>
+      {/* About Us Section */}
+      <section className="about-section">
+        <div className="about-container">
+          <h2 className="section-title">About Feedaily</h2>
+          <div className="about-content">
+            <p className="about-text">
+              Feedaily is a registered NGO dedicated to rescuing surplus food and redistributing it to those in need. Our mission is to build a sustainable ecosystem by connecting communities, donors, and partners, and making a lasting impact on hunger and the environment.
+            </p>
+            <p className="about-meta">
+              Registration No: NGO/2023/IND/09845 &nbsp; | &nbsp; Established 2023
+            </p>
           </div>
-          
-          <div className="features-grid" ref={featuresRef}>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="features-section">
+        <div className="section-container">
+          <div className="section-header">
+            <h2 className="section-title">Why Choose Feedaily?</h2>
+            <p className="section-subtitle">
+              Join a platform that makes saving food simple and rewarding
+            </p>
+          </div>
+
+          <div className="features-grid">
             {features.map((feature, index) => (
-              <div key={index} className="feature-card">
+              <div
+                key={index}
+                onMouseEnter={() => setHoveredFeature(index)}
+                onMouseLeave={() => setHoveredFeature(null)}
+                className={`feature-card ${hoveredFeature === index ? 'hovered' : ''}`}
+              >
                 <div className="feature-icon">
                   {feature.icon}
                 </div>
-                <h3>{feature.title}</h3>
-                <p>{feature.desc}</p>
+                <h3 className="feature-title">{feature.title}</h3>
+                <p className="feature-description">{feature.desc}</p>
               </div>
             ))}
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Stats Section */}
-      <div className="stats-section">
-        <div className="container">
-          <div className="stats-grid">
-            <div className="stat-item">
-              <span className="stat-number">10K+</span>
-              <span className="stat-label">Meals Saved</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-number">2K+</span>
-              <span className="stat-label">Active Users</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-number">500+</span>
-              <span className="stat-label">Partners</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-number">50+</span>
-              <span className="stat-label">Communities</span>
-            </div>
+      {/* Partners Section */}
+      <section className="partners-section">
+        <div className="partners-container">
+          <h2 className="partners-title">Our Trusted Partners</h2>
+          <div className="partners-grid">
+            {partners.map((partner, i) => (
+              <span key={i} className="partner-badge">
+                {partner}
+              </span>
+            ))}
           </div>
         </div>
-      </div>
+      </section>
+
+      {/* Stats Section */}
+      <section className="stats-section">
+        <div className="section-container">
+          <div className="stats-grid">
+            {stats.map((stat, index) => (
+              <div key={index} className="stat-card">
+                <div className="stat-number">{stat.number}</div>
+                <div className="stat-label">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* CTA Section */}
-      <div className="cta-section">
-        <div className="container">
-          <h2>Ready to Make a Difference?</h2>
-          <p>Join thousands of users fighting food waste today</p>
-          <button 
-            className="cta-button"
-            onClick={onGetStartedClick}
-          >
+      <section className="cta-section">
+        <div className="cta-container">
+          <h2 className="cta-title">Ready to Make a Difference?</h2>
+          <p className="cta-description">
+            Join thousands of users fighting food waste today
+          </p>
+
+          <button onClick={onGetStartedClick} className="btn-cta">
             Start Your Journey
             <FiArrowRight className="btn-icon" />
           </button>
         </div>
-      </div>
+      </section>
 
-      {/* Loading indicator */}
-      {isAnimating && (
-        <div className="loading-overlay">
-          <div className="loading-spinner"></div>
+      {/* Contact Section */}
+      <section className="contact-section">
+        <div className="contact-container">
+          <h2 className="contact-title">Contact Us</h2>
+          <div className="contact-grid">
+            <div className="contact-item">
+              <FiMail className="contact-icon" />
+              <span>contact@feedaily.org</span>
+            </div>
+            <div className="contact-item">
+              <FiPhone className="contact-icon" />
+              <span>+91 98765 43210</span>
+            </div>
+            <div className="contact-item">
+              <FiMapPin className="contact-icon" />
+              <span>Feedaily NGO, Bengaluru, India</span>
+            </div>
+          </div>
+          <div className="social-links">
+            Follow us: 
+            <a href="#" className="social-link">Instagram</a> | 
+            <a href="#" className="social-link">Twitter</a> | 
+            <a href="#" className="social-link">Facebook</a>
+          </div>
         </div>
-      )}
+      </section>
+
+      {/* Footer */}
+      <footer className="landing-footer">
+        <div className="footer-container">
+          <p className="footer-text">
+            © 2025 Feedaily. Making a difference, one meal at a time.
+          </p>
+          <p className="footer-subtext">
+            Registered NGO | All donations eligible for tax exemption under Section 80G, Government of India.
+          </p>
+        </div>
+      </footer>
     </div>
   );
 }

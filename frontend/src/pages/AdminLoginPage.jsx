@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { FiMail, FiLock, FiEye, FiEyeOff, FiArrowRight } from "react-icons/fi";
-import "./AuthPages.css"; 
+import "./AdminLoginPage.css"; 
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState("");
