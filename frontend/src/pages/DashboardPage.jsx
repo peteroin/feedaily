@@ -155,8 +155,10 @@ export default function DashboardPage() {
         const data = await res.json();
         setMessage(data.message);
         if (res.ok) {
-          setDonorName("");
-          setContact("");
+          // Reset form fields but keep user info from localStorage
+          const storedUser = JSON.parse(localStorage.getItem("user"));
+          setDonorName(storedUser?.name || "");
+          setContact(storedUser?.contact || "");
           setFoodType("");
           setQuantity("");
           setFreshness("");
