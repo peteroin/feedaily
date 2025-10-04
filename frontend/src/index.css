@@ -4,8 +4,10 @@
 body {
     font-family: 'General Sans', sans-serif;
     width: 100dvw;
-    background-color: #dfdff0;
+    background-color: var(--color-bg-primary, #dfdff0);
+    color: var(--color-text-primary, #1e293b);
     overflow-x: hidden;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 

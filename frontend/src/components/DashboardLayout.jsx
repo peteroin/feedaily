@@ -8,6 +8,7 @@ import {
   FiTruck,
   FiLogOut,
 } from "react-icons/fi";
+import ThemeToggle from "./ThemeToggle";
 import "./DashboardLayout.css";
 
 export default function DashboardLayout({ children }) {
@@ -77,20 +78,23 @@ export default function DashboardLayout({ children }) {
             })}
           </nav>
           
-          <button 
-            className="logout-btn"
-            onClick={handleLogout}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = '#000';
-              e.currentTarget.style.transform = 'translateX(2px)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = '#666';
-              e.currentTarget.style.transform = 'translateX(0)';
-            }}
-          >
-            <FiLogOut />
-          </button>
+          <div className="header-actions">
+            <ThemeToggle />
+            <button 
+              className="logout-btn"
+              onClick={handleLogout}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = '#000';
+                e.currentTarget.style.transform = 'translateX(2px)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = '#666';
+                e.currentTarget.style.transform = 'translateX(0)';
+              }}
+            >
+              <FiLogOut />
+            </button>
+          </div>
         </div>
       </header>
 
