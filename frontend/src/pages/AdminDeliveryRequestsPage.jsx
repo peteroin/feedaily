@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import MapModal from "../components/MapModal";
 
 export default function AdminDeliveryRequestsPage() {
   const [requests, setRequests] = useState([]);
@@ -7,6 +8,19 @@ export default function AdminDeliveryRequestsPage() {
   const [activeTab, setActiveTab] = useState("Available");
   const [expireModalOpenFor, setExpireModalOpenFor] = useState(null); // donation/request id for expiration
   const [expirationReason, setExpirationReason] = useState("");
+  
+  // Map modal states
+  const [showMapModal, setShowMapModal] = useState(false);
+  const [mapModalData, setMapModalData] = useState({
+    latitude: null,
+    longitude: null,
+    title: "Location",
+    showDirections: false,
+    destinationLat: null,
+    destinationLng: null,
+    destinationTitle: "Destination"
+  });
+  
   const expirationReasons = [
     "Spoiled",
     "Not picked up",
@@ -42,6 +56,45 @@ export default function AdminDeliveryRequestsPage() {
   const handleLogout = () => {
     localStorage.removeItem("adminUser");
     window.location.href = "/admin-login"; // Or navigate
+  };
+
+  const openMapModal = (latitude, longitude, title = "Location") => {
+    setMapModalData({
+      latitude,
+      longitude,
+      title,
+      showDirections: false,
+      destinationLat: null,
+      destinationLng: null,
+      destinationTitle: "Destination"
+    });
+    setShowMapModal(true);
+  };
+
+  const openRouteModal = (originLat, originLng, destLat, destLng, originTitle = "Origin", destTitle = "Destination") => {
+    setMapModalData({
+      latitude: originLat,
+      longitude: originLng,
+      title: originTitle,
+      showDirections: true,
+      destinationLat: destLat,
+      destinationLng: destLng,
+      destinationTitle: destTitle
+    });
+    setShowMapModal(true);
+  };
+
+  const closeMapModal = () => {
+    setShowMapModal(false);
+    setMapModalData({
+      latitude: null,
+      longitude: null,
+      title: "Location",
+      showDirections: false,
+      destinationLat: null,
+      destinationLng: null,
+      destinationTitle: "Destination"
+    });
   };
 
   const TableHeader = () => (
@@ -98,21 +151,26 @@ export default function AdminDeliveryRequestsPage() {
         <br />
         {req.contact}
       </td>
-
       {currentTab === "Available" && (
         <>
           <td style={{ padding: "8px", border: "1px solid #ddd", whiteSpace: "normal", wordBreak: "break-word" }}>
             {req.locationLat && req.locationLng ? (
-              <a
-                href={`https://www.google.com/maps/search/?api=1&query=${req.locationLat},${req.locationLng}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ color: "#007bff", cursor: "pointer", textDecoration: "underline" }}
+              <button
+                onClick={() => openMapModal(req.locationLat, req.locationLng, `${req.donorName}'s Location`)}
+                style={{ 
+                  color: "#007bff", 
+                  cursor: "pointer", 
+                  textDecoration: "underline",
+                  background: "none",
+                  border: "none",
+                  padding: 0,
+                  font: "inherit"
+                }}
               >
-                View
-              </a>
+                View Location
+              </button>
             ) : (
-              "N/A"
+              <span style={{ color: "#999" }}>N/A</span>
             )}
           </td>
           <td style={{ padding: "8px", border: "1px solid #ddd", whiteSpace: "normal", wordBreak: "break-word" }}>
@@ -136,14 +194,27 @@ export default function AdminDeliveryRequestsPage() {
           </td>
           <td style={{ padding: "8px", border: "1px solid #ddd", textAlign: "center" }}>
             {req.locationLat && req.locationLng && req.requesterLat && req.requesterLng ? (
-              <a
-                href={`https://www.google.com/maps/dir/?api=1&origin=${req.locationLat},${req.locationLng}&destination=${req.requesterLat},${req.requesterLng}&travelmode=driving`}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ color: "#007bff", cursor: "pointer", textDecoration: "underline" }}
+              <button
+                onClick={() => openRouteModal(
+                  req.locationLat, 
+                  req.locationLng, 
+                  req.requesterLat, 
+                  req.requesterLng,
+                  `${req.donorName}'s Location`,
+                  `${req.requesterName}'s Location`
+                )}
+                style={{ 
+                  color: "#007bff", 
+                  cursor: "pointer", 
+                  textDecoration: "underline",
+                  background: "none",
+                  border: "none",
+                  padding: 0,
+                  font: "inherit"
+                }}
               >
                 View Route on Map
-              </a>
+              </button>
             ) : (
               "N/A"
             )}
@@ -312,6 +383,18 @@ export default function AdminDeliveryRequestsPage() {
   </div>
 )}
 
+      {/* Map Modal */}
+      <MapModal
+        isOpen={showMapModal}
+        onClose={closeMapModal}
+        latitude={mapModalData.latitude}
+        longitude={mapModalData.longitude}
+        title={mapModalData.title}
+        showDirections={mapModalData.showDirections}
+        destinationLat={mapModalData.destinationLat}
+        destinationLng={mapModalData.destinationLng}
+        destinationTitle={mapModalData.destinationTitle}
+      />
     </div>
   );
 }

@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import Webcam from "react-webcam";
 import TMImagePredictor from '../components/TMImagePredictor';
+import MapModal from '../components/MapModal';
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import { 
@@ -48,6 +49,15 @@ export default function DashboardPage() {
   const [showPayment, setShowPayment] = useState(false);
   const [pendingDeliveryDonId, setPendingDeliveryDonId] = useState(null);
   const [deliveryCharge, setDeliveryCharge] = useState(50);
+  
+  // Map modal states
+  const [showMapModal, setShowMapModal] = useState(false);
+  const [mapModalData, setMapModalData] = useState({
+    latitude: null,
+    longitude: null,
+    title: "Location"
+  });
+  
   const storedUser = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
@@ -180,6 +190,24 @@ export default function DashboardPage() {
   const openRequestChoice = (donationId) => {
     setCurrentRequestDonationId(donationId);
     setDeliveryMethodChoice(null);
+  };
+
+  const openMapModal = (latitude, longitude, title = "Location") => {
+    setMapModalData({
+      latitude,
+      longitude,
+      title
+    });
+    setShowMapModal(true);
+  };
+
+  const closeMapModal = () => {
+    setShowMapModal(false);
+    setMapModalData({
+      latitude: null,
+      longitude: null,
+      title: "Location"
+    });
   };
 
   const confirmRequest = async () => {
@@ -575,8 +603,15 @@ export default function DashboardPage() {
                       {donation.locationName ? donation.locationName : donation.locationLat && donation.locationLng ? `${donation.locationLat.toFixed(4)}, ${donation.locationLng.toFixed(4)}` : "Location not provided"}
                     </div>
                     {donation.locationLat && donation.locationLng && (
-                      <button onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${donation.locationLat},${donation.locationLng}`, "_blank")} className="btn btn-ghost btn-xs">
-                        <FiMapPin /> Map
+                      <button 
+                        onClick={() => openMapModal(
+                          donation.locationLat, 
+                          donation.locationLng, 
+                          donation.locationName || `${donation.foodType} Location`
+                        )} 
+                        className="btn btn-ghost btn-xs"
+                      >
+                        <FiMapPin /> View Map
                       </button>
                     )}
                   </div>
@@ -707,6 +742,15 @@ export default function DashboardPage() {
           </div>
         </div>
       )}
+
+      {/* Map Modal */}
+      <MapModal
+        isOpen={showMapModal}
+        onClose={closeMapModal}
+        latitude={mapModalData.latitude}
+        longitude={mapModalData.longitude}
+        title={mapModalData.title}
+      />
     </div>
   );
 }
