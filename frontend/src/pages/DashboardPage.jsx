@@ -81,10 +81,17 @@ export default function DashboardPage() {
       setIsLoading(true);
       const res = await fetch(`http://localhost:5000/api/donations`);
       const data = await res.json();
+        if (Array.isArray(data)) {
       setDonations(data);
-    } catch (err) {
-      console.error("Failed to fetch donations:", err);
-    } finally {
+    } else if (data && Array.isArray(data.data)) {
+      setDonations(data.data);
+    } else {
+      setDonations([]);
+    }
+  } catch (err) {
+    console.error("Failed to fetch donations:", err);
+    setDonations([]); // fallback on error
+  } finally {
       setIsLoading(false);
     }
   };
