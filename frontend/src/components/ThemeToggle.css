@@ -1,0 +1,99 @@
+/* Theme Toggle Component Styles */
+.theme-toggle {
+  position: relative;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.theme-toggle:hover {
+  background-color: var(--color-hover-bg);
+  transform: scale(1.05);
+}
+
+.theme-toggle:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.theme-toggle-track {
+  width: 50px;
+  height: 26px;
+  background-color: var(--color-toggle-track);
+  border-radius: 13px;
+  position: relative;
+  transition: background-color 0.3s ease;
+  border: 2px solid var(--color-toggle-border);
+}
+
+.theme-toggle-thumb {
+  position: absolute;
+  top: 2px;
+  width: 20px;
+  height: 20px;
+  background-color: var(--color-toggle-thumb);
+  border-radius: 50%;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.theme-toggle-thumb.light {
+  left: 2px;
+  background-color: #fbbf24; /* Warm yellow for sun */
+}
+
+.theme-toggle-thumb.dark {
+  left: 24px;
+  background-color: #6366f1; /* Cool purple for moon */
+}
+
+.theme-icon {
+  width: 12px;
+  height: 12px;
+  color: white;
+  transition: transform 0.3s ease;
+}
+
+.theme-toggle:hover .theme-icon {
+  transform: rotate(15deg);
+}
+
+/* Light theme track colors */
+.light-theme .theme-toggle-track {
+  --color-toggle-track: #e5e7eb;
+  --color-toggle-border: #d1d5db;
+}
+
+/* Dark theme track colors */
+.dark-theme .theme-toggle-track {
+  --color-toggle-track: #374151;
+  --color-toggle-border: #4b5563;
+}
+
+/* Hover background colors */
+.light-theme .theme-toggle {
+  --color-hover-bg: rgba(0, 0, 0, 0.05);
+}
+
+.dark-theme .theme-toggle {
+  --color-hover-bg: rgba(255, 255, 255, 0.1);
+}
+
+/* Animation for theme switching */
+@keyframes bounce {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.theme-toggle:active .theme-toggle-thumb {
+  animation: bounce 0.3s ease;
+}
