@@ -47,12 +47,30 @@ function UserDonationStats() {
 
     if (storedUser) {
       fetch(`http://localhost:5000/api/donations?userId=${storedUser.id}`)
-        .then((res) => res.json())
-        .then((data) => setUserDonations(data || []));
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
+          }
+          return res.json();
+        })
+        .then((data) => setUserDonations(data || []))
+        .catch((err) => {
+          console.error("Error fetching user donations:", err);
+          setUserDonations([]);
+        });
 
       fetch(`http://localhost:5000/api/donations/requested?requesterId=${storedUser.id}`)
-        .then((res) => res.json())
-        .then((data) => setUserReceived(data || []));
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
+          }
+          return res.json();
+        })
+        .then((data) => setUserReceived(data || []))
+        .catch((err) => {
+          console.error("Error fetching user received donations:", err);
+          setUserReceived([]);
+        });
     }
   }, []);
 
@@ -155,19 +173,24 @@ function UserDonationStats() {
             options={{
               pieHole: 0.45,
               pieSliceBorderWidth: 0,
-              slices: { 0: { color: "#5636d3" }, 1: { color: "#28b363" } },
+              slices: { 0: { color: "#4CAF50" }, 1: { color: "#81C784" } }, // Better green shades
               chartArea: { width: "100%", height: "85%" },
               legend: { position: "none" },
               backgroundColor: "transparent",
               enableInteractivity: false,
               tooltip: { trigger: "none" },
+              animation: {
+                startup: true,
+                duration: 800,
+                easing: 'out'
+              }
             }}
           />
           <div
             style={{
               textAlign: "center",
               fontWeight: 500,
-              color: "#5636d3",
+              color: "#4CAF50",
               fontSize: "1.07rem",
               marginTop: "8px",
             }}
@@ -188,19 +211,24 @@ function UserDonationStats() {
             options={{
               pieHole: 0.45,
               pieSliceBorderWidth: 0,
-              slices: { 0: { color: "#ffb600" }, 1: { color: "#f5f5f5" } },
+              slices: { 0: { color: "#FF9800" }, 1: { color: "#FFE0B2" } }, // Better orange shades
               chartArea: { width: "100%", height: "85%" },
               legend: { position: "none" },
               backgroundColor: "transparent",
               enableInteractivity: false,
               tooltip: { trigger: "none" },
+              animation: {
+                startup: true,
+                duration: 800,
+                easing: 'out'
+              }
             }}
           />
           <div
             style={{
               textAlign: "center",
               fontWeight: 500,
-              color: "#ffb600",
+              color: "#FF9800",
               fontSize: "1.07rem",
               marginTop: "8px",
             }}
@@ -221,19 +249,24 @@ function UserDonationStats() {
             options={{
               pieHole: 0.45,
               pieSliceBorderWidth: 0,
-              slices: { 0: { color: "#4FB7DD" }, 1: { color: "#f5f5f5" } },
+              slices: { 0: { color: "#2196F3" }, 1: { color: "#BBDEFB" } }, // Better blue shades
               chartArea: { width: "100%", height: "85%" },
               legend: { position: "none" },
               backgroundColor: "transparent",
               enableInteractivity: false,
               tooltip: { trigger: "none" },
+              animation: {
+                startup: true,
+                duration: 800,
+                easing: 'out'
+              }
             }}
           />
           <div
             style={{
               textAlign: "center",
               fontWeight: 500,
-              color: "#4FB7DD",
+              color: "#2196F3",
               fontSize: "1.07rem",
               marginTop: "8px",
             }}
@@ -244,7 +277,7 @@ function UserDonationStats() {
       </div>
       {/* Achievements/Badges Section */}
       <div style={{ width: "100%", marginTop: 36, textAlign: "center" }}>
-        <h3 style={{ fontWeight: 500, marginBottom: 16, color: "#5636d3" }}>
+        <h3 style={{ fontWeight: 500, marginBottom: 16, color: "#4CAF50" }}>
           {unlockedBadges.length === 0
             ? "Start Donating or Receiving to Earn Badges 🌱"
             : "🎉 Your Milestone Achievements"}
@@ -336,7 +369,7 @@ function UserDonationStats() {
         </div>
         {/* Swag Section */}
         <div style={{ textAlign: "center", marginBottom: 18 }}>
-          <h4 style={{ color: "#5636d3", marginBottom: 10 }}>🎁 Your Swag Rewards</h4>
+          <h4 style={{ color: "#4CAF50", marginBottom: 10 }}>🎁 Your Swag Rewards</h4>
           <div style={{ display: "flex", justifyContent: "center", gap: 24, flexWrap: "wrap" }}>
             {SWAG_ITEMS.map((swag) => {
               const unlocked = unlockedBadges.some((b) => b.label === swag.badgeLabel);
@@ -532,7 +565,7 @@ function UserDonationStats() {
               background: "#f5f6ff",
               padding: "11px 18px",
               borderRadius: 13,
-              color: "#7d5cf5",
+              color: "#9C27B0",
               fontWeight: 500,
               fontSize: "1.01rem",
             }}
