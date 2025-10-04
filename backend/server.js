@@ -50,6 +50,20 @@ app.post("/api/login", (req, res) => {
   );
 });
 
+// ADMIN LOGIN endpoint
+app.post("/api/admin-login", (req, res) => {
+  const { email, password } = req.body;
+  db.get(
+    "SELECT * FROM users WHERE email = ? AND password = ? AND type = 'Admin'",
+    [email, password],
+    (err, row) => {
+      if (err) return res.status(500).json({ message: "DB error" });
+      if (!row) return res.json({ message: "Invalid admin credentials" });
+      res.json({ message: "Admin login successful", user: row });
+    }
+  );
+});
+
 // Update user profile
 app.put("/api/users/:id", (req, res) => {
   const userId = req.params.id;
@@ -84,7 +98,7 @@ app.put("/api/users/:id", (req, res) => {
     });
   });
 });
-
+ 
 app.post('/api/donate-food', (req, res) => {
   const {
     userId,
