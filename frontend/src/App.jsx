@@ -13,6 +13,8 @@ import PaymentSuccess from "./pages/PaymentSuccess";
 import AdminDeliveryRequestsPage from "./pages/AdminDeliveryRequestsPage";
 import AdminLoginPage from "./pages/AdminLoginPage";
 import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
+import { ThemeProvider } from "./context/ThemeContext";
+import "./styles/themes.css";
 // Wrapper for LandingPage (to use navigation)
 function LandingPageWrapper() {
   const navigate = useNavigate();
@@ -30,66 +32,68 @@ function LandingPageWrapper() {
 
 function App() {
   return (
-    <main className="relative min-h-screen w-screen overflow-x-hidden">
-      <Routes>
-        <Route path="/" element={<LandingPageWrapper />} />
+    <ThemeProvider>
+      <main className="relative min-h-screen w-screen overflow-x-hidden theme-bg-primary">
+        <Routes>
+          <Route path="/" element={<LandingPageWrapper />} />
 
-        {/* Auth pages */}
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/admin-login" element={<AdminLoginPage />} />
+          {/* Auth pages */}
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/admin-login" element={<AdminLoginPage />} />
 
-        {/* Dashboard & sub-pages with layout */}
-        <Route
-          path="/dashboard"
-          element={
-            <DashboardLayout>
-              <DashboardPage />
-            </DashboardLayout>
-          }
-        />
-        <Route
-          path="/stats"
-          element={
-            <DashboardLayout>
-              <StatsPage />
-            </DashboardLayout>
-          }
-        />
-        <Route
-          path="/profile"
-          element={
-            <DashboardLayout>
-              <UserProfilePage />
-            </DashboardLayout>
-          }
-        />
-        <Route
-          path="/sender-rankings"
-          element={
-            <DashboardLayout>
-              <SenderRankingPage />
-            </DashboardLayout>
-          }
-        />
-        <Route
-          path="/delivery"
-          element={
-            <DashboardLayout>
-              <DeliveryPage />
-            </DashboardLayout>
-          }
-        />
+          {/* Dashboard & sub-pages with layout */}
+          <Route
+            path="/dashboard"
+            element={
+              <DashboardLayout>
+                <DashboardPage />
+              </DashboardLayout>
+            }
+          />
+          <Route
+            path="/stats"
+            element={
+              <DashboardLayout>
+                <StatsPage />
+              </DashboardLayout>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <DashboardLayout>
+                <UserProfilePage />
+              </DashboardLayout>
+            }
+          />
+          <Route
+            path="/sender-rankings"
+            element={
+              <DashboardLayout>
+                <SenderRankingPage />
+              </DashboardLayout>
+            }
+          />
+          <Route
+            path="/delivery"
+            element={
+              <DashboardLayout>
+                <DeliveryPage />
+              </DashboardLayout>
+            }
+          />
 
-        <Route path="/success" element={<PaymentSuccess />} />
-        <Route path="/admin/delivery-requests" element={
-          <ProtectedAdminRoute>
-            <AdminDeliveryRequestsPage />
-          </ProtectedAdminRoute>
-        } />
+          <Route path="/success" element={<PaymentSuccess />} />
+          <Route path="/admin/delivery-requests" element={
+            <ProtectedAdminRoute>
+              <AdminDeliveryRequestsPage />
+            </ProtectedAdminRoute>
+          } />
 
-      </Routes>
-    </main>
+        </Routes>
+      </main>
+    </ThemeProvider>
   );
 }
 

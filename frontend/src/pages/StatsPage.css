@@ -4,27 +4,29 @@
   margin: 0 auto;
   padding: 0;
   font-family: 'Inter', sans-serif;
-  background: #fff;
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  transition: var(--transition-theme);
 }
 
 /* Header Section */
 .stats-header {
   padding: 2rem;
   margin-bottom: 2rem;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  border-bottom: 1px solid var(--color-border-primary);
 }
 
 .stats-title {
   font-size: 1.75rem;
   font-weight: 600;
-  color: #000;
+  color: var(--color-text-primary);
   margin: 0 0 0.5rem 0;
   letter-spacing: -0.02em;
 }
 
 .stats-subtitle {
   font-size: 0.875rem;
-  color: #666;
+  color: var(--color-text-secondary);
   margin: 0;
 }
 
@@ -36,20 +38,20 @@
   margin-bottom: 2rem;
   padding: 0 2rem;
 }
-
 .stat-card-minimal {
-  background: #fff;
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-primary);
   border-radius: 12px;
   padding: 1.5rem;
-  transition: all 0.2s ease;
+  transition: var(--transition-theme);
+  box-shadow: var(--color-shadow-sm);
 }
 
 .stat-card-minimal:hover {
-  border-color: rgba(0, 0, 0, 0.1);
+  border-color: var(--color-border-hover);
   transform: translateY(-2px);
+  box-shadow: var(--color-shadow-md);
 }
-
 .stat-card-header {
   display: flex;
   align-items: center;
@@ -63,23 +65,23 @@
   justify-content: center;
   width: 40px;
   height: 40px;
-  background: #fafafa;
+  background: var(--color-bg-tertiary);
   border-radius: 8px;
-  color: #666;
+  color: var(--color-text-secondary);
   font-size: 1.25rem;
 }
 
 .stat-card-title {
   font-size: 0.875rem;
   font-weight: 500;
-  color: #666;
+  color: var(--color-text-secondary);
   margin: 0;
 }
 
 .stat-card-value {
   font-size: 2rem;
   font-weight: 600;
-  color: #000;
+  color: var(--color-text-primary);
   line-height: 1;
   margin-bottom: 0.25rem;
   letter-spacing: -0.02em;
@@ -87,7 +89,7 @@
 
 .stat-card-note {
   font-size: 0.813rem;
-  color: #999;
+  color: var(--color-text-tertiary);
   margin: 0;
 }
 
@@ -101,15 +103,17 @@
 }
 
 .chart-container-minimal {
-  background: #fff;
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-primary);
   border-radius: 12px;
   padding: 1.5rem;
-  transition: all 0.2s ease;
+  transition: var(--transition-theme);
+  box-shadow: var(--color-shadow-sm);
 }
 
 .chart-container-minimal:hover {
-  border-color: rgba(0, 0, 0, 0.1);
+  border-color: var(--color-border-hover);
+  box-shadow: var(--color-shadow-md);
 }
 
 .chart-header {
@@ -122,11 +126,23 @@
 .chart-title {
   font-size: 1rem;
   font-weight: 600;
-  color: #000;
+  color: var(--color-text-primary);
   margin: 0;
   letter-spacing: -0.02em;
 }
+.no-data-text {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
 
+.no-data-subtext {
+  font-size: 0.875rem;
+  color: var(--color-text-tertiary);
+  margin: 0;
+  text-align: center;
+}
 .chart-actions {
   display: flex;
   gap: 0.5rem;
@@ -135,16 +151,18 @@
 /* Line Chart Full Width */
 .line-chart-full {
   grid-column: 1 / -1;
-  background: #fff;
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-primary);
   border-radius: 12px;
   padding: 1.5rem;
   margin: 0 2rem 2rem 2rem;
-  transition: all 0.2s ease;
+  transition: var(--transition-theme);
+  box-shadow: var(--color-shadow-sm);
 }
 
 .line-chart-full:hover {
-  border-color: rgba(0, 0, 0, 0.1);
+  border-color: var(--color-border-hover);
+  box-shadow: var(--color-shadow-md);
 }
 
 /* Buttons */
@@ -164,12 +182,12 @@
 }
 
 .btn-primary {
-  background: #000;
-  color: #fff;
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: #333;
+  background: var(--color-primary-hover);
   transform: translateY(-1px);
 }
 
@@ -177,6 +195,39 @@
   background: #e5e5e5;
   color: #999;
   cursor: not-allowed;
+}
+.btn-primary:disabled {
+  background: var(--color-border-primary);
+  color: var(--color-text-tertiary);
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-primary);
+}
+
+.btn-secondary:hover {
+  background: var(--color-bg-tertiary);
+  border-color: var(--color-border-hover);
+}
+
+/* Dark theme overrides for any remaining hard-coded tooltip/button colors */
+.dark-theme .btn-secondary {
+  background: var(--color-bg-card);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-secondary);
+}
+
+.dark-theme .btn-secondary:hover {
+  background: var(--color-bg-tertiary);
+  border-color: var(--color-border-hover);
+}
+
+.dark-theme .btn-primary:disabled {
+  background: var(--color-border-secondary);
+  color: var(--color-text-tertiary);
 }
 
 .btn-secondary {
@@ -191,21 +242,24 @@
 }
 
 /* Loading States */
-.loading-container {
+.no-data-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 3rem;
-  color: #666;
-  gap: 1rem;
+  color: var(--color-text-tertiary);
+  gap: 0.75rem;
+  background: var(--color-bg-tertiary);
+  border-radius: 8px;
+  margin: 1rem 0;
 }
 
 .loading-spinner {
   width: 24px;
   height: 24px;
-  border: 2px solid rgba(0, 0, 0, 0.1);
-  border-top-color: #000;
+  border: 2px solid var(--color-border-primary);
+  border-top-color: var(--color-primary);
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -216,7 +270,7 @@
 
 .loading-text {
   font-size: 0.875rem;
-  color: #666;
+  color: var(--color-text-secondary);
   margin: 0;
 }
 
@@ -238,6 +292,24 @@
 .minimal-chart text {
   font-family: 'Inter', sans-serif !important;
   fill: #666 !important;
+}
+.minimal-chart .google-visualization-tooltip {
+  background: var(--color-bg-card) !important;
+  border: 1px solid var(--color-border-primary) !important;
+  border-radius: 6px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06) !important;
+  color: var(--color-text-primary) !important;
+}
+
+.dark-theme .minimal-chart .google-visualization-tooltip {
+  background: var(--color-bg-card) !important;
+  border: 1px solid var(--color-border-secondary) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+  color: var(--color-text-primary) !important;
+}
+
+.dark-theme .minimal-chart text {
+  fill: var(--color-text-secondary) !important;
 }
 
 /* Responsive Design */
