@@ -12,7 +12,7 @@ import {
   FiMapPin
 } from "react-icons/fi";
 
-export default function LandingPage({ onLoginClick, onGetStartedClick }) {
+export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, onGetStartedClick }) {
   const [scrollY, setScrollY] = useState(0);
   const [activeFeature, setActiveFeature] = useState(0);
   const [imageLoading, setImageLoading] = useState(true);
@@ -186,23 +186,43 @@ export default function LandingPage({ onLoginClick, onGetStartedClick }) {
           <div className="brand-name text-2xl sm:text-3xl font-bold tracking-wide text-gray-900">
             feedaily
           </div>
-
+          {/* Login/logout and Get started buttons */}
           <div className="nav-buttons flex items-center gap-4">
-            <button
-              onClick={onLoginClick}
-              className={`text-sm sm:text-base px-4 sm:px-5 py-2 sm:py-2.5 rounded-md border ${grayColors.border} bg-white ${grayColors.activeText} hover:bg-gray-900 hover:text-white transition`}
-              style={{ cursor: 'pointer' }}
-            >
-              Login
-            </button>
-
-            <button
-              onClick={onGetStartedClick}
-              className={`text-sm sm:text-base px-4 sm:px-5 py-2 sm:py-2.5 rounded-md bg-gray-900 text-white border ${grayColors.border} hover:bg-white hover:text-gray-900 transition`}
-              style={{ cursor: 'pointer' }}
-            >
-              Get Started
-            </button>
+            {isLoggedIn ? (
+                <>
+                  <button
+                      onClick={onLogoutClick}
+                      className={`text-sm sm:text-base px-4 sm:px-5 py-2 sm:py-2.5 rounded-md border ${grayColors.border} bg-white ${grayColors.activeText} hover:bg-gray-900 hover:text-white transition`}
+                      style={{ cursor: 'pointer' }}
+                  >
+                    Logout
+                  </button>
+                  <button
+                      onClick={onGetStartedClick}
+                      className={`text-sm sm:text-base px-4 sm:px-5 py-2 sm:py-2.5 rounded-md bg-gray-900 text-white border ${grayColors.border} hover:bg-white hover:text-gray-900 transition`}
+                      style={{ cursor: 'pointer' }}
+                  >
+                    Get Started
+                  </button>
+                </>
+            ) : (
+                <>
+                  <button
+                      onClick={onLoginClick}
+                      className={`text-sm sm:text-base px-4 sm:px-5 py-2 sm:py-2.5 rounded-md border ${grayColors.border} bg-white ${grayColors.activeText} hover:bg-gray-900 hover:text-white transition`}
+                      style={{ cursor: 'pointer' }}
+                  >
+                    Login
+                  </button>
+                  <button
+                      onClick={onGetStartedClick}
+                      className={`text-sm sm:text-base px-4 sm:px-5 py-2 sm:py-2.5 rounded-md bg-gray-900 text-white border ${grayColors.border} hover:bg-white hover:text-gray-900 transition`}
+                      style={{ cursor: 'pointer' }}
+                  >
+                    Get Started
+                  </button>
+                </>
+            )}
           </div>
         </div>
       </nav>
