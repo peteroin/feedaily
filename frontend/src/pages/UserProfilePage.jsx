@@ -27,23 +27,27 @@ export default function UserProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({});
 
-  const fetchDonations = async () => {
+  const fetchDonations = async (userId) => {
     try {
-      if (!user) return;
-
+      if (!userId) return;
       // Fetch donations made by user
-      const donationsRes = await fetch(`http://localhost:5000/api/donations?userId=${user.id}`);
-      const donationsData = await donationsRes.json();
-      setUserDonations(donationsData);
+      const [donationsRes, requestedRes] = await Promise.all([
+      fetch(`http://localhost:5000/api/donations?userId=${userId}`),
+      fetch(`http://localhost:5000/api/donations/requested?requesterId=${userId}`)
+    ]);
 
-      // Fetch donations requested by user
-      const requestedRes = await fetch(`http://localhost:5000/api/donations/requested?requesterId=${user.id}`);
-      const requestedData = await requestedRes.json();
-      setRequestedDonations(requestedData);
+    const donationsData = await donationsRes.json().catch(() => []);
+    const requestedData = await requestedRes.json().catch(() => []);
+
+    setUserDonations(Array.isArray(donationsData) ? donationsData : []);
+    setRequestedDonations(Array.isArray(requestedData) ? requestedData : []);
+      
     } catch (error) {
       console.error("Error fetching donations:", error);
       setUserDonations([]);
       setRequestedDonations([]);
+     }finally {
+      setLoading(false);
     }
   };
 
@@ -52,37 +56,11 @@ export default function UserProfilePage() {
     if (storedUser) {
       setUser(storedUser);
       setEditForm(storedUser);
-      fetchDonations();
-      
-      fetch(`http://localhost:5000/api/donations?userId=${storedUser.id}`)
-        .then(res => res.json())
-        .then(data => setUserDonations(data))
-        .catch(err => {
-          console.error("Error fetching user donations:", err);
-          setUserDonations([]);
-        });
-
-      fetch(`http://localhost:5000/api/donations/requested?requesterId=${storedUser.id}`)
-        .then(async res => {
-          const text = await res.text();
-          try {
-            const data = JSON.parse(text);
-            setRequestedDonations(data);
-          } catch (e) {
-            console.error("Error parsing requested donations JSON:", e, "Raw:", text);
-            setRequestedDonations([]);
-          }
-          setLoading(false);
-        })
-        .catch(err => {
-          console.error("Error fetching requested donations:", err);
-          setRequestedDonations([]);
-          setLoading(false);
-        });
-    } else {
+      fetchDonations(storedUser.id);
+        } else {
       setLoading(false);
-    }
-  }, []);
+      }
+    }, []);
 
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
@@ -97,6 +75,7 @@ export default function UserProfilePage() {
         const updatedUser = await res.json();
         setUser(updatedUser);
         localStorage.setItem("user", JSON.stringify(updatedUser));
+          await fetchDonations(user.id); // <--- refresh immediately
         setIsEditing(false);
         alert("Profile updated successfully!");
       } else {
@@ -127,7 +106,7 @@ export default function UserProfilePage() {
       });
       const data = await res.json();
       alert(data.message);
-      if (res.ok) fetchDonations();
+      if (res.ok && user) fetchDonations(user.id);
     } catch (error) {
       console.error("Error confirming pickup:", error);
       alert("Error confirming pickup");
@@ -151,6 +130,8 @@ export default function UserProfilePage() {
       </div>
     );
   }
+const safeUserDonations = Array.isArray(userDonations) ? userDonations : [];
+const safeRequestedDonations = Array.isArray(requestedDonations) ? requestedDonations : [];
 
   return (
     <div className="profile-container">
@@ -285,7 +266,7 @@ export default function UserProfilePage() {
                 </div>
               ) : (
                 <div className="donations-grid">
-                  {userDonations.map(donation => (
+                  {safeUserDonations.map(donation => (
                     <div key={donation.id} className="donation-card">
                       <div className={`status-badge status-${donation.status.toLowerCase()}`}>
                         {donation.status}
@@ -320,7 +301,7 @@ export default function UserProfilePage() {
                           </div>
                           
                           <div className="donation-date">
-                            Donated on: {new Date(donation.createdAt).toLocaleString()}
+                              Donated on: {donation.createdAt ? new Date(donation.createdAt).toLocaleString() : "Unknown"}
                           </div>
 
                           {donation.status === "Delivered" && (
@@ -373,7 +354,7 @@ export default function UserProfilePage() {
                 </div>
               ) : (
                 <div className="donations-grid">
-                  {requestedDonations.map(donation => (
+                  {safeRequestedDonations.map(donation => (
                     <div key={donation.id} className="donation-card">
                       <div className={`status-badge status-${donation.status.toLowerCase()}`}>
                         {donation.status}

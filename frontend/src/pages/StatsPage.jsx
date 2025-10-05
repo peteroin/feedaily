@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { Chart } from "react-google-charts";
 import * as XLSX from "xlsx";
@@ -21,42 +22,34 @@ export default function StatsPage() {
         const peopleData = [["Date", "People Fed", "Capacity to Feed"]];
         const donationsData = [["Date", "Donations (kg)"]];
         
-        data.slice(1).forEach(row => {
-          const [year, month, day] = row[0].split('-').map(Number);
-          const date = new Date(year, month - 1, day);
-          const donated = Number(row[1]) || 0;
-          
-          const MEAL_KG = 0.4;
-          let taken = 0;
-          let peopleFed = 0;
-          let capacity = Math.floor(donated / MEAL_KG);
-          
-          if (row.length > 2) {
-            taken = Number(row[2]) || 0;
-            peopleFed = taken > 0 ? Math.floor(taken / MEAL_KG) : (Number(row[3]) || 0);
-          } else {
-            taken = donated * 0.7;
-            peopleFed = Math.floor(taken / MEAL_KG);
-          }
-          
-          if (peopleFed === 0 && donated > 0) {
-            peopleFed = Math.floor(donated / MEAL_KG);
-          }
-          
-          peopleData.push([date, peopleFed, capacity]);
-          donationsData.push([date, donated]);
+        if (!Array.isArray(data) || data.length <= 1) {
+        setDailyData([["Date", "People Fed", "Capacity to Feed"], [new Date().toLocaleDateString(), 0, 0]]);
+        setDailyDonations([["Date", "Donations (kg)"], [new Date().toLocaleDateString(), 0]]);
+        setLoading(false);
+        return;
+      }
+        // Calculate people fed dynamically
+        const MEAL_KG = 0.4;
+        data.slice(1).forEach((row) => {
+          const [date, donated, taken, fedRaw] = row;
+          const donatedKg = Number(donated) || 0;
+          const takenKg = Number(taken) || 0;
+          // If fed not provided, calculate it
+          const fed = fedRaw ?? Math.floor(takenKg / MEAL_KG);
+          peopleData.push([date, fed, fed + 10]);
+          donationsData.push([date, donatedKg]);
         });
-        
+
         setDailyData(peopleData);
         setDailyDonations(donationsData);
         setLoading(false);
       })
-      .catch(err => {
+      .catch((err) => {
         console.error("Error fetching daily donation stats:", err);
         setLoading(false);
       });
   }, []);
-
+  
   // Fetch summary stats
   useEffect(() => {
     fetch('http://localhost:5000/api/donation-stats')
@@ -75,10 +68,10 @@ export default function StatsPage() {
       .catch(err => console.error("Error fetching global stats:", err));
   }, []);
 
-  const pieData = [
+    const pieData = [
     ["Type", "KG"],
-    ["Total Donated", stats.totalDonated],
-    ["Total Taken", stats.totalTaken],
+    ["Total Donated", stats.totalDonated || 0],
+    ["Total Taken", stats.totalTaken || 0],
   ];
 
   // Minimal Chart Options

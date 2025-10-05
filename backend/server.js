@@ -387,6 +387,16 @@ app.get('/api/donation-stats', (req, res) => {
 // Updated donation-stats endpoint
 app.get('/api/donation-stats', (req, res) => {
   const MEAL_KG = 0.4;
+    const query = `
+    SELECT
+      DATE(createdAt) as dateOnly,
+      SUM(CAST(quantity AS REAL)) as totalDonated,
+      SUM(CASE WHEN status IN ('Requested','Delivered') THEN CAST(quantity AS REAL) ELSE 0 END) as totalTaken
+    FROM donations
+    WHERE quantity IS NOT NULL
+    GROUP BY DATE(createdAt)
+    ORDER BY DATE(createdAt) ASC
+  `;
   const totalDonatedQuery = `SELECT SUM(CAST(quantity AS REAL)) AS totalDonated FROM donations WHERE quantity IS NOT NULL`;
   const totalTakenQuery = `SELECT SUM(CAST(quantity AS REAL)) AS totalTaken FROM donations WHERE status = 'Requested' AND quantity IS NOT NULL`;
   
@@ -431,6 +441,8 @@ app.get('/api/daily-donation-stats', (req, res) => {
     }
     
     const data = [['Date', 'Donations (kg)', 'Taken (kg)', 'People Fed']];
+    
+    if (rows.length > 0) {
     rows.forEach(row => {
       const donationKg = Number(row.totalDonated) || 0;
       const takenKg = Number(row.totalTaken) || 0;
@@ -440,7 +452,9 @@ app.get('/api/daily-donation-stats', (req, res) => {
       
       data.push([row.dateOnly, donationKg, takenKg, peopleFed]);
     });
-    
+    } else {
+      data.push(['No data', 0, 0, 0]);
+    }
     console.log('Sending data:', data);
     res.json(data);
   });
@@ -647,135 +661,7 @@ app.put('/api/expire-donation/:id', (req, res) => {
   });
 });
 
-//add a column only if it doesn't exist (SQLite)
-function addColumnIfNotExists(table, column, type) {
-  db.all(`PRAGMA table_info(${table});`, [], (err, rows) => {
-    if (err) return console.error('PRAGMA error:', err);
-    const has = rows.some(r => r.name === column);
-    if (!has) {
-      db.run(`ALTER TABLE ${table} ADD COLUMN ${column} ${type};`, (e) => {
-        if (e) console.error(`Failed to add ${column}:`, e.message);
-        else console.log(`Column ${column} added to ${table}`);
-      });
-    }
-  });
-}
-//columns for password reset flow
-addColumnIfNotExists('users', 'resetOtp', 'TEXT');
-addColumnIfNotExists('users', 'resetOtpExpires', 'DATETIME');
 
-// Forgot password - request OTP
-app.post("/api/forgot-password", (req, res) => {
-  const { email } = req.body;
-  if (!email) return res.status(400).json({ message: "Email is required" });
-
-  db.get("SELECT id, name, email FROM users WHERE email = ?", [email], (err, user) => {
-    if (err) return res.status(500).json({ message: "Database error" });
-
-    // Always respond 200 to avoid email enumeration
-    const safeOk = () => res.json({ message: "If the email exists, we've sent a code." });
-
-    if (!user) return safeOk();
-
-    const otp = generateOtp(); // 6 digits
-    const expires = new Date(Date.now() + 15 * 60 * 1000).toISOString(); // 15 min
-
-    db.run(
-        "UPDATE users SET resetOtp = ?, resetOtpExpires = ? WHERE id = ?",
-        [otp, expires, user.id],
-        async (updErr) => {
-          if (updErr) return res.status(500).json({ message: "Database error" });
-
-          // send the OTP via email
-          const subject = "Feedaily password reset code";
-          const text =
-              `Hello ${user.name || "there"},
-
-Use this one-time code to reset your password: ${otp}
-It expires in 15 minutes.
-
-If you didn't request this, you can ignore this email.`;
-
-          try {
-            await sendEmail(user.email, subject, text);
-          } catch (e) {
-            console.error("sendEmail error:", e);
-            // still return safe OK to not leak info
-          }
-          return safeOk();
-        }
-    );
-  });
-});
-
-
-// Reset password with email + OTP + new password
-app.post("/api/reset-password", (req, res) => {
-  const { email, otp, newPassword } = req.body;
-  if (!email || !otp || !newPassword) {
-    return res.status(400).json({ message: "email, otp and newPassword are required" });
-  }
-
-  db.get(
-      "SELECT id, resetOtp, resetOtpExpires FROM users WHERE email = ?",
-      [email],
-      (err, user) => {
-        if (err) return res.status(500).json({ message: "Database error" });
-        if (!user || !user.resetOtp) {
-          return res.status(400).json({ message: "Invalid code or email." });
-        }
-
-        const now = new Date();
-        const exp = user.resetOtpExpires ? new Date(user.resetOtpExpires) : null;
-        const isExpired = !exp || now > exp;
-
-        if (isExpired || String(user.resetOtp).trim() !== String(otp).trim()) {
-          return res.status(400).json({ message: "Invalid or expired code." });
-        }
-
-        // update password and clear reset fields
-        db.run(
-            "UPDATE users SET password = ?, resetOtp = NULL, resetOtpExpires = NULL WHERE id = ?",
-            [newPassword, user.id],
-            (uErr) => {
-              if (uErr) return res.status(500).json({ message: "Database error" });
-              return res.json({ message: "Password updated successfully." });
-            }
-        );
-      }
-  );
-});
-
-// Temporary Admin
-const TEMP_ADMIN_EMAIL = "admin@feedaily.com";
-const TEMP_ADMIN_PASSWORD = "admin123";
-
-function createTempAdminIfNoneExists() {
-  db.get("SELECT * FROM users WHERE type = 'Admin' LIMIT 1", [], (err, row) => {
-    if (err) {
-      console.error("Error checking admin existence:", err);
-      return;
-    }
-    if (!row) {
-
-      db.run(
-        "INSERT INTO users (name, type, email, password) VALUES (?, 'Admin', ?, ?)",
-        ["Admin", TEMP_ADMIN_EMAIL, TEMP_ADMIN_PASSWORD],
-        function (err) {
-          if (err) {
-            console.error("Error creating temp admin:", err);
-          } else {
-            console.log(`Temporary admin created: Email: ${TEMP_ADMIN_EMAIL}, Password: ${TEMP_ADMIN_PASSWORD}`);
-          }
-        }
-      );
-    } else {
-      console.log("Admin user exists, skipping temporary admin creation.");
-    }
-  });
-}
-
-createTempAdminIfNoneExists();
 
 const PORT = 5000;
 app.listen(PORT, () => console.log(`Backend running on http://localhost:${PORT}`));
