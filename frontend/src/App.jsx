@@ -13,6 +13,7 @@ import PaymentSuccess from "./pages/PaymentSuccess";
 import AdminDeliveryRequestsPage from "./pages/AdminDeliveryRequestsPage";
 import AdminLoginPage from "./pages/AdminLoginPage";
 import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 // Wrapper for LandingPage (to use navigation)
 function LandingPageWrapper() {
   const navigate = useNavigate();
@@ -48,6 +49,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/admin-login" element={<AdminLoginPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
         {/* Dashboard & sub-pages with layout */}
         <Route

@@ -115,9 +115,7 @@ export default function LoginPage() {
                   </Link>
                 </p>
 
-                <a href="#" className="forgot-link">
-                  Forgot password?
-                </a>
+                <Link to="/forgot-password" className="forgot-link">Forgot password?</Link>
 
                 <div className="admin-login-link">
                   <Link to="/admin-login" className="auth-link">

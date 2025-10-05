@@ -281,7 +281,7 @@ export default function RegisterPage() {
               </div>
 
               {/* Navigation buttons */}
-              {/* Navigation buttons */}
+
               <div className="nav-buttons">
                 {currentStep > 1 ? (
                     <button
