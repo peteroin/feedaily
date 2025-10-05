@@ -164,10 +164,10 @@ export default function AdminDeliveryRequestsPage() {
 
         <td>
           {currentTab === "Delivering" ? (
-            <button className="action-btn">Allocate</button>
+            <button className="admin-action-btn">Allocate</button>
           ) : currentTab === "Available" ? (
             <button
-              className="action-btn expire-btn"
+              className="admin-action-btn admin-expire-btn"
               onClick={() => setExpireModalOpenFor(req.id)}
             >
               Expire
@@ -186,18 +186,18 @@ export default function AdminDeliveryRequestsPage() {
       {/* Header */}
       <div className="admin-header">
         <h1>📋 Admin: Delivery Requests</h1>
-        <button onClick={handleLogout} className="logout-btn">
+        <button onClick={handleLogout} className="admin-logout-btn">
           <FiLogOut size={20} />
         </button>
       </div>
 
       {/* Tabs */}
-      <div className="tabs">
+      <div className="admin-tabs">
         {tabs.map((tab) => (
           <button
             key={tab.label}
             onClick={() => setActiveTab(tab.label)}
-            className={`tab-btn ${tab.label.toLowerCase()} ${
+            className={`admin-tab-btn ${tab.label.toLowerCase()} ${
               activeTab === tab.label ? "active" : ""
             }`}
           >
@@ -221,7 +221,7 @@ export default function AdminDeliveryRequestsPage() {
               style={{ display: activeTab === tab.label ? "block" : "none" }}
             >
               {tab.data.length > 0 ? (
-                <div className="table-container">
+                <div className="admin-table-container">
                   <table className="admin-table">
                     <TableHeader />
                     <tbody>{renderRows(tab.data, tab.label)}</tbody>
@@ -237,8 +237,8 @@ export default function AdminDeliveryRequestsPage() {
 
       {/* Expire Modal */}
       {expireModalOpenFor && (
-        <div className="expire-modal-overlay">
-          <div className="expire-modal">
+        <div className="admin-expire-modal-overlay">
+          <div className="admin-expire-modal">
             <h3>Expire Food Donation</h3>
             <label htmlFor="reason">Select Reason</label>
             <select
@@ -253,9 +253,9 @@ export default function AdminDeliveryRequestsPage() {
                 </option>
               ))}
             </select>
-            <div className="expire-modal-actions">
+            <div className="admin-expire-modal-actions">
               <button
-                className="confirm-btn"
+                className="admin-confirm-btn"
                 disabled={!expirationReason}
                 onClick={async () => {
                   try {
@@ -291,7 +291,7 @@ export default function AdminDeliveryRequestsPage() {
                 Confirm
               </button>
               <button
-                className="cancel-btn"
+                className="admin-cancel-btn"
                 onClick={() => setExpireModalOpenFor(null)}
               >
                 Cancel

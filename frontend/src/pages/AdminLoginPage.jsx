@@ -4,6 +4,9 @@ import { FiMail, FiLock, FiEye, FiEyeOff, FiArrowRight } from "react-icons/fi";
 import "./AdminLoginPage.css";
 import HomeButton from "../components/HomeButton.jsx";
 
+const DEV_ADMIN_EMAIL = "admin@feedaily.com";
+const DEV_ADMIN_PASSWORD = "admin123";
+
 export default function AdminLoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -111,6 +114,12 @@ export default function AdminLoginPage() {
                     </>
                 )}
               </button>
+              <div className="dev-credentials-info">
+                <strong>Admin Credentials for Testing:</strong>
+                <p>Email: <code>{DEV_ADMIN_EMAIL}</code></p>
+                <p>Password: <code>{DEV_ADMIN_PASSWORD}</code></p>
+              </div>
+
 
               <div className="auth-footer">
                 <p>

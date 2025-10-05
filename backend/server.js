@@ -746,6 +746,36 @@ app.post("/api/reset-password", (req, res) => {
   );
 });
 
+// Temporary Admin
+const TEMP_ADMIN_EMAIL = "admin@feedaily.com";
+const TEMP_ADMIN_PASSWORD = "admin123";
+
+function createTempAdminIfNoneExists() {
+  db.get("SELECT * FROM users WHERE type = 'Admin' LIMIT 1", [], (err, row) => {
+    if (err) {
+      console.error("Error checking admin existence:", err);
+      return;
+    }
+    if (!row) {
+
+      db.run(
+        "INSERT INTO users (name, type, email, password) VALUES (?, 'Admin', ?, ?)",
+        ["Admin", TEMP_ADMIN_EMAIL, TEMP_ADMIN_PASSWORD],
+        function (err) {
+          if (err) {
+            console.error("Error creating temp admin:", err);
+          } else {
+            console.log(`Temporary admin created: Email: ${TEMP_ADMIN_EMAIL}, Password: ${TEMP_ADMIN_PASSWORD}`);
+          }
+        }
+      );
+    } else {
+      console.log("Admin user exists, skipping temporary admin creation.");
+    }
+  });
+}
+
+createTempAdminIfNoneExists();
 
 const PORT = 5000;
 app.listen(PORT, () => console.log(`Backend running on http://localhost:${PORT}`));
