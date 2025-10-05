@@ -25,5 +25,6 @@ dist-ssr
 
 # Ignore SQLite database
 users.db
+users.sqbpro
 *.db
 
