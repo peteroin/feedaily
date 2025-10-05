@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { FiMail, FiLock, FiEye, FiEyeOff, FiArrowRight } from "react-icons/fi";
-import "./AdminLoginPage.css"; 
+import "./AdminLoginPage.css";
+import HomeButton from "../components/HomeButton.jsx";
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState("");
@@ -43,85 +44,87 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="auth-container">
-      <div className="auth-background">
-        <div className="auth-pattern"></div>
-        <div className="auth-overlay"></div>
-      </div>
-
-      <div className="auth-content">
-        <div className="auth-card">
-          <div className="auth-header">
-            <div className="auth-logo">
-            <FiLock size={24} /> 
-              <h1>Feedaily Admin</h1>
-            </div>
-            <h2>Admin Login</h2>
-            <p>Access admin dashboard for delivery management</p>
-          </div>
-
-          <form onSubmit={handleAdminLogin} className="auth-form">
-            {error && <div className="auth-error">{error}</div>}
-
-            <div className="input-group">
-              <FiMail className="input-icon" />
-              <input
-                type="email"
-                placeholder="Admin Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="auth-input"
-              />
-            </div>
-
-            <div className="input-group">
-              <FiLock className="input-icon" />
-              <input
-                type={showPassword ? "text" : "password"}
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className="auth-input"
-              />
-              <button
-                type="button"
-                className="password-toggle"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? <FiEyeOff /> : <FiEye />}
-              </button>
-            </div>
-
-            <button 
-              type="submit" 
-              className="auth-button"
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <div className="spinner"></div>
-              ) : (
-                <>
-                  Admin Sign In
-                  <FiArrowRight />
-                </>
-              )}
-            </button>
-
-            <div className="auth-footer">
-              <p>
-                Back to regular login?{" "}
-                <Link to="/login" className="auth-link">
-                  User Login
-                </Link>
-              </p>
-            </div>
-          </form>
+      <div className="auth-container">
+        <HomeButton/>
+        <img src="/img/authBackground.png" alt="" className="auth-illustration"/>
+        <div className="auth-background">
+          <div className="auth-pattern"></div>
+          <div className="auth-overlay"></div>
         </div>
 
-        
+        <div className="auth-content">
+          <div className="auth-card">
+            <div className="auth-header">
+              <div className="auth-logo">
+                <FiLock size={24}/>
+                <h1>Feedaily Admin</h1>
+              </div>
+              <h2>Admin Login</h2>
+              <p>Access admin dashboard for delivery management</p>
+            </div>
+
+            <form onSubmit={handleAdminLogin} className="auth-form">
+              {error && <div className="auth-error">{error}</div>}
+
+              <div className="input-group">
+                <FiMail className="input-icon"/>
+                <input
+                    type="email"
+                    placeholder="Admin Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    className="auth-input"
+                />
+              </div>
+
+              <div className="input-group">
+                <FiLock className="input-icon"/>
+                <input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    className="auth-input"
+                />
+                <button
+                    type="button"
+                    className="password-toggle"
+                    onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <FiEyeOff/> : <FiEye/>}
+                </button>
+              </div>
+
+              <button
+                  type="submit"
+                  className="auth-button"
+                  disabled={isLoading}
+              >
+                {isLoading ? (
+                    <div className="spinner"></div>
+                ) : (
+                    <>
+                      Admin Sign In
+                      <FiArrowRight/>
+                    </>
+                )}
+              </button>
+
+              <div className="auth-footer">
+                <p>
+                  Back to regular login?{" "}
+                  <Link to="/login" className="auth-link">
+                    User Login
+                  </Link>
+                </p>
+              </div>
+            </form>
+          </div>
+
+
+        </div>
       </div>
-    </div>
   );
 }
