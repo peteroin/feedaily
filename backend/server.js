@@ -218,7 +218,7 @@ app.get("/api/donations", (req, res) => {
       }
     });
 
-  res.json({ message: "Success", data: rows });
+    res.json(rows);
   });
 });
 
@@ -371,9 +371,6 @@ app.get('/api/donation-stats', (req, res) => {
 
       const totalDonated = Number(donatedRow.totalDonated) || 0;
       const totalTaken = Number(takenRow.totalTaken) || 0;
-      if (totalDonated === 0 && totalTaken === 0) {
-  return res.json({ message: "No donation stats available yet", totalDonated: 0, totalTaken: 0, totalPeopleFed: 0 });
-}
       const totalPeopleFed = Math.floor(totalDonated / MEAL_KG);
 
       res.json({
@@ -432,9 +429,7 @@ app.get('/api/daily-donation-stats', (req, res) => {
       console.error('DB error', err);
       return res.status(500).json({ message: 'Database error' });
     }
-      if (!rows || rows.length === 0) {
-    return res.json({ message: "No daily donation data available", data: [] });
-  }
+    
     const data = [['Date', 'Donations (kg)', 'Taken (kg)', 'People Fed']];
     rows.forEach(row => {
       const donationKg = Number(row.totalDonated) || 0;
@@ -447,7 +442,7 @@ app.get('/api/daily-donation-stats', (req, res) => {
     });
     
     console.log('Sending data:', data);
-  res.json({ message: "Success", data });
+    res.json(data);
   });
 });
 

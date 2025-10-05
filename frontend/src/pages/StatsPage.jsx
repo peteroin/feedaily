@@ -17,52 +17,36 @@ export default function StatsPage() {
       .then(res => res.json())
       .then(data => {
         console.log('Raw API response:', data);
-     
-
-      // Normalize rows
-      const rows = data.data ? data.data.slice(1) : data.slice(1);
-
-      const peopleData = [["Date", "People Fed", "Capacity to Feed"]];
-      const donationsData = [["Date", "Donations (kg)"]];
-
-      rows.forEach(row => {
-        // row[0] is like "2025-10-05"
-        const [year, month, day] = row[0].split("-").map(Number);
-        const date = new Date(year, month - 1, day); // ✅ Date object
-        if (isNaN(date.getTime())) return; // skip invalid date
-
-        const donated = Number(row[1]) || 0;
-        const taken = Number(row[2]) || 0;
-        const MEAL_KG = 0.4;
-
-        const peopleFed =
-          taken > 0 ? Math.floor(taken / MEAL_KG) : Math.floor(donated / MEAL_KG);
-        const capacity = Math.floor(donated / MEAL_KG);
-
-        peopleData.push([date, peopleFed, capacity]);
-        donationsData.push([date, donated]);
-      });
-        // Ensure always 7 days are shown (even if no donations)
-const today = new Date();
-for (let i = 6; i >= 0; i--) {
-  const day = new Date(today);
-  day.setDate(today.getDate() - i);
-
-  // check if this date already exists
-  const exists = donationsData.find(
-    r => r[0] instanceof Date && r[0].toDateString() === day.toDateString()
-  );
-
-  if (!exists) {
-    donationsData.push([day, 0]);
-    peopleData.push([day, 0, 0]);
-  }
-}
-
-// sort by date
-donationsData.sort((a, b) => new Date(a[0]) - new Date(b[0]));
-peopleData.sort((a, b) => new Date(a[0]) - new Date(b[0]));
-
+        
+        const peopleData = [["Date", "People Fed", "Capacity to Feed"]];
+        const donationsData = [["Date", "Donations (kg)"]];
+        
+        data.slice(1).forEach(row => {
+          const [year, month, day] = row[0].split('-').map(Number);
+          const date = new Date(year, month - 1, day);
+          const donated = Number(row[1]) || 0;
+          
+          const MEAL_KG = 0.4;
+          let taken = 0;
+          let peopleFed = 0;
+          let capacity = Math.floor(donated / MEAL_KG);
+          
+          if (row.length > 2) {
+            taken = Number(row[2]) || 0;
+            peopleFed = taken > 0 ? Math.floor(taken / MEAL_KG) : (Number(row[3]) || 0);
+          } else {
+            taken = donated * 0.7;
+            peopleFed = Math.floor(taken / MEAL_KG);
+          }
+          
+          if (peopleFed === 0 && donated > 0) {
+            peopleFed = Math.floor(donated / MEAL_KG);
+          }
+          
+          peopleData.push([date, peopleFed, capacity]);
+          donationsData.push([date, donated]);
+        });
+        
         setDailyData(peopleData);
         setDailyDonations(donationsData);
         setLoading(false);
@@ -101,7 +85,7 @@ peopleData.sort((a, b) => new Date(a[0]) - new Date(b[0]));
   const columnOptions = {
     title: "",
     backgroundColor: 'transparent',
-colors: ['#22C55E', '#3B82F6'],
+    colors: ['#000'],
     chartArea: { width: '80%', height: '70%' },
     hAxis: {
       textStyle: { color: '#666', fontSize: 11 },
@@ -119,7 +103,7 @@ colors: ['#22C55E', '#3B82F6'],
   const pieOptions = {
     title: "",
     backgroundColor: 'transparent',
-colors: ['#22C55E', '#3B82F6'],
+    colors: ['#000', '#666'],
     chartArea: { width: '90%', height: '90%' },
     legend: {
       textStyle: { color: '#666', fontSize: 12 }
@@ -131,11 +115,9 @@ colors: ['#22C55E', '#3B82F6'],
   const lineOptions = {
     title: "",
     backgroundColor: 'transparent',
-      colors: ['#22C55E', '#3B82F6'], // People Fed, Capacity
+    colors: ['#000', '#666'],
     chartArea: { width: '85%', height: '75%' },
     hAxis: {
-          format: "MMM d",  // 👈 shows "Oct 5"
-
       textStyle: { color: '#666', fontSize: 11 },
       titleTextStyle: { color: '#000', fontSize: 12, bold: true }
     },
@@ -164,7 +146,7 @@ colors: ['#22C55E', '#3B82F6'],
     );
 
     const peopleSheet = dailyData.map((row, idx) =>
-  idx === 0 ? row : [row[0] instanceof Date ? row[0] : new Date(row[0]), row[1], row[2]]
+      idx === 0 ? row : [new Date(row[0]), row[1], row[2]]
     );
 
     const wsDonations = XLSX.utils.aoa_to_sheet(donationsSheet);
@@ -243,10 +225,7 @@ colors: ['#22C55E', '#3B82F6'],
               <div className="loading-spinner"></div>
               <p className="loading-text">Loading chart data...</p>
             </div>
-          ): !loading && dailyDonations.length <= 1 ? (
-    <p className="text-gray-500 text-center">No donation data available</p>
-  )  : (
-    
+          ) : (
             <Chart
               chartType="ColumnChart"
               width="100%"
@@ -294,26 +273,16 @@ colors: ['#22C55E', '#3B82F6'],
             <p className="loading-text">Loading chart data...</p>
           </div>
         ) : (
-           (() => {
-      // 👇 put safeDailyData here
-      const safeDailyData = dailyData.map((row, idx) =>
-  idx === 0 ? row : [row[0] instanceof Date ? row[0] : new Date(row[0]), row[1], row[2]]
-      );
-        return safeDailyData.length <= 1 ? (
-        <p className="text-gray-500 text-center">No people/capacity data available</p>
-      ): (
           <Chart
             chartType="LineChart"
             width="100%"
             height="300px"
-            data={safeDailyData}
+            data={dailyData}
             options={lineOptions}
             className="minimal-chart"
             loader={<div className="loading-container"><div className="loading-spinner"></div></div>}
           />
-       );
-    })()
-  )}
+        )}
       </div>
 
       {/* Export Button */}
