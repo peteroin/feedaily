@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { FiLogOut } from "react-icons/fi";
 import "./AdminDeliveryRequestsPage.css";
 
 export default function AdminDeliveryRequestsPage() {
@@ -186,7 +187,7 @@ export default function AdminDeliveryRequestsPage() {
       <div className="admin-header">
         <h1>📋 Admin: Delivery Requests</h1>
         <button onClick={handleLogout} className="logout-btn">
-          Logout
+          <FiLogOut size={20} />
         </button>
       </div>
 
