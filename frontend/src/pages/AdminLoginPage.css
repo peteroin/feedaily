@@ -197,12 +197,32 @@
   position: absolute;
   left: 50%;
   top: 50%;
-  transform: translate(-50%, -50%); /* center */
-  width: min(88vmin, 720px);        /* responsive size */
+  transform: translate(-50%, -50%);
+  width: min(88vmin, 720px);        
   height: auto;
-  opacity: 0.18;                    /* subtle */
-  filter: grayscale(100%);          /* neutral look */
-  z-index: 0;                       /* behind card */
-  pointer-events: none;             /* don't block inputs */
+  opacity: 0.18;                    
+  filter: grayscale(100%);          
+  z-index: 0;                       
+  pointer-events: none;             
   user-select: none;
+}
+
+/* Tempoary */
+.dev-credentials-info {
+  background-color: #eef2ff;
+  border: 1px solid #667eea;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  color: #333;
+  font-size: 0.9rem;
+  margin-top: 1rem;
+  user-select: text;
+  text-align: center;
+}
+
+.dev-credentials-info code {
+  background: #d0d7ff;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: monospace;
 }
