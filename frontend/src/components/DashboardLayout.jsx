@@ -32,6 +32,7 @@ export default function DashboardLayout({ children }) {
   }, []);
 
   const handleLogout = () => {
+    localStorage.removeItem("user");
     const mainElement = document.querySelector('.main-content');
     if (mainElement) {
       mainElement.style.opacity = '0';

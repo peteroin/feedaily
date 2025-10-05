@@ -13,6 +13,7 @@ import {
 } from "react-icons/fi";
 import "./AuthCommon.css";
 import "./RegisterPage.css";
+import HomeButton from "../components/HomeButton.jsx";
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -143,198 +144,200 @@ export default function RegisterPage() {
     step === currentStep ? "form-step active" : "form-step";
 
   return (
-    <div className="auth-container">
-      <div className="auth-content">
-        <div className="auth-card register-card">
-          <div className="auth-header">
-            <div className="auth-logo">
-              <span>🍽</span>
-              <h1>Feedaily</h1>
+      <div className="auth-container">
+        <HomeButton/>
+        <img src="/img/authBackground.png" alt="" className="auth-illustration"/>
+        <div className="auth-content">
+          <div className="auth-card register-card">
+            <div className="auth-header">
+              <div className="auth-logo">
+                <span>🍽</span>
+                <h1>Feedaily</h1>
+              </div>
+              <h2>Join the movement</h2>
+              <p>Create your account and start making a difference</p>
             </div>
-            <h2>Join the movement</h2>
-            <p>Create your account and start making a difference</p>
+
+            <form
+                onSubmit={handleRegister}
+                className="auth-form"
+                noValidate
+            >
+              {error && <div className="auth-error">{error}</div>}
+
+              {/* Step 1 */}
+              <div className={stepClass(1)}>
+                <div className="input-group">
+                  <FiUser className="input-icon"/>
+                  <input
+                      type="text"
+                      name="name"
+                      placeholder="Full Name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      className="auth-input"
+                  />
+                </div>
+                <div className="input-group">
+                  <select
+                      name="type"
+                      value={formData.type}
+                      onChange={handleChange}
+                      className="auth-select"
+                  >
+                    <option value="Student">Student</option>
+                    <option value="Individual">Individual</option>
+                    <option value="Organisation">Organisation</option>
+                    <option value="NGO">NGO</option>
+                    <option value="Others">Others</option>
+                  </select>
+                </div>
+                <div className="input-group">
+                  <FiPhone className="input-icon"/>
+                  <input
+                      type="text"
+                      name="contact"
+                      placeholder="Contact Number"
+                      value={formData.contact}
+                      onChange={handleChange}
+                      className="auth-input"
+                  />
+                </div>
+              </div>
+
+              {/* Step 2 */}
+              <div className={stepClass(2)}>
+                <div className="input-group">
+                  <FiMail className="input-icon"/>
+                  <input
+                      type="email"
+                      name="email"
+                      placeholder="Email Address"
+                      value={formData.email}
+                      onChange={handleChange}
+                      className="auth-input"
+                  />
+                </div>
+                <div className="input-group">
+                  <FiMapPin className="input-icon"/>
+                  <input
+                      type="text"
+                      name="address"
+                      placeholder="Address"
+                      value={formData.address}
+                      onChange={handleChange}
+                      className="auth-input"
+                  />
+                </div>
+              </div>
+
+              {/* Step 3 */}
+              <div className={stepClass(3)} style={{position: "relative"}}>
+                <div className="input-group">
+                  <FiLock className="input-icon"/>
+                  <input
+                      type={showPassword ? "text" : "password"}
+                      name="password"
+                      placeholder="Password"
+                      value={formData.password}
+                      onChange={handleChange}
+                      className="auth-input"
+                  />
+                  <button
+                      type="button"
+                      className="password-toggle"
+                      onClick={() => setShowPassword(!showPassword)}
+                      tabIndex={-1}
+                      aria-label={showPassword ? "Hide password" : "Show password"}
+                  >
+                    {showPassword ? <FiEyeOff/> : <FiEye/>}
+                  </button>
+                </div>
+
+                <div className="input-group" style={{position: "relative"}}>
+                  <FiLock className="input-icon"/>
+                  <input
+                      type={showConfirmPassword ? "text" : "password"}
+                      name="confirmPassword"
+                      placeholder="Confirm Password"
+                      value={formData.confirmPassword}
+                      onChange={handleChange}
+                      className="auth-input"
+                  />
+                  <button
+                      type="button"
+                      className="password-toggle"
+                      onClick={() =>
+                          setShowConfirmPassword(!showConfirmPassword)
+                      }
+                      tabIndex={-1}
+                      aria-label={
+                        showConfirmPassword ? "Hide password" : "Show password"
+                      }
+                  >
+                    {showConfirmPassword ? <FiEyeOff/> : <FiEye/>}
+                  </button>
+                </div>
+              </div>
+
+              {/* Navigation buttons */}
+
+              <div className="nav-buttons">
+                {currentStep > 1 ? (
+                    <button
+                        type="button"
+                        className="nav-button"
+                        onClick={handlePrev}
+                    >
+                      <FiArrowLeft/>
+                    </button>
+                ) : (
+                    <div/>
+                )}
+
+                {currentStep < totalSteps ? (
+                    <button
+                        type="button"
+                        className="nav-button"
+                        onClick={handleNext}
+                        disabled={isLoading}
+                    >
+                      <FiArrowRight/>
+                    </button>
+                ) : (
+                    <button
+                        type="submit"
+                        className="auth-button"
+                        disabled={isLoading}
+                        aria-busy={isLoading}
+                    >
+                      {isLoading ? (
+                          <div className="spinner" aria-hidden="true"></div>
+                      ) : (
+                          <>
+                            Create Account
+                            <FiArrowRight style={{marginLeft: "0.3rem"}}/>
+                          </>
+                      )}
+                    </button>
+                )}
+              </div>
+
+
+              <div className="auth-footer" style={{gridColumn: "1 / -1", marginTop: "1rem"}}>
+                <p>
+                  Already have an account?{" "}
+                  <Link to="/login" className="auth-link">
+                    Sign in
+                  </Link>
+                </p>
+              </div>
+            </form>
           </div>
-
-          <form
-            onSubmit={handleRegister}
-            className="auth-form"
-            noValidate
-          >
-            {error && <div className="auth-error">{error}</div>}
-
-            {/* Step 1 */}
-            <div className={stepClass(1)}>
-              <div className="input-group">
-                <FiUser className="input-icon" />
-                <input
-                  type="text"
-                  name="name"
-                  placeholder="Full Name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  className="auth-input"
-                />
-              </div>
-              <div className="input-group">
-                <select
-                  name="type"
-                  value={formData.type}
-                  onChange={handleChange}
-                  className="auth-select"
-                >
-                  <option value="Student">Student</option>
-                  <option value="Individual">Individual</option>
-                  <option value="Organisation">Organisation</option>
-                  <option value="NGO">NGO</option>
-                  <option value="Others">Others</option>
-                </select>
-              </div>
-              <div className="input-group">
-                <FiPhone className="input-icon" />
-                <input
-                  type="text"
-                  name="contact"
-                  placeholder="Contact Number"
-                  value={formData.contact}
-                  onChange={handleChange}
-                  className="auth-input"
-                />
-              </div>
-            </div>
-
-            {/* Step 2 */}
-            <div className={stepClass(2)}>
-              <div className="input-group">
-                <FiMail className="input-icon" />
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Email Address"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="auth-input"
-                />
-              </div>
-              <div className="input-group">
-                <FiMapPin className="input-icon" />
-                <input
-                  type="text"
-                  name="address"
-                  placeholder="Address"
-                  value={formData.address}
-                  onChange={handleChange}
-                  className="auth-input"
-                />
-              </div>
-            </div>
-
-            {/* Step 3 */}
-            <div className={stepClass(3)} style={{ position: "relative" }}>
-              <div className="input-group">
-                <FiLock className="input-icon" />
-                <input
-                  type={showPassword ? "text" : "password"}
-                  name="password"
-                  placeholder="Password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  className="auth-input"
-                />
-                <button
-                  type="button"
-                  className="password-toggle"
-                  onClick={() => setShowPassword(!showPassword)}
-                  tabIndex={-1}
-                  aria-label={showPassword ? "Hide password" : "Show password"}
-                >
-                  {showPassword ? <FiEyeOff /> : <FiEye />}
-                </button>
-              </div>
-
-              <div className="input-group" style={{ position: "relative" }}>
-                <FiLock className="input-icon" />
-                <input
-                  type={showConfirmPassword ? "text" : "password"}
-                  name="confirmPassword"
-                  placeholder="Confirm Password"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  className="auth-input"
-                />
-                <button
-                  type="button"
-                  className="password-toggle"
-                  onClick={() =>
-                    setShowConfirmPassword(!showConfirmPassword)
-                  }
-                  tabIndex={-1}
-                  aria-label={
-                    showConfirmPassword ? "Hide password" : "Show password"
-                  }
-                >
-                  {showConfirmPassword ? <FiEyeOff /> : <FiEye />}
-                </button>
-              </div>
-            </div>
-
-            {/* Navigation buttons */}
-           {/* Navigation buttons */}
-<div className="nav-buttons">
-  {currentStep > 1 ? (
-    <button
-      type="button"
-      className="nav-button"
-      onClick={handlePrev}
-    >
-      <FiArrowLeft />
-    </button>
-  ) : (
-    <div />
-  )}
-
-  {currentStep < totalSteps ? (
-    <button
-      type="button"
-      className="nav-button"
-      onClick={handleNext}
-      disabled={isLoading}
-    >
-      <FiArrowRight />
-    </button>
-  ) : (
-    <button
-      type="submit"
-      className="auth-button"
-      disabled={isLoading}
-      aria-busy={isLoading}
-    >
-      {isLoading ? (
-        <div className="spinner" aria-hidden="true"></div>
-      ) : (
-        <>
-          Create Account
-          <FiArrowRight style={{ marginLeft: "0.3rem" }} />
-        </>
-      )}
-    </button>
-  )}
-</div>
-
-
-            <div className="auth-footer" style={{ gridColumn: "1 / -1", marginTop: "1rem" }}>
-              <p>
-                Already have an account?{" "}
-                <Link to="/login" className="auth-link">
-                  Sign in
-                </Link>
-              </p>
-            </div>
-          </form>
         </div>
-      </div>
 
-      {/* Inline styles for animation */}
-      <style>{`
+        {/* Inline styles for animation */}
+        <style>{`
         .form-step {
           display: none;
           opacity: 0;
@@ -364,6 +367,6 @@ export default function RegisterPage() {
           background: #5a6268;
         }
       `}</style>
-    </div>
+      </div>
   );
 }
