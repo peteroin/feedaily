@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import fetch from 'node-fetch';
 import db from "./database.js";
+import bcrypt from "bcrypt";
 import { getPlaceNameFromCoords } from "./geocodeHelper.js";
 import { sendWhatsAppNotification } from './twilioService.mjs';
 import { generateOtp,validateOtp } from './otpService.js'; 
@@ -17,12 +18,17 @@ app.use(express.json());
 app.use("/api",createCheckoutSession);
 
 // REGISTER endpoint
-app.post("/api/register", (req, res) => {
+app.post("/api/register", async (req, res) => {
   const { name, type, email, password, contact, address } = req.body;
 
-  db.get("SELECT * FROM users WHERE email = ?", [email], (err, row) => {
+  db.get("SELECT * FROM users WHERE email = ?", [email], async (err, row) => {
     if (err) return res.status(500).json({ message: "DB error" });
     if (row) return res.json({ message: "Email already registered" });
+    try {
+      // Hash password before saving
+      const saltRounds = 10;
+      const hashedPassword = await bcrypt.hash(password, saltRounds);
+
 
     db.run(
       "INSERT INTO users (name, type, email, password, contact, address) VALUES (?, ?, ?, ?, ?, ?)",
@@ -32,7 +38,12 @@ app.post("/api/register", (req, res) => {
         res.json({ message: "Registration successful", userId: this.lastID });
       }
     );
-  });
+  } catch (error) {
+      console.error("Hashing error:", error);
+      res.status(500).json({ message: "Error hashing password" });
+    }
+  }
+);
 });
 
 
@@ -42,12 +53,31 @@ app.post("/api/login", (req, res) => {
   db.get(
     "SELECT * FROM users WHERE email = ? AND password = ?",
     [email, password],
-    (err, row) => {
+    async (err, row) => {
       if (err) return res.status(500).json({ message: "DB error" });
       if (!row) return res.json({ message: "Invalid credentials" });
+      try {
+      // Check if stored password is hashed or plain
+      const isHashed = row.password.startsWith("$2b$");
+      const isMatch = isHashed
+        ? await bcrypt.compare(password, row.password)
+        : password === row.password;
+
+      if (!isMatch) return res.json({ message: "Invalid credentials" });
+
+      // (Optional) Auto-upgrade plaintext passwords to hashed on successful login
+      if (!isHashed) {
+        const newHash = await bcrypt.hash(password, 10);
+        db.run("UPDATE users SET password = ? WHERE id = ?", [newHash, row.id]);
+        console.log(`Upgraded password for user ID ${row.id}`);
+      }
+
       res.json({ message: "Login successful", user: row });
+    } catch (error) {
+      console.error("Compare error:", error);
+      res.status(500).json({ message: "Error verifying password" });
     }
-  );
+  });
 });
 
 // ADMIN LOGIN endpoint
@@ -56,10 +86,28 @@ app.post("/api/admin-login", (req, res) => {
   db.get(
     "SELECT * FROM users WHERE email = ? AND password = ? AND type = 'Admin'",
     [email, password],
-    (err, row) => {
+    async (err, row) => {
       if (err) return res.status(500).json({ message: "DB error" });
       if (!row) return res.json({ message: "Invalid admin credentials" });
-      res.json({ message: "Admin login successful", user: row });
+      try {
+        const isHashed = row.password.startsWith("$2b$");
+        const isMatch = isHashed
+          ? await bcrypt.compare(password, row.password)
+          : password === row.password;
+
+        if (!isMatch)
+          return res.json({ message: "Invalid admin credentials" });
+
+        if (!isHashed) {
+          const newHash = await bcrypt.hash(password, 10);
+          db.run("UPDATE users SET password = ? WHERE id = ?", [newHash, row.id]);
+          console.log(`Upgraded admin password for user ID ${row.id}`);
+        }
+        res.json({ message: "Admin login successful", user: row });
+      } catch (error) {
+        console.error("Compare error:", error);
+        res.status(500).json({ message: "Error verifying password" });
+      }
     }
   );
 });
