@@ -10,6 +10,66 @@ export default function AdminDeliveryRequestsPage() {
   const [expireModalOpenFor, setExpireModalOpenFor] = useState(null);
   const [expirationReason, setExpirationReason] = useState("");
   const expirationReasons = ["Spoiled", "Not picked up", "Other"];
+  const [collaborations, setCollaborations] = useState([]);
+  const [collabActiveTab, setCollabActiveTab] = useState("Available");
+
+  useEffect(() => {
+    fetch("http://localhost:5000/api/collaborations")
+      .then((res) => res.json())
+      .then((data) => setCollaborations(data))
+      .catch(() => console.error("Failed to fetch collaborations"));
+  }, []);
+  const collabAvailable = collaborations.filter(
+    (c) => c.acceptedByAdmin === null
+  );
+  const collabAccepted = collaborations.filter(
+    (c) => c.acceptedByAdmin === "Accepted"
+  );
+  const collabRejected = collaborations.filter(
+    (c) => c.acceptedByAdmin === "Rejected"
+  );
+
+  const collabTabs = [
+    { label: "Available", data: collabAvailable },
+    { label: "Accepted", data: collabAccepted },
+    { label: "Rejected", data: collabRejected },
+  ];
+
+  const CollabTableHeader = () => (
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Type</th>
+        <th>Form Data</th>
+        <th>File</th>
+        {collabActiveTab === "Available" && <th>Action</th>}
+        {collabActiveTab !== "Available" && <th>Status</th>}
+      </tr>
+    </thead>
+  );
+
+  // Function to update status
+  const updateCollabStatus = async (id, status) => {
+    try {
+      const res = await fetch(
+        `http://localhost:5000/api/collaborations/${id}/status`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ acceptedByAdmin: status }),
+        }
+      );
+      if (res.ok) {
+        setCollaborations((prev) =>
+          prev.map((r) => (r.id === id ? { ...r, acceptedByAdmin: status } : r))
+        );
+        // Move it out of Available automatically
+        setCollabActiveTab(status);
+      } else alert("Failed to update status.");
+    } catch (err) {
+      alert("Error updating status.");
+    }
+  };
 
   useEffect(() => {
     fetch("http://localhost:5000/api/donations")
@@ -116,9 +176,7 @@ export default function AdminDeliveryRequestsPage() {
             </td>
             <td>{req.contact || "N/A"}</td>
             <td>
-              {req.createdAt
-                ? new Date(req.createdAt).toLocaleString()
-                : "N/A"}
+              {req.createdAt ? new Date(req.createdAt).toLocaleString() : "N/A"}
             </td>
           </>
         )}
@@ -271,7 +329,9 @@ export default function AdminDeliveryRequestsPage() {
                       alert("Donation expired successfully");
                       setExpireModalOpenFor(null);
                       setExpirationReason("");
-                      const res = await fetch("http://localhost:5000/api/donations");
+                      const res = await fetch(
+                        "http://localhost:5000/api/donations"
+                      );
                       const data = await res.json();
                       const filtered = data.filter(
                         (d) =>
@@ -300,6 +360,123 @@ export default function AdminDeliveryRequestsPage() {
           </div>
         </div>
       )}
+      
+      {/* Collaboration Requests */}
+      <div style={{ marginTop: "80px" }} className="admin-collab-section">
+        <h2>📋 Admin: Collaboration Requests</h2>
+
+        {/* Collaboration Tabs */}
+        <div className="admin-tabs">
+          {collabTabs.map((tab) => (
+            <button
+              key={tab.label}
+              onClick={() => setCollabActiveTab(tab.label)}
+              className={`admin-tab-btn ${tab.label.toLowerCase()} ${
+                collabActiveTab === tab.label ? "active" : ""
+              }`}
+            >
+              {tab.label} ({tab.data.length})
+            </button>
+          ))}
+        </div>
+
+        {/* Collaboration Table */}
+        {collabTabs.map((tab) => (
+          <div
+            key={tab.label}
+            style={{
+              display: collabActiveTab === tab.label ? "block" : "none",
+            }}
+          >
+            {tab.data.length > 0 ? (
+              <div className="admin-table-container">
+                <table className="admin-table">
+                  <CollabTableHeader />
+                  <tbody>
+                    {tab.data.map((req) => (
+                      <tr key={req.id}>
+                        <td>{req.id}</td>
+                        <td>{req.type}</td>
+
+                        {/* Structured Form Data */}
+                        <td>
+                          <table className="nested-table mx-auto">
+                            <tbody>
+                              {Object.entries(JSON.parse(req.formData)).map(
+                                ([key, value]) => (
+                                  <tr key={key}>
+                                    <td>
+                                      <b>{key}</b>
+                                    </td>
+                                    <td>{value}</td>
+                                  </tr>
+                                )
+                              )}
+                            </tbody>
+                          </table>
+                        </td>
+
+                        <td>
+                          <div className="flex justify-center items-center w-full">
+                            {req.filePath ? (
+                              <a
+                                href={`http://localhost:5000${req.filePath}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 underline"
+                              >
+                                View File
+                              </a>
+                            ) : (
+                              "N/A"
+                            )}
+                          </div>
+                        </td>
+                        {/* Action or Status */}
+                        {tab.label === "Available" ? (
+                          <td>
+                            <button
+                              className="text-white border-0 px-3 py-1.5 rounded-md text-sm cursor-pointer transition-colors duration-200 hover:bg-blue-700 bg-green-600 mr-2"
+                              onClick={() =>
+                                updateCollabStatus(req.id, "Accepted")
+                              }
+                            >
+                              Accept
+                            </button>
+                            <button
+                              className="bg-red-600 text-white border-0 px-3 py-1.5 rounded-md text-sm cursor-pointer transition-colors duration-200 hover:bg-blue-700"
+                              onClick={() =>
+                                updateCollabStatus(req.id, "Rejected")
+                              }
+                            >
+                              Reject
+                            </button>
+                          </td>
+                        ) : (
+                          <td
+                            style={{
+                              color:
+                                tab.label === "Accepted"
+                                  ? "green"
+                                  : tab.label === "Rejected"
+                                  ? "red"
+                                  : "black",
+                            }}
+                          >
+                            {req.acceptedByAdmin}
+                          </td>
+                        )}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <p>No {tab.label.toLowerCase()} collaboration requests.</p>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

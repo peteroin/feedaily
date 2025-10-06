@@ -221,3 +221,39 @@
 .capitalize {
   text-transform: capitalize;
 }
+
+/* Collaboration section wrapper */
+.admin-collab-section h2 {
+  margin-bottom: 15px;
+  font-size: 1.5rem;
+}
+
+/* Tabs spacing */
+.admin-collab-section .admin-tabs {
+  margin-bottom: 20px;
+}
+
+/* Tabs colors for active state */
+.admin-collab-section .admin-tab-btn.available.active {
+  border-bottom: 3px solid #007bff; /* blue for Available */
+}
+
+.admin-collab-section .admin-tab-btn.accepted.active {
+  border-bottom: 3px solid #28a745; /* green for Accepted */
+}
+
+.admin-collab-section .admin-tab-btn.rejected.active {
+  border-bottom: 3px solid #dc3545; /* red for Rejected */
+}
+
+.admin-table th,
+.admin-table td {
+  border: 1px solid #e5e7eb; /* light gray */
+}
+.admin-table th {
+  background-color: #f9fafb;
+  font-weight: 600;
+}
+.admin-table tr:nth-child(even) {
+  background-color: #f3f4f6;
+}
