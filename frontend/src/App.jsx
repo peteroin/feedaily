@@ -1,5 +1,5 @@
 import { Routes, Route, useNavigate } from "react-router-dom";
-
+import CommunityPage from "./pages/CommunityPage";
 import LandingPage from "./components/LandingPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
@@ -89,6 +89,14 @@ function App() {
           element={
             <DashboardLayout>
               <DeliveryPage />
+            </DashboardLayout>
+          }
+        />
+        <Route
+          path="/community"
+          element={
+            <DashboardLayout>
+              <CommunityPage />
             </DashboardLayout>
           }
         />
