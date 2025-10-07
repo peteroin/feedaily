@@ -10,6 +10,7 @@ import {
   FiTrendingUp,
   FiUsers,
   FiZap,
+  FiAlertCircle,
 } from "react-icons/fi";
 import "./ImpactPage.css";
 
@@ -31,403 +32,391 @@ export const ImpactPage = () => {
   const [hasAnimated, setHasAnimated] = useState(false);
   const metricsRef = useRef(null);
 
-  // console.log("Debug - environmentalData:", environmentalData);
-  // console.log("Debug - animatedMetrics:", animatedMetrics);
-  // console.log("Debug - inView:", inView, "hasAnimated:", hasAnimated);
+  // Fetch environmental impact data with better error handling
+  const fetchEnvironmentalData = async () => {
+    try {
+      setLoading(true);
+      setError(null);
 
-  // Fetch environmental impact data
-  useEffect(() => {
-    const fetchEnvironmentalData = async () => {
-      try {
-        setLoading(true);
-        setError(null);
+      console.log("Fetching environmental impact data...");
+      
+      const response = await fetch("http://localhost:5000/api/environmental-impact");
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
-        const response = await fetch(
-          "http://localhost:5000/api/environmental-impact"
-        );
+      const result = await response.json();
+      console.log("Fetched data:", result);
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch environmental impact data");
-        }
+      if (result.success && result.data) {
+        setEnvironmentalData(result.data);
+        
+        // Initialize animated metrics with actual data
+        const data = result.data;
+        setAnimatedMetrics({
+          foodWasteAvoided: data.foodWaste?.wasteAvoided || 0,
+          carbonAvoided: data.carbonImpact?.emissionAvoided || 0,
+          waterSaved: data.resourceSaving?.waterSaved || 0,
+          energySaved: data.resourceSaving?.energySaved || 0,
+          deliveryEfficiency: data.efficiency?.delivery || 0,
+          diversionRate: data.wasteManagement?.diversionRate || 0,
+          avgDistance: data.community?.avgDeliveryDistance || 0,
+          communityIndex: data.community?.sustainabilityIndex || 0,
+        });
+      } else {
+        throw new Error("Invalid response format: " + JSON.stringify(result));
+      }
+    } catch (err) {
+      console.error("Error fetching environmental impact:", err);
+      setError(err.message || "Failed to load environmental impact data");
+      
+      // Set fallback data for development
+      setEnvironmentalData(getFallbackData());
+    } finally {
+      setLoading(false);
+    }
+  };
 
-        const result = await response.json();
-        // console.log("Environmental impact data:", result);
-
-        if (result.success && result.data) {
-          setEnvironmentalData(result.data);
-        } else {
-          throw new Error("Invalid response format");
-        }
-
-        setLoading(false);
-      } catch (err) {
-        console.error("Error fetching environmental impact:", err);
-        setError(err.message || "Failed to load environmental impact data");
-        setLoading(false);
+  // Fallback data for development
+  const getFallbackData = () => {
+    return {
+      foodWaste: { wasteAvoided: 1250 },
+      carbonImpact: { emissionAvoided: 320, digitalFootprint: 0.025 },
+      resourceSaving: { waterSaved: 50000, energySaved: 1200 },
+      efficiency: { 
+        delivery: 85, 
+        freshness: 24.5, 
+        localityScore: 0.78 
+      },
+      wasteManagement: { diversionRate: 92 },
+      community: { 
+        avgDeliveryDistance: 3.2, 
+        sustainabilityIndex: 88,
+        totalParticipants: 156,
+        completedDonations: 423
       }
     };
+  };
 
+  useEffect(() => {
     fetchEnvironmentalData();
   }, []);
 
-  // Intersection Observer for animations
+  // Simplified Intersection Observer
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        console.log(
-          "Debug - Intersection observer triggered:",
-          entry.isIntersecting,
-          "hasAnimated:",
-          hasAnimated
-        );
-        if (entry.isIntersecting && !hasAnimated) {
-          console.log("Debug - Setting inView to true");
+        if (entry.isIntersecting && !hasAnimated && environmentalData) {
+          console.log("Starting animation...");
           setInView(true);
           setHasAnimated(true);
         }
       },
-      { threshold: 0.1, rootMargin: "0px 0px -10px 0px" } // More aggressive settings
+      { threshold: 0.3 }
     );
 
-    if (metricsRef.current) {
-      observer.observe(metricsRef.current);
-      console.log("Debug - Observer attached to metricsRef");
-    } else {
-      console.log("Debug - metricsRef.current is null");
+    const currentRef = metricsRef.current;
+    if (currentRef) {
+      observer.observe(currentRef);
     }
 
-    return () => observer.disconnect();
-  }, [hasAnimated]);
+    return () => {
+      if (currentRef) {
+        observer.unobserve(currentRef);
+      }
+    };
+  }, [hasAnimated, environmentalData]);
 
-  // Fallback: trigger animation after data loads and a short delay
-  useEffect(() => {
-    if (environmentalData && !hasAnimated && !inView) {
-      console.log(
-        "Debug - Fallback trigger: setting inView to true after 1 second"
-      );
-      const timer = setTimeout(() => {
-        setInView(true);
-        setHasAnimated(true);
-      }, 1000);
-      return () => clearTimeout(timer);
-    }
-  }, [environmentalData, hasAnimated, inView]);
-
-  // Animate metrics when in view - using homepage pattern
+  // Improved animation logic
   useEffect(() => {
     if (inView && environmentalData) {
-      const targets = [
-        environmentalData.foodWaste?.wasteAvoided || 0,
-        environmentalData.carbonImpact?.emissionAvoided || 0,
-        environmentalData.resourceSaving?.waterSaved || 0,
-        environmentalData.resourceSaving?.energySaved || 0,
-        environmentalData.efficiency?.delivery || 0,
-        environmentalData.wasteManagement?.diversionRate || 0,
-        environmentalData.community?.avgDeliveryDistance || 0,
-        environmentalData.community?.sustainabilityIndex || 0,
-      ];
+      console.log("Animating metrics with data:", environmentalData);
+      
+      const targets = {
+        foodWasteAvoided: environmentalData.foodWaste?.wasteAvoided || 0,
+        carbonAvoided: environmentalData.carbonImpact?.emissionAvoided || 0,
+        waterSaved: environmentalData.resourceSaving?.waterSaved || 0,
+        energySaved: environmentalData.resourceSaving?.energySaved || 0,
+        deliveryEfficiency: environmentalData.efficiency?.delivery || 0,
+        diversionRate: environmentalData.wasteManagement?.diversionRate || 0,
+        avgDistance: environmentalData.community?.avgDeliveryDistance || 0,
+        communityIndex: environmentalData.community?.sustainabilityIndex || 0,
+      };
 
-      // console.log("Debug - Animation starting with targets:", targets);
+      const duration = 1500;
+      const frameRate = 60;
+      const totalFrames = Math.floor(duration / (1000 / frameRate));
+      let frame = 0;
 
-      const duration = 2000;
-      const steps = 60;
-      const stepDuration = duration / steps;
+      const animate = () => {
+        frame++;
+        const progress = Math.min(frame / totalFrames, 1);
+        const easeOut = 1 - Math.pow(1 - progress, 3);
 
-      let currentStep = 0;
-      const interval = setInterval(() => {
-        currentStep++;
-        const progress = currentStep / steps;
-        const easeOutQuad = 1 - Math.pow(1 - progress, 3);
+        setAnimatedMetrics({
+          foodWasteAvoided: Math.floor(targets.foodWasteAvoided * easeOut),
+          carbonAvoided: Math.floor(targets.carbonAvoided * easeOut),
+          waterSaved: Math.floor(targets.waterSaved * easeOut),
+          energySaved: Math.floor(targets.energySaved * easeOut),
+          deliveryEfficiency: Math.floor(targets.deliveryEfficiency * easeOut),
+          diversionRate: Math.floor(targets.diversionRate * easeOut),
+          avgDistance: parseFloat((targets.avgDistance * easeOut).toFixed(1)),
+          communityIndex: Math.floor(targets.communityIndex * easeOut),
+        });
 
-        const newMetrics = {
-          foodWasteAvoided: Math.floor(targets[0] * easeOutQuad),
-          carbonAvoided: Math.floor(targets[1] * easeOutQuad),
-          waterSaved: Math.floor(targets[2] * easeOutQuad),
-          energySaved: Math.floor(targets[3] * easeOutQuad),
-          deliveryEfficiency: Math.floor(targets[4] * easeOutQuad),
-          diversionRate: Math.floor(targets[5] * easeOutQuad),
-          avgDistance: parseFloat((targets[6] * easeOutQuad).toFixed(1)),
-          communityIndex: Math.floor(targets[7] * easeOutQuad),
-        };
-
-        // console.log(
-        //   `Debug - Step ${currentStep}/${steps}, progress: ${progress.toFixed(
-        //     2
-        //   )}, metrics:`,
-        //   newMetrics
-        // );
-
-        setAnimatedMetrics(newMetrics);
-
-        if (currentStep >= steps) {
-          const finalMetrics = {
-            foodWasteAvoided: Math.floor(targets[0]),
-            carbonAvoided: Math.floor(targets[1]),
-            waterSaved: Math.floor(targets[2]),
-            energySaved: Math.floor(targets[3]),
-            deliveryEfficiency: Math.floor(targets[4]),
-            diversionRate: Math.floor(targets[5]),
-            avgDistance: parseFloat(targets[6].toFixed(1)),
-            communityIndex: Math.floor(targets[7]),
-          };
-          // console.log(
-          //   "Debug - Animation completed, final metrics:",
-          //   finalMetrics
-          // );
-          setAnimatedMetrics(finalMetrics);
-          clearInterval(interval);
+        if (frame < totalFrames) {
+          requestAnimationFrame(animate);
+        } else {
+          // Ensure final values are exact
+          setAnimatedMetrics(targets);
         }
-      }, stepDuration);
+      };
 
-      return () => clearInterval(interval);
+      requestAnimationFrame(animate);
     }
   }, [inView, environmentalData]);
 
+  // Manual refresh function
+  const handleRefresh = () => {
+    setHasAnimated(false);
+    setInView(false);
+    fetchEnvironmentalData();
+  };
+
   if (loading) {
     return (
-      <div className="ip-loading">
-        <div className="ip-loading-spinner"></div>
-        <p>Loading environmental impact data...</p>
+      <div className="impact-loading">
+        <FiRefreshCw className="spin" />
+        Loading environmental impact data...
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="ip-loading">
-        <div style={{ color: "#ef4444", fontSize: "3rem" }}>⚠️</div>
-        <p style={{ color: "#ef4444" }}>Error: {error}</p>
-        <button
-          onClick={() => window.location.reload()}
-          style={{
-            marginTop: "1rem",
-            padding: "0.5rem 1rem",
-            backgroundColor: "#4f46e5",
-            color: "white",
-            border: "none",
-            borderRadius: "0.5rem",
-            cursor: "pointer",
-          }}
-        >
-          Retry
-        </button>
+      <div className="impact-error">
+        <FiAlertCircle className="error-icon" />
+        <h2>Error Loading Impact Data</h2>
+        <p>{error}</p>
+        <div className="error-actions">
+          <button onClick={handleRefresh} className="retry-btn">
+            <FiRefreshCw />
+            Try Again
+          </button>
+          <button 
+            onClick={() => setEnvironmentalData(getFallbackData())} 
+            className="retry-btn secondary"
+          >
+            Use Demo Data
+          </button>
+        </div>
       </div>
     );
   }
 
   const environmentalMetrics = [
     {
-      icon: <FiHeart className="w-8 h-8" />,
+      icon: <FiHeart />,
       title: "Food Waste Prevented",
-      value: animatedMetrics.foodWasteAvoided || 0,
+      value: animatedMetrics.foodWasteAvoided,
       unit: "kg",
-      color: "from-green-500 to-green-600",
+      color: "metric-green",
       description: "Total food rescued from going to waste",
     },
     {
-      icon: <FiThermometer className="w-8 h-8" />,
+      icon: <FiThermometer />,
       title: "CO₂ Emissions Avoided",
-      value: animatedMetrics.carbonAvoided || 0,
+      value: animatedMetrics.carbonAvoided,
       unit: "kg CO₂",
-      color: "from-blue-500 to-blue-600",
+      color: "metric-blue",
       description: "Carbon footprint reduced by preventing food waste",
     },
     {
-      icon: <FiDroplet className="w-8 h-8" />,
+      icon: <FiDroplet />,
       title: "Water Footprint Saved",
-      value: animatedMetrics.waterSaved || 0,
+      value: animatedMetrics.waterSaved,
       unit: "L",
-      color: "from-cyan-500 to-cyan-600",
+      color: "metric-cyan",
       description: "Water conserved by rescuing surplus food",
     },
     {
-      icon: <FiZap className="w-8 h-8" />,
+      icon: <FiZap />,
       title: "Energy Conserved",
-      value: animatedMetrics.energySaved || 0,
+      value: animatedMetrics.energySaved,
       unit: "MJ",
-      color: "from-yellow-500 to-yellow-600",
+      color: "metric-orange",
       description: "Energy saved by not producing replacement food",
     },
     {
-      icon: <FiRefreshCw className="w-8 h-8" />,
+      icon: <FiRefreshCw />,
       title: "Waste Diversion Rate",
-      value: animatedMetrics.diversionRate || 0,
+      value: animatedMetrics.diversionRate,
       unit: "%",
-      color: "from-emerald-500 to-emerald-600",
+      color: "metric-emerald",
       description: "Food successfully diverted from landfills",
     },
     {
-      icon: <FiUsers className="w-8 h-8" />,
+      icon: <FiUsers />,
       title: "Community Engagement",
-      value: animatedMetrics.communityIndex || 0,
+      value: animatedMetrics.communityIndex,
       unit: "%",
-      color: "from-pink-500 to-pink-600",
+      color: "metric-pink",
       description: "Community participation in sustainability efforts",
     },
   ];
 
   return (
-    <div className="ip-container">
-      {/* Hero Section */}
-      <div className="ip-hero">
-        <div className="ip-hero-background">
-          <div className="ip-hero-overlay"></div>
-        </div>
-        <div className="ip-hero-content">
-          <h1 className="ip-hero-title">
-            Environmental <span className="ip-hero-highlight">Impact</span>
-          </h1>
-          <p className="ip-hero-subtitle">
-            Measuring our contribution to a sustainable future through
-            data-driven insights
-          </p>
-          <div className="ip-hero-stats">
-            <div className="ip-hero-stat">
-              <FiHeart className="ip-hero-stat-icon" />
-              <span className="ip-hero-stat-text">
-                {environmentalData?.foodWaste?.wasteAvoided?.toFixed(1) || "0"}{" "}
-                kg Food Rescued
-              </span>
+    <div className="impact-container">
+      {/* Header with refresh button */}
+      <div className="impact-header">
+        <div className="impact-header-content">
+          <div>
+            <h1>Environmental Impact</h1>
+            <p>Track your contribution to sustainability and food rescue efforts</p>
+          </div>
+          <div className="header-actions">
+            <div className="impact-summary-badges">
+              <div className="impact-badge">
+                <FiHeart />
+                <span>{animatedMetrics.foodWasteAvoided.toLocaleString()}kg Saved</span>
+              </div>
+              <div className="impact-badge">
+                <FiThermometer />
+                <span>{animatedMetrics.carbonAvoided.toLocaleString()}kg CO₂</span>
+              </div>
             </div>
-            <div className="ip-hero-stat">
-              <FiThermometer className="ip-hero-stat-icon" />
-              <span className="ip-hero-stat-text">
-                {environmentalData?.carbonImpact?.emissionAvoided?.toFixed(1) ||
-                  "0"}{" "}
-                kg CO₂ Avoided
-              </span>
-            </div>
+            <button onClick={handleRefresh} className="refresh-btn">
+              <FiRefreshCw />
+              Refresh
+            </button>
           </div>
         </div>
       </div>
 
-      {/* Environmental Metrics */}
-      <section className="ip-metrics" ref={metricsRef}>
-        <div className="ip-section-header">
-          <h2 className="ip-section-title">Environmental Impact Metrics</h2>
-          <p className="ip-section-subtitle">
-            Real environmental benefits from our food rescue operations
-          </p>
-        </div>
-
-        <div className="ip-metrics-grid">
-          {environmentalMetrics.map((metric, index) => (
-            <div
-              key={index}
-              className="ip-metric-card"
-              style={{ animationDelay: `${index * 0.1}s` }}
-            >
-              <div
-                className={`ip-metric-icon bg-gradient-to-r ${metric.color}`}
-              >
-                {metric.icon}
-              </div>
-              <div className="ip-metric-content">
-                <div className="ip-metric-value">
-                  {metric.value.toLocaleString()}
-                  <span className="ip-metric-unit">{metric.unit}</span>
-                </div>
-                <h3 className="ip-metric-title">{metric.title}</h3>
-                <p className="ip-metric-description">{metric.description}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Efficiency Insights */}
-      {environmentalData?.efficiency && (
-        <section className="ip-insights">
-          <div className="ip-section-header">
-            <h2 className="ip-section-title">Efficiency Insights</h2>
-            <p className="ip-section-subtitle">
-              How we're optimizing our environmental impact
-            </p>
+      <div className="impact-content">
+        {/* Main Metrics Grid */}
+        <section className="impact-metrics-section" ref={metricsRef}>
+          <div className="section-header">
+            <h2>Environmental Impact Metrics</h2>
+            <p>Real-time tracking of your sustainability contributions</p>
           </div>
 
-          <div className="ip-insights-grid">
-            <div className="ip-insight-card">
-              <div className="ip-insight-icon">
-                <FiClock className="w-6 h-6" />
-              </div>
-              <div className="ip-insight-content">
-                <h3>Freshness Efficiency</h3>
-                <div className="ip-insight-value">
-                  {environmentalData.efficiency.freshness?.toFixed(1) || "0"}{" "}
-                  hrs avg
+          <div className="impact-metrics-grid">
+            {environmentalMetrics.map((metric, index) => (
+              <div
+                key={index}
+                className="impact-metric-card"
+              >
+                <div className="metric-card-header">
+                  <div className={`metric-icon-wrapper ${metric.color}`}>
+                    {metric.icon}
+                  </div>
                 </div>
-                <p>Average freshness of delivered food</p>
-              </div>
-            </div>
-
-            <div className="ip-insight-card">
-              <div className="ip-insight-icon">
-                <FiTarget className="w-6 h-6" />
-              </div>
-              <div className="ip-insight-content">
-                <h3>Locality Optimization</h3>
-                <div className="ip-insight-value">
-                  {(environmentalData.efficiency.localityScore * 100)?.toFixed(
-                    0
-                  ) || "0"}
-                  %
+                <div className="metric-card-content">
+                  <div className="metric-value">
+                    {metric.value.toLocaleString()}
+                    <span className="metric-unit">{metric.unit}</span>
+                  </div>
+                  <h3 className="metric-title">{metric.title}</h3>
+                  <p className="metric-description">{metric.description}</p>
                 </div>
-                <p>Efficiency in local food distribution</p>
               </div>
-            </div>
-
-            <div className="ip-insight-card">
-              <div className="ip-insight-icon">
-                <FiMail className="w-6 h-6" />
-              </div>
-              <div className="ip-insight-content">
-                <h3>Digital Footprint</h3>
-                <div className="ip-insight-value">
-                  {environmentalData.carbonImpact?.digitalFootprint?.toFixed(
-                    3
-                  ) || "0"}{" "}
-                  kg CO₂
-                </div>
-                <p>Carbon cost of digital notifications</p>
-              </div>
-            </div>
+            ))}
           </div>
         </section>
-      )}
 
-      {/* Call to Action */}
-      <section className="ip-cta">
-        <div className="ip-cta-content">
-          <h2 className="ip-cta-title">Join the Environmental Movement</h2>
-          <p className="ip-cta-subtitle">
-            Every food rescue contributes to a healthier planet. Start making a
-            difference today through sustainable food sharing.
-          </p>
-          <div className="ip-cta-buttons">
+        {/* Efficiency & Community Insights */}
+        <div className="impact-insights-grid">
+          <section className="impact-insight-section">
+            <div className="section-header">
+              <h3>Efficiency Metrics</h3>
+              <p>Optimization and performance insights</p>
+            </div>
+            <div className="insight-cards">
+              <div className="insight-card">
+                <div className="insight-icon">
+                  <FiClock />
+                </div>
+                <div className="insight-content">
+                  <div className="insight-value">
+                    {environmentalData?.efficiency?.freshness?.toFixed(1) || "0"} hrs
+                  </div>
+                  <div className="insight-label">Avg Freshness</div>
+                </div>
+              </div>
+
+              <div className="insight-card">
+                <div className="insight-icon">
+                  <FiTarget />
+                </div>
+                <div className="insight-content">
+                  <div className="insight-value">
+                    {((environmentalData?.efficiency?.localityScore || 0) * 100)?.toFixed(0)}%
+                  </div>
+                  <div className="insight-label">Locality Score</div>
+                </div>
+              </div>
+
+              <div className="insight-card">
+                <div className="insight-icon">
+                  <FiMail />
+                </div>
+                <div className="insight-content">
+                  <div className="insight-value">
+                    {(environmentalData?.carbonImpact?.digitalFootprint || 0)?.toFixed(3)} kg
+                  </div>
+                  <div className="insight-label">Digital Footprint</div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section className="impact-insight-section">
+            <div className="section-header">
+              <h3>Community Impact</h3>
+              <p>Your role in the larger ecosystem</p>
+            </div>
+            <div className="community-stats">
+              <div className="community-stat">
+                <div className="stat-value">
+                  {environmentalData?.community?.totalParticipants || "0"}
+                </div>
+                <div className="stat-label">Active Participants</div>
+              </div>
+              <div className="community-stat">
+                <div className="stat-value">
+                  {environmentalData?.community?.completedDonations || "0"}
+                </div>
+                <div className="stat-label">Successful Donations</div>
+              </div>
+              <div className="community-stat">
+                <div className="stat-value">
+                  {animatedMetrics.avgDistance} km
+                </div>
+                <div className="stat-label">Avg Delivery Distance</div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        {/* Call to Action */}
+        <section className="impact-cta">
+          <div className="cta-content">
+            <FiHeart className="cta-icon" />
+            <div className="cta-text">
+              <h3>Continue Making an Impact</h3>
+              <p>Your next donation could save even more resources and help build a sustainable community</p>
+            </div>
             <button
-              className="ip-cta-primary"
+              className="cta-button"
               onClick={() => (window.location.href = "/dashboard")}
             >
-              <FiHeart className="ip-btn-icon" />
-              Start Rescuing Food
-            </button>
-            <button
-              className="ip-cta-secondary"
-              onClick={() => (window.location.href = "/stats")}
-            >
-              <FiTrendingUp className="ip-btn-icon" />
-              View Detailed Stats
+              Make Another Donation
             </button>
           </div>
-        </div>
-        <div className="ip-cta-visual">
-          <div className="ip-impact-circles">
-            <div className="ip-circle ip-circle-1"></div>
-            <div className="ip-circle ip-circle-2"></div>
-            <div className="ip-circle ip-circle-3"></div>
-          </div>
-        </div>
-      </section>
+        </section>
+      </div>
     </div>
   );
 };
