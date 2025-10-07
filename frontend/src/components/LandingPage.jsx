@@ -1,18 +1,25 @@
 import React, { useState, useEffect, useRef } from "react";
-import { 
-  FiArrowRight, 
-  FiUsers, 
-  FiHeart, 
-  FiGlobe, 
+import {
+  FiArrowRight,
+  FiUsers,
+  FiHeart,
+  FiGlobe,
   FiAward,
   FiShield,
   FiTrendingUp,
   FiMail,
   FiPhone,
-  FiMapPin
+  FiMapPin,
 } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
+import UpcomingEvents from "./UpcomingEvents.jsx";
 
-export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, onGetStartedClick }) {
+export default function LandingPage({
+  isLoggedIn,
+  onLoginClick,
+  onLogoutClick,
+  onGetStartedClick,
+}) {
   const [scrollY, setScrollY] = useState(0);
   const [activeFeature, setActiveFeature] = useState(0);
   const [imageLoading, setImageLoading] = useState(true);
@@ -20,19 +27,29 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
   const [animatedStats, setAnimatedStats] = useState([0, 0, 0, 0]);
   const featuresContainerRef = useRef(null);
   const statsRef = useRef(null);
+  const [showCollabModal, setShowCollabModal] = useState(false);
+  const navigate = useNavigate();
+  const [events, setEvents] = useState([]);
+
+  const onCollaborationClick = () => {
+    setShowCollabModal(true);
+  };
 
   // scroll listener
   useEffect(() => {
     const handleScroll = () => {
       setScrollY(window.scrollY);
-      
+
       if (featuresContainerRef.current) {
         const rect = featuresContainerRef.current.getBoundingClientRect();
         const containerTop = rect.top;
         const containerHeight = rect.height;
         const windowHeight = window.innerHeight;
-        
-        const scrollProgress = Math.max(0, Math.min(1, (windowHeight / 2 - containerTop) / (containerHeight / 2)));
+
+        const scrollProgress = Math.max(
+          0,
+          Math.min(1, (windowHeight / 2 - containerTop) / (containerHeight / 2))
+        );
         const featureIndex = Math.min(5, Math.floor(scrollProgress * 6));
         setActiveFeature(featureIndex);
       }
@@ -45,7 +62,7 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
         }
       }
     };
-    
+
     window.addEventListener("scroll", handleScroll);
     handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
@@ -71,8 +88,10 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
         currentStep++;
         const progress = currentStep / steps;
         const easeOutQuad = 1 - Math.pow(1 - progress, 3);
-        
-        setAnimatedStats(targets.map(target => Math.floor(target * easeOutQuad)));
+
+        setAnimatedStats(
+          targets.map((target) => Math.floor(target * easeOutQuad))
+        );
 
         if (currentStep >= steps) {
           setAnimatedStats(targets);
@@ -87,7 +106,8 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
   // load Google Fonts
   useEffect(() => {
     const link = document.createElement("link");
-    link.href = "https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Sora:wght@400;600;700&display=swap";
+    link.href =
+      "https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Sora:wght@400;600;700&display=swap";
     link.rel = "stylesheet";
     document.head.appendChild(link);
     return () => {
@@ -95,18 +115,21 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
     };
   }, []);
 
-  const headingStyle = { fontFamily: "'Sora', 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif" };
+  const headingStyle = {
+    fontFamily:
+      "'Sora', 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif",
+  };
 
   // Minimalist grayscale colors for icons and borders
   const grayColors = {
-    border: 'border-gray-300',
-    bgHover: 'hover:bg-gray-100',
-    activeBg: 'bg-white',
-    inactiveBg: 'bg-gray-50',
-    activeText: 'text-gray-900',
-    inactiveText: 'text-gray-500',
-    iconColor: 'text-gray-700',
-    activeIconColor: 'text-gray-900'
+    border: "border-gray-300",
+    bgHover: "hover:bg-gray-100",
+    activeBg: "bg-white",
+    inactiveBg: "bg-gray-50",
+    activeText: "text-gray-900",
+    inactiveText: "text-gray-500",
+    iconColor: "text-gray-700",
+    activeIconColor: "text-gray-900",
   };
 
   // Feature images - from your public folder
@@ -116,112 +139,133 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
     "/features/eco.png",
     "/features/reward.png",
     "/features/trust.png",
-    "/features/progress.png"
+    "/features/progress.png",
   ];
 
   const features = [
-    { 
-      icon: <FiUsers className={`${grayColors.iconColor} w-6 h-6`} />, 
-      title: "Community Driven", 
+    {
+      icon: <FiUsers className={`${grayColors.iconColor} w-6 h-6`} />,
+      title: "Community Driven",
       desc: "Join thousands fighting food waste",
-      detailDesc: "Connect with a vibrant community of volunteers, donors, and partners committed to eliminating food waste. Share experiences, organize events, and create lasting impact together.",
+      detailDesc:
+        "Connect with a vibrant community of volunteers, donors, and partners committed to eliminating food waste. Share experiences, organize events, and create lasting impact together.",
     },
-    { 
-      icon: <FiHeart className={`${grayColors.iconColor} w-6 h-6`} />, 
-      title: "Make an Impact", 
+    {
+      icon: <FiHeart className={`${grayColors.iconColor} w-6 h-6`} />,
+      title: "Make an Impact",
       desc: "Every meal saved makes a difference",
-      detailDesc: "Track your contributions in real-time and see how every meal rescued helps feed families in need. Your actions create ripples of positive change in communities.",
+      detailDesc:
+        "Track your contributions in real-time and see how every meal rescued helps feed families in need. Your actions create ripples of positive change in communities.",
     },
-    { 
-      icon: <FiGlobe className={`${grayColors.iconColor} w-6 h-6`} />, 
-      title: "Eco Friendly", 
+    {
+      icon: <FiGlobe className={`${grayColors.iconColor} w-6 h-6`} />,
+      title: "Eco Friendly",
       desc: "Reduce your carbon footprint",
-      detailDesc: "Food waste is a major contributor to climate change. By rescuing surplus food, you're not just feeding people—you're protecting our planet for future generations.",
+      detailDesc:
+        "Food waste is a major contributor to climate change. By rescuing surplus food, you're not just feeding people—you're protecting our planet for future generations.",
     },
-    { 
-      icon: <FiAward className={`${grayColors.iconColor} w-6 h-6`} />, 
-      title: "Earn Recognition", 
+    {
+      icon: <FiAward className={`${grayColors.iconColor} w-6 h-6`} />,
+      title: "Earn Recognition",
       desc: "Climb the leaderboards",
-      detailDesc: "Get rewarded for your contributions with badges, certificates, and public recognition. Top contributors gain special privileges and leadership opportunities.",
+      detailDesc:
+        "Get rewarded for your contributions with badges, certificates, and public recognition. Top contributors gain special privileges and leadership opportunities.",
     },
-    { 
-      icon: <FiShield className={`${grayColors.iconColor} w-6 h-6`} />, 
-      title: "Safe & Verified", 
+    {
+      icon: <FiShield className={`${grayColors.iconColor} w-6 h-6`} />,
+      title: "Safe & Verified",
       desc: "Quality assured donations",
-      detailDesc: "All food donations go through strict quality checks and safety protocols. We ensure that every meal meets health standards before distribution.",
+      detailDesc:
+        "All food donations go through strict quality checks and safety protocols. We ensure that every meal meets health standards before distribution.",
     },
-    { 
-      icon: <FiTrendingUp className={`${grayColors.iconColor} w-6 h-6`} />, 
-      title: "Track Progress", 
+    {
+      icon: <FiTrendingUp className={`${grayColors.iconColor} w-6 h-6`} />,
+      title: "Track Progress",
       desc: "Monitor your impact in real-time",
-      detailDesc: "View detailed analytics of your contributions, see trends over time, and measure your environmental impact with comprehensive dashboards and reports.",
-    }
+      detailDesc:
+        "View detailed analytics of your contributions, see trends over time, and measure your environmental impact with comprehensive dashboards and reports.",
+    },
   ];
 
   const stats = [
     { number: "10K+", label: "Meals Saved", value: 10000 },
     { number: "2K+", label: "Active Users", value: 2000 },
     { number: "500+", label: "Partners", value: 500 },
-    { number: "50+", label: "Communities", value: 50 }
+    { number: "50+", label: "Communities", value: 50 },
   ];
 
   const partners = [
     "World Food Programme",
     "Akshay Patra Foundation",
     "Feeding India",
-    "Robin Hood Army"
+    "Robin Hood Army",
   ];
 
   return (
     <div
       className="landing-page bg-white text-gray-900"
-      style={{ fontFamily: "'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif" }}
+      style={{
+        fontFamily:
+          "'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif",
+      }}
     >
       {/* Navigation */}
-      <nav 
-        className={`fixed w-full z-50 bg-white/95 backdrop-blur-sm ${scrollY > 50 ? 'shadow-sm' : ''}`}
-        style={{ borderBottom: "1px solid #e5e7eb" }}   
+      <nav
+        className={`fixed w-full z-50 bg-white/95 backdrop-blur-sm ${
+          scrollY > 50 ? "shadow-sm" : ""
+        }`}
+        style={{ borderBottom: "1px solid #e5e7eb" }}
       >
         <div className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-2">
           <div className="brand-name text-2xl sm:text-3xl font-bold tracking-wide text-gray-900">
             feedaily
           </div>
-          {/* Login/logout and Get started buttons */}
+
           <div className="nav-buttons flex items-center gap-4">
+            {/* Collaboration button (always visible) */}
+            <button
+              onClick={onCollaborationClick}
+              className={`text-sm sm:text-base px-4 sm:px-5 py-2 sm:py-2.5 rounded-md border ${grayColors.border} bg-white ${grayColors.activeText} hover:bg-gray-900 hover:text-white transition mr-45`}
+              style={{ cursor: "pointer" }} // adds extra spacing before Login
+            >
+              Collaboration
+            </button>
+
+            {/* Login/logout and Get started buttons */}
             {isLoggedIn ? (
-                <>
-                  <button
-                      onClick={onLogoutClick}
-                      className={`text-sm sm:text-base px-4 sm:px-5 py-2 sm:py-2.5 rounded-md border ${grayColors.border} bg-white ${grayColors.activeText} hover:bg-gray-900 hover:text-white transition`}
-                      style={{ cursor: 'pointer' }}
-                  >
-                    Logout
-                  </button>
-                  <button
-                      onClick={onGetStartedClick}
-                      className={`text-sm sm:text-base px-4 sm:px-5 py-2 sm:py-2.5 rounded-md bg-gray-900 text-white border ${grayColors.border} hover:bg-white hover:text-gray-900 transition`}
-                      style={{ cursor: 'pointer' }}
-                  >
-                    Get Started
-                  </button>
-                </>
+              <>
+                <button
+                  onClick={onLogoutClick}
+                  className={`text-sm sm:text-base px-4 sm:px-5 py-2 sm:py-2.5 rounded-md border ${grayColors.border} bg-white ${grayColors.activeText} hover:bg-gray-900 hover:text-white transition`}
+                  style={{ cursor: "pointer" }}
+                >
+                  Logout
+                </button>
+                <button
+                  onClick={onGetStartedClick}
+                  className={`text-sm sm:text-base px-4 sm:px-5 py-2 sm:py-2.5 rounded-md bg-gray-900 text-white border ${grayColors.border} hover:bg-white hover:text-gray-900 transition`}
+                  style={{ cursor: "pointer" }}
+                >
+                  Get Started
+                </button>
+              </>
             ) : (
-                <>
-                  <button
-                      onClick={onLoginClick}
-                      className={`text-sm sm:text-base px-4 sm:px-5 py-2 sm:py-2.5 rounded-md border ${grayColors.border} bg-white ${grayColors.activeText} hover:bg-gray-900 hover:text-white transition`}
-                      style={{ cursor: 'pointer' }}
-                  >
-                    Login
-                  </button>
-                  <button
-                      onClick={onGetStartedClick}
-                      className={`text-sm sm:text-base px-4 sm:px-5 py-2 sm:py-2.5 rounded-md bg-gray-900 text-white border ${grayColors.border} hover:bg-white hover:text-gray-900 transition`}
-                      style={{ cursor: 'pointer' }}
-                  >
-                    Get Started
-                  </button>
-                </>
+              <>
+                <button
+                  onClick={onLoginClick}
+                  className={`text-sm sm:text-base px-4 sm:px-5 py-2 sm:py-2.5 rounded-md border ${grayColors.border} bg-white ${grayColors.activeText} hover:bg-gray-900 hover:text-white transition`}
+                  style={{ cursor: "pointer" }}
+                >
+                  Login
+                </button>
+                <button
+                  onClick={onGetStartedClick}
+                  className={`text-sm sm:text-base px-4 sm:px-5 py-2 sm:py-2.5 rounded-md bg-gray-900 text-white border ${grayColors.border} hover:bg-white hover:text-gray-900 transition`}
+                  style={{ cursor: "pointer" }}
+                >
+                  Get Started
+                </button>
+              </>
             )}
           </div>
         </div>
@@ -233,20 +277,28 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
         <section className="hero-section max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             <div className="hero-content">
-              <h1 className="hero-title text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight" style={headingStyle}>
-                Rescue food,<br />
-                <span className="hero-highlight text-gray-900">reduce waste</span>
+              <h1
+                className="hero-title text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight"
+                style={headingStyle}
+              >
+                Rescue food,
+                <br />
+                <span className="hero-highlight text-gray-900">
+                  reduce waste
+                </span>
               </h1>
 
               <p className="hero-description mt-4 text-gray-600 max-w-xl">
-                Join the movement to eliminate food waste and feed communities in need. Every plate matters in our mission to create a sustainable future.
+                Join the movement to eliminate food waste and feed communities
+                in need. Every plate matters in our mission to create a
+                sustainable future.
               </p>
 
               <div className="hero-buttons mt-6 flex flex-wrap gap-3">
                 <button
                   onClick={onGetStartedClick}
                   className="inline-flex items-center gap-2 px-5 py-3 rounded-md bg-gray-900 text-white font-medium hover:bg-gray-700 transition"
-                  style={{ cursor: 'pointer' }}
+                  style={{ cursor: "pointer" }}
                 >
                   Start Your Journey <FiArrowRight />
                 </button>
@@ -254,7 +306,7 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
                 <button
                   onClick={onLoginClick}
                   className="inline-flex items-center gap-2 px-5 py-3 rounded-md border border-gray-300 bg-white text-gray-900 hover:bg-gray-50 transition"
-                  style={{ cursor: 'pointer' }}
+                  style={{ cursor: "pointer" }}
                 >
                   Learn More
                 </button>
@@ -262,11 +314,14 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
             </div>
 
             <div className="hero-image-container flex justify-center lg:justify-end">
-              <div 
+              <div
                 className="hero-image-wrapper w-64 sm:w-80 lg:w-96 transition-all duration-300"
                 style={{
-                  transform: `translateY(${scrollY * 0.3}px) scale(${Math.max(0.85, 1 - scrollY * 0.0003)})`,
-                  opacity: Math.max(0.3, 1 - scrollY * 0.002)
+                  transform: `translateY(${scrollY * 0.3}px) scale(${Math.max(
+                    0.85,
+                    1 - scrollY * 0.0003
+                  )})`,
+                  opacity: Math.max(0.3, 1 - scrollY * 0.002),
                 }}
               >
                 <img
@@ -282,27 +337,39 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
         {/* About Us */}
         <section className="about-section max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="about-container">
-            <h2 className="section-title text-2xl font-semibold" style={headingStyle}>About Feedaily</h2>
+            <h2
+              className="section-title text-2xl font-semibold"
+              style={headingStyle}
+            >
+              About Feedaily
+            </h2>
             <div className="about-content mt-4">
               <p className="about-text text-gray-600 max-w-3xl">
-                Feedaily is a registered NGO dedicated to rescuing surplus food and redistributing it to those in need. Our mission is to build a sustainable ecosystem by connecting communities, donors, and partners, and making a lasting impact on hunger and the environment.
+                Feedaily is a registered NGO dedicated to rescuing surplus food
+                and redistributing it to those in need. Our mission is to build
+                a sustainable ecosystem by connecting communities, donors, and
+                partners, and making a lasting impact on hunger and the
+                environment.
               </p>
               <p className="about-meta mt-3 text-sm text-gray-400">
-                Registration No: NGO/2023/IND/09845 &nbsp; | &nbsp; Established 2023
+                Registration No: NGO/2023/IND/09845 &nbsp; | &nbsp; Established
+                2023
               </p>
             </div>
           </div>
         </section>
 
         {/* Features Section with Scroll Animation */}
-        <section 
+        <section
           ref={featuresContainerRef}
           className="features-section py-12"
-          style={{ minHeight: '0vh' }}
+          style={{ minHeight: "0vh" }}
         >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold" style={headingStyle}>Why feedaily matters?</h2>
+              <h2 className="text-3xl font-bold" style={headingStyle}>
+                Why feedaily matters?
+              </h2>
               <p className="text-gray-600 mt-2">our features</p>
             </div>
 
@@ -322,13 +389,26 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
                   >
                     <div className="flex items-center gap-3">
                       {/* Minimalist icon without colored background */}
-                      <div className={`w-8 h-8 flex items-center justify-center ${
-                        activeFeature === index ? grayColors.activeIconColor : grayColors.iconColor
-                      }`}>
+                      <div
+                        className={`w-8 h-8 flex items-center justify-center ${
+                          activeFeature === index
+                            ? grayColors.activeIconColor
+                            : grayColors.iconColor
+                        }`}
+                      >
                         {feature.icon}
                       </div>
                       <div className="flex-1">
-                        <h3 className={`font-semibold text-base ${activeFeature === index ? grayColors.activeText : grayColors.inactiveText}`} style={headingStyle}>{feature.title}</h3>
+                        <h3
+                          className={`font-semibold text-base ${
+                            activeFeature === index
+                              ? grayColors.activeText
+                              : grayColors.inactiveText
+                          }`}
+                          style={headingStyle}
+                        >
+                          {feature.title}
+                        </h3>
                         <p className="text-xs text-gray-500">{feature.desc}</p>
                       </div>
                     </div>
@@ -342,23 +422,33 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
                 {imageLoading && (
                   <div className="absolute inset-0 flex items-center justify-center bg-gray-50">
                     <div className="flex gap-2">
-                      <div className="w-8 h-1 bg-gray-300 rounded animate-pulse" style={{ animationDelay: '0ms' }}></div>
-                      <div className="w-8 h-1 bg-gray-300 rounded animate-pulse" style={{ animationDelay: '150ms' }}></div>
-                      <div className="w-8 h-1 bg-gray-300 rounded animate-pulse" style={{ animationDelay: '300ms' }}></div>
+                      <div
+                        className="w-8 h-1 bg-gray-300 rounded animate-pulse"
+                        style={{ animationDelay: "0ms" }}
+                      ></div>
+                      <div
+                        className="w-8 h-1 bg-gray-300 rounded animate-pulse"
+                        style={{ animationDelay: "150ms" }}
+                      ></div>
+                      <div
+                        className="w-8 h-1 bg-gray-300 rounded animate-pulse"
+                        style={{ animationDelay: "300ms" }}
+                      ></div>
                     </div>
                   </div>
                 )}
-                
+
                 {/* Full cover image - contains within bounds */}
-                <img 
-                  src={featureImages[activeFeature]} 
+                <img
+                  src={featureImages[activeFeature]}
                   alt={features[activeFeature].title}
                   className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-500 ${
-                    imageLoading ? 'opacity-0' : 'opacity-100'
+                    imageLoading ? "opacity-0" : "opacity-100"
                   }`}
                   onLoad={() => setImageLoading(false)}
-                  onError={(e) => { 
-                    e.target.src = 'https://via.placeholder.com/600x500/e5e5e5/666?text=Image+Not+Found';
+                  onError={(e) => {
+                    e.target.src =
+                      "https://via.placeholder.com/600x500/e5e5e5/666?text=Image+Not+Found";
                     setImageLoading(false);
                   }}
                 />
@@ -369,7 +459,9 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
                     <div
                       key={index}
                       className={`h-0.5 w-8 rounded transition-all duration-500 ${
-                        index === activeFeature ? 'bg-gray-900 w-12' : 'bg-gray-400'
+                        index === activeFeature
+                          ? "bg-gray-900 w-12"
+                          : "bg-gray-400"
                       }`}
                     />
                   ))}
@@ -381,10 +473,18 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
 
         {/* Partners Section */}
         <section className="partners-section max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-          <h3 className="text-lg font-semibold text-center mb-6" style={headingStyle}>Our Trusted Partners</h3>
+          <h3
+            className="text-lg font-semibold text-center mb-6"
+            style={headingStyle}
+          >
+            Our Trusted Partners
+          </h3>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 items-center">
             {partners.map((partner, i) => (
-              <div key={i} className="flex items-center justify-center py-4 px-3 bg-white rounded-lg border border-gray-200 shadow-sm text-sm text-gray-700">
+              <div
+                key={i}
+                className="flex items-center justify-center py-4 px-3 bg-white rounded-lg border border-gray-200 shadow-sm text-sm text-gray-700"
+              >
                 {partner}
               </div>
             ))}
@@ -395,21 +495,28 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
         <section ref={statsRef} className="stats-section bg-gray-50">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold" style={headingStyle}>Our Impact</h2>
+              <h2 className="text-3xl font-bold" style={headingStyle}>
+                Our Impact
+              </h2>
               <p className="text-gray-600 mt-2">making a difference together</p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
               {stats.map((stat, idx) => (
-                <div 
-                  key={idx} 
+                <div
+                  key={idx}
                   className="bg-white rounded-xl p-6 flex flex-col items-center justify-center min-h-[110px] shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-300"
                 >
-                  <div className="text-3xl sm:text-4xl font-extrabold text-gray-900" style={headingStyle}>
-                    {statsInView ? (
-                      idx === 0 ? `${(animatedStats[idx] / 1000).toFixed(1)}K+` :
-                      idx === 1 ? `${(animatedStats[idx] / 1000).toFixed(1)}K+` :
-                      `${animatedStats[idx]}+`
-                    ) : '0'}
+                  <div
+                    className="text-3xl sm:text-4xl font-extrabold text-gray-900"
+                    style={headingStyle}
+                  >
+                    {statsInView
+                      ? idx === 0
+                        ? `${(animatedStats[idx] / 1000).toFixed(1)}K+`
+                        : idx === 1
+                        ? `${(animatedStats[idx] / 1000).toFixed(1)}K+`
+                        : `${animatedStats[idx]}+`
+                      : "0"}
                   </div>
                   <div className="text-sm text-gray-600 mt-2">{stat.label}</div>
                 </div>
@@ -421,13 +528,21 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
         {/* CTA Section */}
         <section className="cta-section bg-gray-900">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 text-center">
-            <h2 className="text-2xl font-semibold text-white" style={headingStyle}>Ready to make a difference?</h2>
-            <p className="text-gray-300 mt-2">Join thousands of volunteers and partners — rescue food and help communities.</p>
+            <h2
+              className="text-2xl font-semibold text-white"
+              style={headingStyle}
+            >
+              Ready to make a difference?
+            </h2>
+            <p className="text-gray-300 mt-2">
+              Join thousands of volunteers and partners — rescue food and help
+              communities.
+            </p>
             <div className="mt-4">
-              <button 
-                onClick={onGetStartedClick} 
+              <button
+                onClick={onGetStartedClick}
                 className="inline-flex items-center gap-2 px-5 py-3 rounded-md bg-white text-gray-900 font-medium hover:bg-gray-100 transition"
-                style={{ cursor: 'pointer' }}
+                style={{ cursor: "pointer" }}
               >
                 Start Your Journey <FiArrowRight />
               </button>
@@ -435,15 +550,28 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
           </div>
         </section>
 
+        <section className="events-section max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+  <h2 className="text-center text-2xl font-bold">Upcoming Events</h2>
+  <UpcomingEvents />
+</section>
+
+
         {/* Contact details */}
         <section className="contact-section">
           <div className="max-w-4xl mx-auto px-6 py-6">
-            <h3 className="text-center text-xl font-semibold mb-4" style={headingStyle}>Contact Details</h3>
+            <h3
+              className="text-center text-xl font-semibold mb-4"
+              style={headingStyle}
+            >
+              Contact Details
+            </h3>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
               <div className="bg-white p-3 rounded-lg">
                 <FiMail className="mx-auto text-xl text-gray-900 mb-2" />
-                <div className="text-sm text-gray-700">contact@feedaily.org</div>
+                <div className="text-sm text-gray-700">
+                  contact@feedaily.org
+                </div>
               </div>
               <div className="bg-white p-3 rounded-lg">
                 <FiPhone className="mx-auto text-xl text-gray-900 mb-2" />
@@ -451,12 +579,25 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
               </div>
               <div className="bg-white p-3 rounded-lg">
                 <FiMapPin className="mx-auto text-xl text-gray-900 mb-2" />
-                <div className="text-sm text-gray-700">Feedaily NGO, Bengaluru, India</div>
+                <div className="text-sm text-gray-700">
+                  Feedaily NGO, Bengaluru, India
+                </div>
               </div>
             </div>
 
             <div className="text-center mt-4 text-sm text-gray-500">
-              Follow us: <a href="#" className="underline">Instagram</a> &nbsp;|&nbsp; <a href="#" className="underline">Twitter</a> &nbsp;|&nbsp; <a href="#" className="underline">Facebook</a>
+              Follow us:{" "}
+              <a href="#" className="underline">
+                Instagram
+              </a>{" "}
+              &nbsp;|&nbsp;{" "}
+              <a href="#" className="underline">
+                Twitter
+              </a>{" "}
+              &nbsp;|&nbsp;{" "}
+              <a href="#" className="underline">
+                Facebook
+              </a>
             </div>
           </div>
         </section>
@@ -464,11 +605,66 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
         {/* Footer */}
         <footer className="landing-footer bg-white border-t border-gray-200">
           <div className="max-w-6xl mx-auto px-6 py-8 text-center">
-            <p className="text-sm text-gray-600">© 2025 Feedaily. Making a difference, one meal at a time.</p>
-            <p className="text-xs text-gray-400 mt-1">Registered NGO | All donations eligible for tax exemption under Section 80G, Government of India.</p>
+            <p className="text-sm text-gray-600">
+              © 2025 Feedaily. Making a difference, one meal at a time.
+            </p>
+            <p className="text-xs text-gray-400 mt-1">
+              Registered NGO | All donations eligible for tax exemption under
+              Section 80G, Government of India.
+            </p>
           </div>
         </footer>
       </div>
+
+      {/* Collaboration Modal */}
+      {showCollabModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-lg max-w-md w-full mx-4 p-6 relative">
+            {/* Close Button */}
+            <button
+              onClick={() => setShowCollabModal(false)}
+              className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
+            >
+              ✕
+            </button>
+
+            {/* Header */}
+            <h2 className="text-2xl font-semibold text-center mb-4 text-gray-900">
+              Collaboration Options
+            </h2>
+            <p className="text-center text-gray-600 mb-6 text-sm">
+              Choose how you’d like to collaborate with Feedaily.
+            </p>
+
+            {/* Collaborator Option Buttons */}
+            <div className="flex flex-col gap-4">
+              <button
+                onClick={() => {
+                  setShowCollabModal(false); // close popup
+                  navigate("/collaboration?type=ngo"); // 👈 pass type as query param
+                }}
+                className="w-full px-5 py-3 rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-900 hover:text-white transition font-medium"
+              >
+                🤝 Collaborate as NGO / Partner
+              </button>
+
+              <button
+                onClick={() => {
+                  setShowCollabModal(false); // close popup
+                  navigate("/collaboration?type=event"); // 👈 pass type as query param
+                }}
+                className="w-full px-5 py-3 rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-900 hover:text-white transition font-medium"
+              >
+                🎉 Request a Social Event (Office / Premises)
+              </button>
+            </div>
+
+            <p className="text-xs text-gray-400 text-center mt-6">
+              Feedaily | Building partnerships for a better tomorrow
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

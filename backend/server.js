@@ -9,6 +9,7 @@ import { generateOtp,validateOtp } from './otpService.js';
 import nodemailer from "nodemailer";
 import { sendEmail } from './emailService.js';
 import createCheckoutSession from "./createCheckoutSession.js";
+import collaborationRoutes from "./collaborationRoutes.js";
 
 const app = express();
 app.use(cors());
@@ -16,6 +17,9 @@ app.use(express.json());
 
 //registering for payment 
 app.use("/api",createCheckoutSession);
+
+//Collaboration routes
+app.use("/api", collaborationRoutes);
 
 // REGISTER endpoint
 app.post("/api/register", async (req, res) => {
