@@ -1,231 +1,200 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
-  FiGlobe,
+  FiClock,
+  FiDroplet,
   FiHeart,
-  FiPackage,
+  FiMail,
+  FiRefreshCw,
   FiTarget,
+  FiThermometer,
   FiTrendingUp,
   FiUsers,
+  FiZap,
 } from "react-icons/fi";
 import "./ImpactPage.css";
 
 export const ImpactPage = () => {
-  const [stats, setStats] = useState({
-    totalDonated: 0,
-    totalTaken: 0,
-    totalPeopleFed: 0,
-  });
+  const [environmentalData, setEnvironmentalData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [animatedStats, setAnimatedStats] = useState({
-    totalDonated: 0,
-    totalTaken: 0,
-    totalPeopleFed: 0,
-    mealsSaved: 0,
-    activeUsers: 0,
-    partners: 0,
-    communities: 0,
+  const [animatedMetrics, setAnimatedMetrics] = useState({
+    foodWasteAvoided: 0,
+    carbonAvoided: 0,
+    waterSaved: 0,
+    energySaved: 0,
+    deliveryEfficiency: 0,
+    diversionRate: 0,
+    avgDistance: 0,
+    communityIndex: 0,
   });
   const [inView, setInView] = useState(false);
-  const statsRef = useRef(null);
+  const [hasAnimated, setHasAnimated] = useState(false);
+  const metricsRef = useRef(null);
 
-  // Fetch data from stats endpoint
+  // console.log("Debug - environmentalData:", environmentalData);
+  // console.log("Debug - animatedMetrics:", animatedMetrics);
+  // console.log("Debug - inView:", inView, "hasAnimated:", hasAnimated);
+
+  // Fetch environmental impact data
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchEnvironmentalData = async () => {
       try {
         setLoading(true);
         setError(null);
 
-        const statsResponse = await fetch(
-          "http://localhost:5000/api/donation-stats"
+        const response = await fetch(
+          "http://localhost:5000/api/environmental-impact"
         );
 
-        if (!statsResponse.ok) {
-          throw new Error("Failed to fetch data from server");
+        if (!response.ok) {
+          throw new Error("Failed to fetch environmental impact data");
         }
 
-        const statsData = await statsResponse.json();
+        const result = await response.json();
+        // console.log("Environmental impact data:", result);
 
-        console.log("Fetched stats:", statsData);
-
-        // Handle the stats data
-        if (statsData.message) {
-          throw new Error(statsData.message);
+        if (result.success && result.data) {
+          setEnvironmentalData(result.data);
+        } else {
+          throw new Error("Invalid response format");
         }
-        setStats(statsData);
 
         setLoading(false);
       } catch (err) {
-        console.error("Error fetching impact data:", err);
-        setError(err.message || "Failed to load impact data");
+        console.error("Error fetching environmental impact:", err);
+        setError(err.message || "Failed to load environmental impact data");
         setLoading(false);
       }
     };
 
-    fetchData();
+    fetchEnvironmentalData();
   }, []);
 
   // Intersection Observer for animations
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
+        console.log(
+          "Debug - Intersection observer triggered:",
+          entry.isIntersecting,
+          "hasAnimated:",
+          hasAnimated
+        );
+        if (entry.isIntersecting && !hasAnimated) {
+          console.log("Debug - Setting inView to true");
           setInView(true);
+          setHasAnimated(true);
         }
       },
-      { threshold: 0.1 } // Reduced threshold to trigger earlier
+      { threshold: 0.1, rootMargin: "0px 0px -10px 0px" } // More aggressive settings
     );
 
-    if (statsRef.current) {
-      observer.observe(statsRef.current);
+    if (metricsRef.current) {
+      observer.observe(metricsRef.current);
+      console.log("Debug - Observer attached to metricsRef");
+    } else {
+      console.log("Debug - metricsRef.current is null");
     }
 
     return () => observer.disconnect();
-  }, []);
+  }, [hasAnimated]);
 
-  // Animate numbers when data is loaded OR when in view
+  // Fallback: trigger animation after data loads and a short delay
   useEffect(() => {
-    if ((!loading && !error && stats.totalDonated > 0) || inView) {
-      const duration = 2000; // 2 seconds
+    if (environmentalData && !hasAnimated && !inView) {
+      console.log(
+        "Debug - Fallback trigger: setting inView to true after 1 second"
+      );
+      const timer = setTimeout(() => {
+        setInView(true);
+        setHasAnimated(true);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [environmentalData, hasAnimated, inView]);
+
+  // Animate metrics when in view - using homepage pattern
+  useEffect(() => {
+    if (inView && environmentalData) {
+      const targets = [
+        environmentalData.foodWaste?.wasteAvoided || 0,
+        environmentalData.carbonImpact?.emissionAvoided || 0,
+        environmentalData.resourceSaving?.waterSaved || 0,
+        environmentalData.resourceSaving?.energySaved || 0,
+        environmentalData.efficiency?.delivery || 0,
+        environmentalData.wasteManagement?.diversionRate || 0,
+        environmentalData.community?.avgDeliveryDistance || 0,
+        environmentalData.community?.sustainabilityIndex || 0,
+      ];
+
+      // console.log("Debug - Animation starting with targets:", targets);
+
+      const duration = 2000;
       const steps = 60;
       const stepDuration = duration / steps;
 
       let currentStep = 0;
-      const timer = setInterval(() => {
+      const interval = setInterval(() => {
         currentStep++;
         const progress = currentStep / steps;
+        const easeOutQuad = 1 - Math.pow(1 - progress, 3);
 
-        // Calculate derived stats from real data
-        const mealsSaved = Math.floor(stats.totalDonated * 2.5); // Assuming 1kg = 2.5 meals saved
-        const activeUsers = Math.floor(stats.totalPeopleFed * 0.8); // Estimate active users
-        const partners = Math.min(Math.floor(stats.totalDonated / 10), 500); // Partners based on donations
-        const communities = Math.min(
-          Math.floor(stats.totalPeopleFed / 100),
-          50
-        ); // Communities served
+        const newMetrics = {
+          foodWasteAvoided: Math.floor(targets[0] * easeOutQuad),
+          carbonAvoided: Math.floor(targets[1] * easeOutQuad),
+          waterSaved: Math.floor(targets[2] * easeOutQuad),
+          energySaved: Math.floor(targets[3] * easeOutQuad),
+          deliveryEfficiency: Math.floor(targets[4] * easeOutQuad),
+          diversionRate: Math.floor(targets[5] * easeOutQuad),
+          avgDistance: parseFloat((targets[6] * easeOutQuad).toFixed(1)),
+          communityIndex: Math.floor(targets[7] * easeOutQuad),
+        };
 
-        setAnimatedStats({
-          totalDonated: Math.floor(stats.totalDonated * progress),
-          totalTaken: Math.floor(stats.totalTaken * progress),
-          totalPeopleFed: Math.floor(stats.totalPeopleFed * progress),
-          mealsSaved: Math.floor(mealsSaved * progress),
-          activeUsers: Math.floor(activeUsers * progress),
-          partners: Math.floor(partners * progress),
-          communities: Math.floor(communities * progress),
-        });
+        // console.log(
+        //   `Debug - Step ${currentStep}/${steps}, progress: ${progress.toFixed(
+        //     2
+        //   )}, metrics:`,
+        //   newMetrics
+        // );
+
+        setAnimatedMetrics(newMetrics);
 
         if (currentStep >= steps) {
-          setAnimatedStats({
-            totalDonated: Math.floor(stats.totalDonated),
-            totalTaken: Math.floor(stats.totalTaken),
-            totalPeopleFed: Math.floor(stats.totalPeopleFed),
-            mealsSaved,
-            activeUsers,
-            partners,
-            communities,
-          });
-          clearInterval(timer);
+          const finalMetrics = {
+            foodWasteAvoided: Math.floor(targets[0]),
+            carbonAvoided: Math.floor(targets[1]),
+            waterSaved: Math.floor(targets[2]),
+            energySaved: Math.floor(targets[3]),
+            deliveryEfficiency: Math.floor(targets[4]),
+            diversionRate: Math.floor(targets[5]),
+            avgDistance: parseFloat(targets[6].toFixed(1)),
+            communityIndex: Math.floor(targets[7]),
+          };
+          // console.log(
+          //   "Debug - Animation completed, final metrics:",
+          //   finalMetrics
+          // );
+          setAnimatedMetrics(finalMetrics);
+          clearInterval(interval);
         }
       }, stepDuration);
 
-      return () => clearInterval(timer);
+      return () => clearInterval(interval);
     }
-  }, [loading, error, stats, inView]);
-
-  const impactMetrics = [
-    {
-      icon: <FiPackage className="w-8 h-8" />,
-      title: "Meals Saved",
-      value: animatedStats.mealsSaved,
-      unit: "",
-      color: "from-blue-500 to-blue-600",
-      description: "Total meals rescued from waste",
-      change: "+15%",
-    },
-    {
-      icon: <FiUsers className="w-8 h-8" />,
-      title: "Active Users",
-      value: animatedStats.activeUsers,
-      unit: "",
-      color: "from-green-500 to-green-600",
-      description: "Community members making impact",
-      change: "+22%",
-    },
-    {
-      icon: <FiHeart className="w-8 h-8" />,
-      title: "Partners",
-      value: animatedStats.partners,
-      unit: "",
-      color: "from-purple-500 to-purple-600",
-      description: "Organizations working with us",
-      change: "+18%",
-    },
-    {
-      icon: <FiGlobe className="w-8 h-8" />,
-      title: "Communities",
-      value: animatedStats.communities,
-      unit: "",
-      color: "from-emerald-500 to-emerald-600",
-      description: "Areas we're serving",
-      change: "+25%",
-    },
-    {
-      icon: <FiPackage className="w-8 h-8" />,
-      title: "Food Rescued",
-      value: animatedStats.totalDonated,
-      unit: "kg",
-      color: "from-orange-500 to-orange-600",
-      description: "Total food saved from waste",
-      change: "+12%",
-    },
-    {
-      icon: <FiUsers className="w-8 h-8" />,
-      title: "People Fed",
-      value: animatedStats.totalPeopleFed,
-      unit: "",
-      color: "from-red-500 to-red-600",
-      description: "Lives directly impacted",
-      change: "+18%",
-    },
-  ];
-
-  const achievements = [
-    {
-      icon: "🏆",
-      title: "Top NGO",
-      desc: "Regional recognition for food rescue",
-    },
-    {
-      icon: "🌱",
-      title: "Eco Champion",
-      desc: `Reduced ${Math.floor(
-        stats.totalDonated / 100
-      )}+ tons of food waste`,
-    },
-    {
-      icon: "🤝",
-      title: "Community Builder",
-      desc: `Connected ${animatedStats.activeUsers}+ food donors`,
-    },
-    {
-      icon: "📈",
-      title: "Growth Leader",
-      desc: "300% increase in impact this year",
-    },
-  ];
+  }, [inView, environmentalData]);
 
   if (loading) {
     return (
-      <div className="impact-loading">
-        <div className="loading-spinner"></div>
-        <p>Loading impact data...</p>
+      <div className="ip-loading">
+        <div className="ip-loading-spinner"></div>
+        <p>Loading environmental impact data...</p>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="impact-loading">
+      <div className="ip-loading">
         <div style={{ color: "#ef4444", fontSize: "3rem" }}>⚠️</div>
         <p style={{ color: "#ef4444" }}>Error: {error}</p>
         <button
@@ -246,125 +215,216 @@ export const ImpactPage = () => {
     );
   }
 
+  const environmentalMetrics = [
+    {
+      icon: <FiHeart className="w-8 h-8" />,
+      title: "Food Waste Prevented",
+      value: animatedMetrics.foodWasteAvoided || 0,
+      unit: "kg",
+      color: "from-green-500 to-green-600",
+      description: "Total food rescued from going to waste",
+    },
+    {
+      icon: <FiThermometer className="w-8 h-8" />,
+      title: "CO₂ Emissions Avoided",
+      value: animatedMetrics.carbonAvoided || 0,
+      unit: "kg CO₂",
+      color: "from-blue-500 to-blue-600",
+      description: "Carbon footprint reduced by preventing food waste",
+    },
+    {
+      icon: <FiDroplet className="w-8 h-8" />,
+      title: "Water Footprint Saved",
+      value: animatedMetrics.waterSaved || 0,
+      unit: "L",
+      color: "from-cyan-500 to-cyan-600",
+      description: "Water conserved by rescuing surplus food",
+    },
+    {
+      icon: <FiZap className="w-8 h-8" />,
+      title: "Energy Conserved",
+      value: animatedMetrics.energySaved || 0,
+      unit: "MJ",
+      color: "from-yellow-500 to-yellow-600",
+      description: "Energy saved by not producing replacement food",
+    },
+    {
+      icon: <FiRefreshCw className="w-8 h-8" />,
+      title: "Waste Diversion Rate",
+      value: animatedMetrics.diversionRate || 0,
+      unit: "%",
+      color: "from-emerald-500 to-emerald-600",
+      description: "Food successfully diverted from landfills",
+    },
+    {
+      icon: <FiUsers className="w-8 h-8" />,
+      title: "Community Engagement",
+      value: animatedMetrics.communityIndex || 0,
+      unit: "%",
+      color: "from-pink-500 to-pink-600",
+      description: "Community participation in sustainability efforts",
+    },
+  ];
+
   return (
-    <div className="impact-container">
+    <div className="ip-container">
       {/* Hero Section */}
-      <div className="impact-hero">
-        <div className="hero-background">
-          <div className="hero-overlay"></div>
+      <div className="ip-hero">
+        <div className="ip-hero-background">
+          <div className="ip-hero-overlay"></div>
         </div>
-        <div className="hero-content">
-          <h1 className="hero-title">
-            Our <span className="hero-highlight">Impact</span> Story
+        <div className="ip-hero-content">
+          <h1 className="ip-hero-title">
+            Environmental <span className="ip-hero-highlight">Impact</span>
           </h1>
-          <p className="hero-subtitle">
-            Transforming surplus food into hope, one meal at a time
+          <p className="ip-hero-subtitle">
+            Measuring our contribution to a sustainable future through
+            data-driven insights
           </p>
-          <div className="hero-stats">
-            <div className="hero-stat">
-              <FiHeart className="hero-stat-icon" />
-              <span className="hero-stat-text">
-                {stats.totalPeopleFed.toLocaleString()} People Fed
+          <div className="ip-hero-stats">
+            <div className="ip-hero-stat">
+              <FiHeart className="ip-hero-stat-icon" />
+              <span className="ip-hero-stat-text">
+                {environmentalData?.foodWaste?.wasteAvoided?.toFixed(1) || "0"}{" "}
+                kg Food Rescued
               </span>
             </div>
-            <div className="hero-stat">
-              <FiTarget className="hero-stat-icon" />
-              <span className="hero-stat-text">
-                {stats.totalDonated.toFixed(1)} kg Rescued
+            <div className="ip-hero-stat">
+              <FiThermometer className="ip-hero-stat-icon" />
+              <span className="ip-hero-stat-text">
+                {environmentalData?.carbonImpact?.emissionAvoided?.toFixed(1) ||
+                  "0"}{" "}
+                kg CO₂ Avoided
               </span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Main Impact Metrics */}
-      <section className="impact-metrics" ref={statsRef}>
-        <div className="section-header">
-          <h2 className="section-title">Impact at a Glance</h2>
-          <p className="section-subtitle">
-            Real numbers, real change, real people helped
+      {/* Environmental Metrics */}
+      <section className="ip-metrics" ref={metricsRef}>
+        <div className="ip-section-header">
+          <h2 className="ip-section-title">Environmental Impact Metrics</h2>
+          <p className="ip-section-subtitle">
+            Real environmental benefits from our food rescue operations
           </p>
         </div>
 
-        <div className="metrics-grid">
-          {impactMetrics.map((metric, index) => (
+        <div className="ip-metrics-grid">
+          {environmentalMetrics.map((metric, index) => (
             <div
               key={index}
-              className="metric-card"
-              style={{ animationDelay: `${index * 0.2}s` }}
+              className="ip-metric-card"
+              style={{ animationDelay: `${index * 0.1}s` }}
             >
-              <div className={`metric-icon bg-gradient-to-r ${metric.color}`}>
+              <div
+                className={`ip-metric-icon bg-gradient-to-r ${metric.color}`}
+              >
                 {metric.icon}
               </div>
-              <div className="metric-content">
-                <div className="metric-value">
+              <div className="ip-metric-content">
+                <div className="ip-metric-value">
                   {metric.value.toLocaleString()}
-                  <span className="metric-unit">{metric.unit}</span>
+                  <span className="ip-metric-unit">{metric.unit}</span>
                 </div>
-                <h3 className="metric-title">{metric.title}</h3>
-                <p className="metric-description">{metric.description}</p>
-                <div className="metric-change">
-                  <FiTrendingUp className="change-icon" />
-                  <span>{metric.change} this month</span>
-                </div>
+                <h3 className="ip-metric-title">{metric.title}</h3>
+                <p className="ip-metric-description">{metric.description}</p>
               </div>
             </div>
           ))}
         </div>
       </section>
 
-      {/* Achievements */}
-      <section className="impact-achievements">
-        <div className="section-header">
-          <h2 className="section-title">Our Achievements</h2>
-          <p className="section-subtitle">Milestones that make us proud</p>
-        </div>
+      {/* Efficiency Insights */}
+      {environmentalData?.efficiency && (
+        <section className="ip-insights">
+          <div className="ip-section-header">
+            <h2 className="ip-section-title">Efficiency Insights</h2>
+            <p className="ip-section-subtitle">
+              How we're optimizing our environmental impact
+            </p>
+          </div>
 
-        <div className="achievements-grid">
-          {achievements.map((achievement, index) => (
-            <div
-              key={index}
-              className="achievement-card"
-              style={{ animationDelay: `${index * 0.15}s` }}
-            >
-              <div className="achievement-icon">{achievement.icon}</div>
-              <h3 className="achievement-title">{achievement.title}</h3>
-              <p className="achievement-desc">{achievement.desc}</p>
+          <div className="ip-insights-grid">
+            <div className="ip-insight-card">
+              <div className="ip-insight-icon">
+                <FiClock className="w-6 h-6" />
+              </div>
+              <div className="ip-insight-content">
+                <h3>Freshness Efficiency</h3>
+                <div className="ip-insight-value">
+                  {environmentalData.efficiency.freshness?.toFixed(1) || "0"}{" "}
+                  hrs avg
+                </div>
+                <p>Average freshness of delivered food</p>
+              </div>
             </div>
-          ))}
-        </div>
-      </section>
+
+            <div className="ip-insight-card">
+              <div className="ip-insight-icon">
+                <FiTarget className="w-6 h-6" />
+              </div>
+              <div className="ip-insight-content">
+                <h3>Locality Optimization</h3>
+                <div className="ip-insight-value">
+                  {(environmentalData.efficiency.localityScore * 100)?.toFixed(
+                    0
+                  ) || "0"}
+                  %
+                </div>
+                <p>Efficiency in local food distribution</p>
+              </div>
+            </div>
+
+            <div className="ip-insight-card">
+              <div className="ip-insight-icon">
+                <FiMail className="w-6 h-6" />
+              </div>
+              <div className="ip-insight-content">
+                <h3>Digital Footprint</h3>
+                <div className="ip-insight-value">
+                  {environmentalData.carbonImpact?.digitalFootprint?.toFixed(
+                    3
+                  ) || "0"}{" "}
+                  kg CO₂
+                </div>
+                <p>Carbon cost of digital notifications</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Call to Action */}
-      <section className="impact-cta">
-        <div className="cta-content">
-          <h2 className="cta-title">Be Part of Something Bigger</h2>
-          <p className="cta-subtitle">
-            Every donation, every meal shared, every life touched - it all adds
-            up to create lasting change in our community.
+      <section className="ip-cta">
+        <div className="ip-cta-content">
+          <h2 className="ip-cta-title">Join the Environmental Movement</h2>
+          <p className="ip-cta-subtitle">
+            Every food rescue contributes to a healthier planet. Start making a
+            difference today through sustainable food sharing.
           </p>
-          <div className="cta-buttons">
+          <div className="ip-cta-buttons">
             <button
-              className="cta-primary"
+              className="ip-cta-primary"
               onClick={() => (window.location.href = "/dashboard")}
             >
-              <FiHeart className="btn-icon" />
-              Start Donating
+              <FiHeart className="ip-btn-icon" />
+              Start Rescuing Food
             </button>
             <button
-              className="cta-secondary"
-              onClick={() => (window.location.href = "/register")}
+              className="ip-cta-secondary"
+              onClick={() => (window.location.href = "/stats")}
             >
-              <FiUsers className="btn-icon" />
-              Join Our Community
+              <FiTrendingUp className="ip-btn-icon" />
+              View Detailed Stats
             </button>
           </div>
         </div>
-        <div className="cta-visual">
-          <div className="impact-circles">
-            <div className="circle circle-1"></div>
-            <div className="circle circle-2"></div>
-            <div className="circle circle-3"></div>
+        <div className="ip-cta-visual">
+          <div className="ip-impact-circles">
+            <div className="ip-circle ip-circle-1"></div>
+            <div className="ip-circle ip-circle-2"></div>
+            <div className="ip-circle ip-circle-3"></div>
           </div>
         </div>
       </section>
