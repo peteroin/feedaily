@@ -15,6 +15,8 @@ import AdminLoginPage from "./pages/AdminLoginPage";
 import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import { ImpactPage } from "./pages/ImpactPage";
+import CollaborationFormPage from "./pages/CollaborationFormPage";
+
 // Wrapper for LandingPage (to use navigation)
 function LandingPageWrapper() {
   const navigate = useNavigate();
@@ -45,6 +47,7 @@ function App() {
     <main className="relative min-h-screen w-screen overflow-x-hidden">
       <Routes>
         <Route path="/" element={<LandingPageWrapper />} />
+        <Route path="/collaboration" element={<CollaborationFormPage />} />
 
         {/* Auth pages */}
         <Route path="/login" element={<LoginPage />} />

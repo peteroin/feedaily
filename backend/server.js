@@ -10,6 +10,7 @@ import nodemailer from "nodemailer";
 import { sendEmail } from './emailService.js';
 import createCheckoutSession from "./createCheckoutSession.js";
 import impactAPI from './impactAPI.js';
+import collaborationRoutes from "./collaborationRoutes.js";
 
 const app = express();
 app.use(cors());
@@ -20,6 +21,9 @@ app.use("/api", createCheckoutSession);
 
 // Register environmental impact API routes
 app.use("/api", impactAPI);
+
+//Collaboration routes
+app.use("/api", collaborationRoutes);
 
 // REGISTER endpoint
 app.post("/api/register", async (req, res) => {
@@ -787,7 +791,7 @@ Password: ${TEMP_ADMIN_PASSWORD} (hashed in DB)`);
     }
   });
 }
-
+  
 createTempAdminIfNoneExists();
 
 const PORT = 5000;
