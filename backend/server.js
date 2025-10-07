@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import fetch from 'node-fetch';
 import db from "./database.js";
+import bcrypt from "bcrypt";
 import { getPlaceNameFromCoords } from "./geocodeHelper.js";
 import { sendWhatsAppNotification } from './twilioService.mjs';
 import { generateOtp,validateOtp } from './otpService.js'; 
@@ -17,22 +18,32 @@ app.use(express.json());
 app.use("/api",createCheckoutSession);
 
 // REGISTER endpoint
-app.post("/api/register", (req, res) => {
+app.post("/api/register", async (req, res) => {
   const { name, type, email, password, contact, address } = req.body;
 
-  db.get("SELECT * FROM users WHERE email = ?", [email], (err, row) => {
+  db.get("SELECT * FROM users WHERE email = ?", [email], async (err, row) => {
     if (err) return res.status(500).json({ message: "DB error" });
     if (row) return res.json({ message: "Email already registered" });
+    try {
+      // Hash password before saving
+      const saltRounds = 10;
+      const hashedPassword = await bcrypt.hash(password, saltRounds);
+
 
     db.run(
       "INSERT INTO users (name, type, email, password, contact, address) VALUES (?, ?, ?, ?, ?, ?)",
-      [name, type, email, password, contact, address],
+      [name, type, email, hashedPassword, contact, address],
       function (err) {
         if (err) return res.status(500).json({ message: "DB insert error" });
         res.json({ message: "Registration successful", userId: this.lastID });
       }
     );
-  });
+  } catch (error) {
+      console.error("Hashing error:", error);
+      res.status(500).json({ message: "Error hashing password" });
+    }
+  }
+);
 });
 
 
@@ -40,26 +51,44 @@ app.post("/api/register", (req, res) => {
 app.post("/api/login", (req, res) => {
   const { email, password } = req.body;
   db.get(
-    "SELECT * FROM users WHERE email = ? AND password = ?",
-    [email, password],
-    (err, row) => {
+    "SELECT * FROM users WHERE email = ?",
+    [email],
+    async (err, row) => {
       if (err) return res.status(500).json({ message: "DB error" });
       if (!row) return res.json({ message: "Invalid credentials" });
+      try {
+      // Check if stored password is hashed or plain
+      const isMatch = await bcrypt.compare(password, row.password);
+
+      if (!isMatch) return res.json({ message: "Invalid credentials" });
+
       res.json({ message: "Login successful", user: row });
+    } catch (error) {
+      console.error("Compare error:", error);
+      res.status(500).json({ message: "Error verifying password" });
     }
-  );
+  });
 });
 
 // ADMIN LOGIN endpoint
 app.post("/api/admin-login", (req, res) => {
   const { email, password } = req.body;
   db.get(
-    "SELECT * FROM users WHERE email = ? AND password = ? AND type = 'Admin'",
-    [email, password],
-    (err, row) => {
+    "SELECT * FROM users WHERE email = ? AND type = 'Admin'",
+    [email],
+    async (err, row) => {
       if (err) return res.status(500).json({ message: "DB error" });
       if (!row) return res.json({ message: "Invalid admin credentials" });
-      res.json({ message: "Admin login successful", user: row });
+      try {
+        const isMatch = await bcrypt.compare(password, row.password);
+
+        if (!isMatch)
+          return res.json({ message: "Invalid admin credentials" });
+        res.json({ message: "Admin login successful", user: row });
+      } catch (error) {
+        console.error("Compare error:", error);
+        res.status(500).json({ message: "Error verifying password" });
+      }
     }
   );
 });
@@ -692,7 +721,7 @@ app.post("/api/reset-password", (req, res) => {
   db.get(
       "SELECT id, resetOtp, resetOtpExpires FROM users WHERE email = ?",
       [email],
-      (err, user) => {
+      async (err, user) => {
         if (err) return res.status(500).json({ message: "Database error" });
         if (!user || !user.resetOtp) {
           return res.status(400).json({ message: "Invalid code or email." });
@@ -707,9 +736,10 @@ app.post("/api/reset-password", (req, res) => {
         }
 
         // update password and clear reset fields
+        const hashedNewPassword = await bcrypt.hash(newPassword, 10);
         db.run(
             "UPDATE users SET password = ?, resetOtp = NULL, resetOtpExpires = NULL WHERE id = ?",
-            [newPassword, user.id],
+            [hashedNewPassword, user.id],
             (uErr) => {
               if (uErr) return res.status(500).json({ message: "Database error" });
               return res.json({ message: "Password updated successfully." });
