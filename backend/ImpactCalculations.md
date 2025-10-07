@@ -1,12 +1,12 @@
-# 🌱 Environmental Impact Calculations Module
+# Environmental Impact Calculations Module
 
 This module provides comprehensive environmental impact tracking for the Feedaily food redistribution platform. It calculates various sustainability metrics based on food donations, deliveries, and community engagement data.
 
-## 📊 Overview
+## Overview
 
 The impact calculations module measures 15 different environmental and efficiency metrics to provide a complete picture of the platform's positive environmental impact. All calculations are based on scientific standards from IPCC, WRAP, FAO, and other authoritative environmental organizations.
 
-## 🌍 Impact Categories
+## Impact Categories
 
 ### Carbon & Emissions
 - **Transport Carbon Emission**: CO₂ emitted during delivery
@@ -31,7 +31,7 @@ The impact calculations module measures 15 different environmental and efficienc
 - **Waste Diversion Rate**: Success in preventing waste
 - **Average Delivery Distance**: Geographic efficiency metric
 
-## 📋 Detailed Impact Mapping
+## Detailed Impact Mapping
 
 | Impact Type | Description | Formula / Estimation Logic | Data Source |
 |-------------|-------------|----------------------------|-------------|
@@ -51,7 +51,7 @@ The impact calculations module measures 15 different environmental and efficienc
 | **14. Locality Optimization Score** | Measures proximity optimization (lower distance = better) | `Score = 1 / (1 + AVG_Distance)` | Derived from Average Delivery Distance |
 | **15. Freshness Efficiency** | Average freshness score across successful donations | `Efficiency = AVG(freshness WHERE status='Delivered')` | `donations` (freshness, status) |
 
-## ⚙️ Constants and Sources
+## Constants and Sources
 
 | Constant | Value | Unit | Source |
 |----------|-------|------|---------|
@@ -63,7 +63,7 @@ The impact calculations module measures 15 different environmental and efficienc
 | **Energy Content** | 7 | MJ/kg food | UNEP Estimates |
 | **Email Emission** | 0.004 | kg CO₂/email | BBC Earth Data |
 
-## 🔍 Example Calculations
+## Example Calculations
 
 ### Scenario 1: Bike Delivery
 ```
@@ -87,9 +87,9 @@ Carbon Avoided: 8.6 kg CO₂e
 Transport Emission: 0.105 kg CO₂
 Net Benefit = 8.6 - 0.105 = 8.495 kg CO₂e saved
 ```
-**🌍 Result: Positive Environmental Impact!**
+**Result: Positive Environmental Impact!**
 
-## 🚀 Usage
+## Usage
 
 ### Import the Module
 ```javascript
@@ -127,7 +127,7 @@ const wasteAvoided = await calculateFoodWasteAvoided();
 const deliveryEmission = await getTransportEmissionsForDelivery(donationId);
 ```
 
-## 📊 Report Structure
+## Report Structure
 
 The comprehensive impact report returns data in the following structure:
 
