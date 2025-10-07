@@ -9,10 +9,6 @@ import nodemailer from "nodemailer";
 import { sendEmail } from './emailService.js';
 import createCheckoutSession from "./createCheckoutSession.js";
 import collaborationRoutes from "./collaborationRoutes.js";
-import path from "path";
-import { fileURLToPath } from "url";
-import fs from "fs";
-
 
 const app = express();
 app.use(cors());
@@ -21,13 +17,6 @@ app.use(express.json());
 //registering for payment 
 app.use("/api",createCheckoutSession);
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-// Ensure upload directory exists
-fs.mkdirSync(path.join(__dirname, "uploads/collaborations"), { recursive: true });
-// Serve uploaded files
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 //Collaboration routes
 app.use("/api", collaborationRoutes);
 

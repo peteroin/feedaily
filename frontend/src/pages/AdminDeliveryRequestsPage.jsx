@@ -360,7 +360,7 @@ export default function AdminDeliveryRequestsPage() {
           </div>
         </div>
       )}
-      
+
       {/* Collaboration Requests */}
       <div style={{ marginTop: "80px" }} className="admin-collab-section">
         <h2>📋 Admin: Collaboration Requests</h2>
@@ -419,19 +419,17 @@ export default function AdminDeliveryRequestsPage() {
                         <td>
                           <div className="flex justify-center items-center w-full">
                             {req.filePath ? (
-                              <a
-                                href={`http://localhost:5000${req.filePath}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-blue-600 underline"
-                              >
-                                View File
-                              </a>
+                              <img
+                                src={req.filePath}
+                                alt="Uploaded"
+                                style={{ width: "120px", borderRadius: "8px" }}
+                              />
                             ) : (
                               "N/A"
                             )}
                           </div>
                         </td>
+
                         {/* Action or Status */}
                         {tab.label === "Available" ? (
                           <td>

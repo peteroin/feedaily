@@ -1,50 +1,38 @@
 // collaborationRoutes.js
 import express from "express";
-import multer from "multer";
-import path from "path";
 import db from "./database.js";
 
 const router = express.Router();
 
-// Configure multer for file uploads
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/collaborations/"); // folder to store files
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, uniqueSuffix + path.extname(file.originalname));
-  },
-});
-
-const upload = multer({ storage });
-
 // POST /api/collaborate
-router.post("/collaborate", upload.single("file"), (req, res) => {
-  const { type } = req.body; // 'ngo' or 'event'
-  const filePath = req.file ? `/uploads/collaborations/${req.file.filename}` : null;
+router.post("/collaborate", async (req, res) => {
+  try {
+    const { type, file: base64File } = req.body;
 
-  if (!type) {
-    return res.status(400).json({ message: "Form type is required." });
-  }
+    if (!type) return res.status(400).json({ message: "Form type is required." });
 
-  const formFields = { ...req.body };
-  delete formFields.file; // remove file if accidentally included
+    // Keep all form fields except 'file'
+    const formFields = { ...req.body };
+    delete formFields.file;
 
-  db.run(
-    `INSERT INTO collaborations (type, formData, filePath, acceptedByAdmin)
-     VALUES (?, ?, ?, NULL)`,
-    [type, JSON.stringify(formFields), filePath],
-    function (err) {
-      if (err) {
-        console.error("DB insert error:", err);
-        return res.status(500).json({ message: "Database error" });
+    // Insert into DB (store base64 in filePath column or create fileBase64 column)
+    db.run(
+      `INSERT INTO collaborations (type, formData, filePath, acceptedByAdmin)
+       VALUES (?, ?, ?, NULL)`,
+      [type, JSON.stringify(formFields), base64File || null],
+      function (err) {
+        if (err) {
+          console.error("DB insert error:", err);
+          return res.status(500).json({ message: "Database error" });
+        }
+        res.json({ message: "Collaboration request submitted!", id: this.lastID });
       }
-      res.json({ message: "Collaboration request submitted!", id: this.lastID });
-    }
-  );
+    );
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
 });
-
 
 // GET /api/collaborations
 router.get("/collaborations", (req, res) => {

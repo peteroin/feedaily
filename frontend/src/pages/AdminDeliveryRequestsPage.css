@@ -257,3 +257,65 @@
 .admin-table tr:nth-child(even) {
   background-color: #f3f4f6;
 }
+
+/* 🎯 Apply only to Collaboration Requests section */
+.admin-collab-section .admin-table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0 auto;
+  border-spacing: 0;
+}
+
+/* Reduce excessive padding in main table cells */
+.admin-collab-section .admin-table th,
+.admin-collab-section .admin-table td {
+  padding: 6px 10px; /* tighter spacing */
+  vertical-align: middle;
+  text-align: center;
+}
+
+/* Control the width of Form Data column */
+.admin-collab-section .admin-table td:nth-child(3) {
+  max-width: 350px;
+  vertical-align: middle;
+}
+
+/* 🧾 Nested table styling (inside Form Data column) */
+.admin-collab-section .nested-table {
+  width: fit-content;
+  margin: 0 auto; /* center nested table horizontally */
+  border-collapse: collapse;
+  max-height: 180px;
+  overflow-y: auto;
+  display: block;
+  background-color: #fafafa;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+/* Reduce inner padding further */
+.admin-collab-section .nested-table td {
+  padding: 4px 8px;
+  font-size: 13px;
+  word-break: break-word;
+  white-space: normal;
+  text-align: left;
+}
+
+/* Add subtle row separators */
+.admin-collab-section .nested-table tr + tr td {
+  border-top: 1px solid #e0e0e0;
+}
+
+/* 🖼️ Image styling in File column */
+.admin-collab-section .admin-table img {
+  width: 160px;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.admin-collab-section .admin-table img:hover {
+  transform: scale(1.05);
+}
