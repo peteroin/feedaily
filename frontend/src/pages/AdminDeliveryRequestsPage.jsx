@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { FiLogOut } from "react-icons/fi";
+import MapModal from "../components/MapModal";
 import "./AdminDeliveryRequestsPage.css";
 
 export default function AdminDeliveryRequestsPage() {
@@ -7,6 +8,8 @@ export default function AdminDeliveryRequestsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [activeTab, setActiveTab] = useState("Available");
+  const [isMapModalOpen, setIsMapModalOpen] = useState(false);
+  const [mapModalUrl, setMapModalUrl] = useState('');
   const [expireModalOpenFor, setExpireModalOpenFor] = useState(null);
   const [expirationReason, setExpirationReason] = useState("");
   const expirationReasons = ["Spoiled", "Not picked up", "Other"];
@@ -43,6 +46,16 @@ export default function AdminDeliveryRequestsPage() {
   const handleLogout = () => {
     localStorage.removeItem("adminUser");
     window.location.href = "/admin-login";
+  };
+
+  const handleOpenMap = (url) => {
+    setMapModalUrl(url);
+    setIsMapModalOpen(true);
+  };
+
+  const handleCloseMap = () => {
+    setIsMapModalOpen(false);
+    setMapModalUrl('');
   };
 
   const TableHeader = () => (
@@ -103,16 +116,10 @@ export default function AdminDeliveryRequestsPage() {
           <>
             <td>
               {req.locationLat && req.locationLng ? (
-                <a
-                  href={`https://www.google.com/maps/search/?api=1&query=${req.locationLat},${req.locationLng}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <button className="admin-action-btn" onClick={() => handleOpenMap(`https://www.google.com/maps?q=${req.locationLat},${req.locationLng}&output=embed`)}>
                   View
-                </a>
-              ) : (
-                "N/A"
-              )}
+                </button>
+              ) : ( "N/A" )}
             </td>
             <td>{req.contact || "N/A"}</td>
             <td>
@@ -132,20 +139,11 @@ export default function AdminDeliveryRequestsPage() {
             </td>
             <td>{req.deliveryMethod || "N/A"}</td>
             <td>
-              {req.locationLat &&
-              req.locationLng &&
-              req.requesterLat &&
-              req.requesterLng ? (
-                <a
-                  href={`https://www.google.com/maps/dir/?api=1&origin=${req.locationLat},${req.locationLng}&destination=${req.requesterLat},${req.requesterLng}&travelmode=driving`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  View Route on Map
-                </a>
-              ) : (
-                "N/A"
-              )}
+              {req.locationLat && req.locationLng && req.requesterLat && req.requesterLng ? (
+                <button className="admin-action-btn" onClick={() => handleOpenMap(`https://www.google.com/maps?saddr=${req.requesterLat},${req.requesterLng}&daddr=${req.locationLat},${req.locationLng}&output=embed`)}>
+                  View Route
+                </button>
+              ) : ( "N/A" )}
             </td>
           </>
         )}
@@ -300,6 +298,12 @@ export default function AdminDeliveryRequestsPage() {
           </div>
         </div>
       )}
+
+      <MapModal 
+        isOpen={isMapModalOpen} 
+        onClose={handleCloseMap} 
+        mapUrl={mapModalUrl} 
+      />
     </div>
   );
 }

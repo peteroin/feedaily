@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import Webcam from "react-webcam";
 import TMImagePredictor from '../components/TMImagePredictor';
 import Carousel from "react-multi-carousel";
+import MapModal from '../components/MapModal';
 import "react-multi-carousel/lib/styles.css";
 import { 
   FiCamera, 
@@ -27,6 +28,8 @@ const responsive = {
 };
 
 export default function DashboardPage() {
+  const [isMapModalOpen, setIsMapModalOpen] = useState(false);
+  const [mapModalUrl, setMapModalUrl] = useState('');
   const [donorName, setDonorName] = useState("");
   const [contact, setContact] = useState("");
   const [foodType, setFoodType] = useState("");
@@ -262,6 +265,36 @@ export default function DashboardPage() {
     } else {
       alert("Could not start payment. Try again.");
     }
+  };
+
+  const handleOpenMap = (donation) => {
+    if (!navigator.geolocation) {
+      alert("Geolocation is not supported by your browser.");
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const requesterLat = position.coords.latitude;
+        const requesterLng = position.coords.longitude;
+        
+        const donorLat = donation.locationLat;
+        const donorLng = donation.locationLng;
+
+        const url = `https://www.google.com/maps?saddr=${requesterLat},${requesterLng}&daddr=${donorLat},${donorLng}&output=embed`;
+        
+        setMapModalUrl(url);
+        setIsMapModalOpen(true);
+      },
+      () => {
+        alert("Could not get your location. Please enable location services to view the route.");
+      }
+    );
+  };
+
+  const handleCloseMap = () => {
+    setIsMapModalOpen(false);
+    setMapModalUrl(''); 
   };
 
   return (
@@ -575,8 +608,8 @@ export default function DashboardPage() {
                       {donation.locationName ? donation.locationName : donation.locationLat && donation.locationLng ? `${donation.locationLat.toFixed(4)}, ${donation.locationLng.toFixed(4)}` : "Location not provided"}
                     </div>
                     {donation.locationLat && donation.locationLng && (
-                      <button onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${donation.locationLat},${donation.locationLng}`, "_blank")} className="btn btn-ghost btn-xs">
-                        <FiMapPin /> Map
+                      <button onClick={() => handleOpenMap(donation)} className="btn btn-ghost btn-xs">
+                        <FiMapPin /> View Route
                       </button>
                     )}
                   </div>
@@ -707,6 +740,13 @@ export default function DashboardPage() {
           </div>
         </div>
       )}
+
+      <MapModal 
+        isOpen={isMapModalOpen} 
+        onClose={handleCloseMap} 
+        mapUrl={mapModalUrl} 
+      />
+
     </div>
   );
 }
