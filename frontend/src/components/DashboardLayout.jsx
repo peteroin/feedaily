@@ -7,6 +7,7 @@ import {
   FiAward,
   FiTruck,
   FiLogOut,
+  FiHeart,
 } from "react-icons/fi";
 import "./DashboardLayout.css";
 
@@ -19,6 +20,7 @@ export default function DashboardLayout({ children }) {
     { path: "/dashboard", label: "Dashboard", icon: <FiHome /> },
     { path: "/stats", label: "Stats", icon: <FiBarChart2 /> },
     { path: "/profile", label: "Profile", icon: <FiUser /> },
+    { path: "/impact", label: "Impact", icon: <FiHeart /> },
     { path: "/sender-rankings", label: "Rankings", icon: <FiAward /> },
     { path: "/delivery", label: "Delivery", icon: <FiTruck /> },
   ];

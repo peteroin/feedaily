@@ -9,6 +9,7 @@ import { generateOtp,validateOtp } from './otpService.js';
 import nodemailer from "nodemailer";
 import { sendEmail } from './emailService.js';
 import createCheckoutSession from "./createCheckoutSession.js";
+import impactAPI from './impactAPI.js';
 
 const app = express();
 app.use(cors());
@@ -16,6 +17,9 @@ app.use(express.json());
 
 //registering for payment 
 app.use("/api",createCheckoutSession);
+
+// Register environmental impact API routes
+app.use("/api", impactAPI);
 
 // REGISTER endpoint
 app.post("/api/register", async (req, res) => {
@@ -387,37 +391,11 @@ app.post("/api/request-food/:id", async (req, res) => {
 
 
 // server.js
-app.get('/api/donation-stats', (req, res) => {
-  const MEAL_KG = 0.4;
-  const totalDonatedQuery = `SELECT SUM(quantity) AS totalDonated FROM donations`;
-  const totalTakenQuery = `SELECT SUM(quantity) AS totalTaken FROM donations WHERE status = 'Requested'`;
-
-  db.get(totalDonatedQuery, [], (err, donatedRow) => {
-    if (err) return res.status(500).json({ message: 'Database error' });
-
-    db.get(totalTakenQuery, [], (err, takenRow) => {
-      if (err) return res.status(500).json({ message: 'Database error' });
-
-      const totalDonated = Number(donatedRow.totalDonated) || 0;
-      const totalTaken = Number(takenRow.totalTaken) || 0;
-      const totalPeopleFed = Math.floor(totalDonated / MEAL_KG);
-
-      res.json({
-        totalDonated,
-        totalTaken,
-        totalPeopleFed
-      });
-    });
-  });
-});
-
-
-// server.js
-// Updated donation-stats endpoint
+// Updated donation-stats endpoint (removing duplicate and fixing calculation)
 app.get('/api/donation-stats', (req, res) => {
   const MEAL_KG = 0.4;
   const totalDonatedQuery = `SELECT SUM(CAST(quantity AS REAL)) AS totalDonated FROM donations WHERE quantity IS NOT NULL`;
-  const totalTakenQuery = `SELECT SUM(CAST(quantity AS REAL)) AS totalTaken FROM donations WHERE status = 'Requested' AND quantity IS NOT NULL`;
+  const totalTakenQuery = `SELECT SUM(CAST(quantity AS REAL)) AS totalTaken FROM donations WHERE status IN ('Requested', 'Delivered') AND quantity IS NOT NULL`;
   
   db.get(totalDonatedQuery, [], (err, donatedRow) => {
     if (err) return res.status(500).json({ message: 'Database error' });
@@ -446,7 +424,7 @@ app.get('/api/daily-donation-stats', (req, res) => {
     SELECT
       DATE(createdAt) as dateOnly,
       SUM(CAST(quantity AS REAL)) as totalDonated,
-      SUM(CASE WHEN status = 'Requested' THEN CAST(quantity AS REAL) ELSE 0 END) as totalTaken
+      SUM(CASE WHEN status IN ('Requested', 'Delivered') THEN CAST(quantity AS REAL) ELSE 0 END) as totalTaken
     FROM donations
     WHERE quantity IS NOT NULL
     GROUP BY DATE(createdAt)
@@ -476,7 +454,6 @@ app.get('/api/daily-donation-stats', (req, res) => {
 });
 
 // server.js or your routes file
-
 app.get('/api/sender-rankings', (req, res) => {
   db.all(`
     SELECT u.id, u.name, u.contact, u.email, SUM(d.quantity) as totalSent
