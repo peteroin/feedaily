@@ -9,11 +9,14 @@ import {
   FiTrendingUp,
   FiMail,
   FiPhone,
-  FiMapPin
+  FiMapPin,
+  FiSun,
+  FiMoon
 } from "react-icons/fi";
 
 export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, onGetStartedClick }) {
   const [scrollY, setScrollY] = useState(0);
+  const [theme, setTheme] = useState('light');
   const [activeFeature, setActiveFeature] = useState(0);
   const [imageLoading, setImageLoading] = useState(true);
   const [statsInView, setStatsInView] = useState(false);
@@ -95,19 +98,56 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
     };
   }, []);
 
+  // Apply theme to body
+  useEffect(() => {
+    document.body.classList.toggle('dark', theme === 'dark');
+    document.body.style.backgroundColor = theme === 'dark' ? '#1a202c' : '#ffffff';
+  }, [theme]);
+
   const headingStyle = { fontFamily: "'Sora', 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif" };
 
-  // Minimalist grayscale colors for icons and borders
-  const grayColors = {
-    border: 'border-gray-300',
-    bgHover: 'hover:bg-gray-100',
-    activeBg: 'bg-white',
-    inactiveBg: 'bg-gray-50',
-    activeText: 'text-gray-900',
-    inactiveText: 'text-gray-500',
-    iconColor: 'text-gray-700',
-    activeIconColor: 'text-gray-900'
-  };
+  // Theme-based color classes
+  const themeClasses = theme === "dark"
+    ? {
+        page: "bg-gray-900 text-gray-100",
+        nav: "bg-gray-900/95 text-gray-100",
+        border: "border-gray-700",
+        card: "bg-gray-800 border-gray-700 text-gray-100",
+        cardHover: "hover:bg-gray-700",
+        activeBg: "bg-gray-800",
+        inactiveBg: "bg-gray-800",
+        activeText: "text-white",
+        inactiveText: "text-gray-400",
+        iconColor: "text-gray-300",
+        activeIconColor: "text-yellow-400",
+        statBg: "bg-gray-800 border-gray-700",
+        statText: "text-gray-100",
+        ctaBg: "bg-gray-800",
+        ctaText: "text-gray-100",
+        footer: "bg-gray-900 border-gray-700 text-gray-400",
+        btnPrimary: "bg-gray-700 text-white hover:bg-gray-600",
+        btnSecondary: "bg-gray-800 text-white hover:bg-gray-700 border-gray-600",
+      }
+    : {
+        page: "bg-white text-gray-900",
+        nav: "bg-white/95 text-gray-900",
+        border: "border-gray-300",
+        card: "bg-white border-gray-200 text-gray-900",
+        cardHover: "hover:bg-gray-100",
+        activeBg: "bg-white",
+        inactiveBg: "bg-gray-50",
+        activeText: "text-gray-900",
+        inactiveText: "text-gray-500",
+        iconColor: "text-gray-700",
+        activeIconColor: "text-gray-900",
+        statBg: "bg-white border-gray-200",
+        statText: "text-gray-900",
+        ctaBg: "bg-gray-900",
+        ctaText: "text-white",
+        footer: "bg-white border-gray-200 text-gray-600",
+        btnPrimary: "bg-gray-900 text-white hover:bg-gray-700",
+        btnSecondary: "bg-white text-gray-900 hover:bg-gray-900 hover:text-white border-gray-300",
+      };
 
   // Feature images - from your public folder
   const featureImages = [
@@ -121,37 +161,37 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
 
   const features = [
     { 
-      icon: <FiUsers className={`${grayColors.iconColor} w-6 h-6`} />, 
+      icon: <FiUsers className="w-6 h-6" />, 
       title: "Community Driven", 
       desc: "Join thousands fighting food waste",
       detailDesc: "Connect with a vibrant community of volunteers, donors, and partners committed to eliminating food waste. Share experiences, organize events, and create lasting impact together.",
     },
     { 
-      icon: <FiHeart className={`${grayColors.iconColor} w-6 h-6`} />, 
+      icon: <FiHeart className="w-6 h-6" />, 
       title: "Make an Impact", 
       desc: "Every meal saved makes a difference",
       detailDesc: "Track your contributions in real-time and see how every meal rescued helps feed families in need. Your actions create ripples of positive change in communities.",
     },
     { 
-      icon: <FiGlobe className={`${grayColors.iconColor} w-6 h-6`} />, 
+      icon: <FiGlobe className="w-6 h-6" />, 
       title: "Eco Friendly", 
       desc: "Reduce your carbon footprint",
       detailDesc: "Food waste is a major contributor to climate change. By rescuing surplus food, you're not just feeding people—you're protecting our planet for future generations.",
     },
     { 
-      icon: <FiAward className={`${grayColors.iconColor} w-6 h-6`} />, 
+      icon: <FiAward className="w-6 h-6" />, 
       title: "Earn Recognition", 
       desc: "Climb the leaderboards",
       detailDesc: "Get rewarded for your contributions with badges, certificates, and public recognition. Top contributors gain special privileges and leadership opportunities.",
     },
     { 
-      icon: <FiShield className={`${grayColors.iconColor} w-6 h-6`} />, 
+      icon: <FiShield className="w-6 h-6" />, 
       title: "Safe & Verified", 
       desc: "Quality assured donations",
       detailDesc: "All food donations go through strict quality checks and safety protocols. We ensure that every meal meets health standards before distribution.",
     },
     { 
-      icon: <FiTrendingUp className={`${grayColors.iconColor} w-6 h-6`} />, 
+      icon: <FiTrendingUp className="w-6 h-6" />, 
       title: "Track Progress", 
       desc: "Monitor your impact in real-time",
       detailDesc: "View detailed analytics of your contributions, see trends over time, and measure your environmental impact with comprehensive dashboards and reports.",
@@ -174,16 +214,16 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
 
   return (
     <div
-      className="landing-page bg-white text-gray-900"
+      className={`landing-page ${themeClasses.page}`}
       style={{ fontFamily: "'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif" }}
     >
       {/* Navigation */}
       <nav 
-        className={`fixed w-full z-50 bg-white/95 backdrop-blur-sm ${scrollY > 50 ? 'shadow-sm' : ''}`}
-        style={{ borderBottom: "1px solid #e5e7eb" }}   
+        className={`fixed w-full z-50 ${themeClasses.nav} backdrop-blur-sm ${scrollY > 50 ? 'shadow-sm' : ''}`}
+        style={{ borderBottom: theme === 'dark' ? '1px solid #374151' : '1px solid #e5e7eb' }}   
       >
         <div className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-2">
-          <div className="brand-name text-2xl sm:text-3xl font-bold tracking-wide text-gray-900">
+          <div className={`brand-name text-2xl sm:text-3xl font-bold tracking-wide ${themeClasses.activeText}`}>
             feedaily
           </div>
           {/* Login/logout and Get started buttons */}
@@ -192,14 +232,14 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
                 <>
                   <button
                       onClick={onLogoutClick}
-                      className={`text-sm sm:text-base px-4 sm:px-5 py-2 sm:py-2.5 rounded-md border ${grayColors.border} bg-white ${grayColors.activeText} hover:bg-gray-900 hover:text-white transition`}
+                      className={`text-sm sm:text-base px-4 sm:px-5 py-2 sm:py-2.5 rounded-md border ${themeClasses.border} ${themeClasses.btnSecondary} transition`}
                       style={{ cursor: 'pointer' }}
                   >
                     Logout
                   </button>
                   <button
                       onClick={onGetStartedClick}
-                      className={`text-sm sm:text-base px-4 sm:px-5 py-2 sm:py-2.5 rounded-md bg-gray-900 text-white border ${grayColors.border} hover:bg-white hover:text-gray-900 transition`}
+                      className={`text-sm sm:text-base px-4 sm:px-5 py-2 sm:py-2.5 rounded-md ${themeClasses.btnPrimary} border ${themeClasses.border} transition`}
                       style={{ cursor: 'pointer' }}
                   >
                     Get Started
@@ -209,14 +249,14 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
                 <>
                   <button
                       onClick={onLoginClick}
-                      className={`text-sm sm:text-base px-4 sm:px-5 py-2 sm:py-2.5 rounded-md border ${grayColors.border} bg-white ${grayColors.activeText} hover:bg-gray-900 hover:text-white transition`}
+                      className={`text-sm sm:text-base px-4 sm:px-5 py-2 sm:py-2.5 rounded-md border ${themeClasses.border} ${themeClasses.btnSecondary} transition`}
                       style={{ cursor: 'pointer' }}
                   >
                     Login
                   </button>
                   <button
                       onClick={onGetStartedClick}
-                      className={`text-sm sm:text-base px-4 sm:px-5 py-2 sm:py-2.5 rounded-md bg-gray-900 text-white border ${grayColors.border} hover:bg-white hover:text-gray-900 transition`}
+                      className={`text-sm sm:text-base px-4 sm:px-5 py-2 sm:py-2.5 rounded-md ${themeClasses.btnPrimary} border ${themeClasses.border} transition`}
                       style={{ cursor: 'pointer' }}
                   >
                     Get Started
@@ -233,19 +273,19 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
         <section className="hero-section max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             <div className="hero-content">
-              <h1 className="hero-title text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight" style={headingStyle}>
+              <h1 className={`hero-title text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight ${themeClasses.activeText}`} style={headingStyle}>
                 Rescue food,<br />
-                <span className="hero-highlight text-gray-900">reduce waste</span>
+                <span className={`hero-highlight ${themeClasses.activeText}`}>reduce waste</span>
               </h1>
 
-              <p className="hero-description mt-4 text-gray-600 max-w-xl">
+              <p className={`hero-description mt-4 max-w-xl ${themeClasses.inactiveText}`}>
                 Join the movement to eliminate food waste and feed communities in need. Every plate matters in our mission to create a sustainable future.
               </p>
 
               <div className="hero-buttons mt-6 flex flex-wrap gap-3">
                 <button
                   onClick={onGetStartedClick}
-                  className="inline-flex items-center gap-2 px-5 py-3 rounded-md bg-gray-900 text-white font-medium hover:bg-gray-700 transition"
+                  className={`inline-flex items-center gap-2 px-5 py-3 rounded-md ${themeClasses.btnPrimary} font-medium transition`}
                   style={{ cursor: 'pointer' }}
                 >
                   Start Your Journey <FiArrowRight />
@@ -253,7 +293,7 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
 
                 <button
                   onClick={onLoginClick}
-                  className="inline-flex items-center gap-2 px-5 py-3 rounded-md border border-gray-300 bg-white text-gray-900 hover:bg-gray-50 transition"
+                  className={`inline-flex items-center gap-2 px-5 py-3 rounded-md border ${themeClasses.border} ${themeClasses.card} ${themeClasses.cardHover} transition`}
                   style={{ cursor: 'pointer' }}
                 >
                   Learn More
@@ -272,7 +312,7 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
                 <img
                   src="https://static.vecteezy.com/system/resources/thumbnails/016/733/232/small_2x/hand-drawn-fried-chicken-rice-or-thai-food-illustration-png.png"
                   alt="Food illustration"
-                  className="w-full h-full object-contain"
+                  className={`w-full h-full object-contain ${theme === "dark" ? "filter invert" : ""}`}
                 />
               </div>
             </div>
@@ -282,12 +322,12 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
         {/* About Us */}
         <section className="about-section max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="about-container">
-            <h2 className="section-title text-2xl font-semibold" style={headingStyle}>About Feedaily</h2>
+            <h2 className={`text-2xl font-semibold ${themeClasses.activeText}`} style={headingStyle}>About Feedaily</h2>
             <div className="about-content mt-4">
-              <p className="about-text text-gray-600 max-w-3xl">
+              <p className={`about-text max-w-3xl ${themeClasses.inactiveText}`}>
                 Feedaily is a registered NGO dedicated to rescuing surplus food and redistributing it to those in need. Our mission is to build a sustainable ecosystem by connecting communities, donors, and partners, and making a lasting impact on hunger and the environment.
               </p>
-              <p className="about-meta mt-3 text-sm text-gray-400">
+              <p className={`about-meta mt-3 text-sm ${themeClasses.inactiveText}`}>
                 Registration No: NGO/2023/IND/09845 &nbsp; | &nbsp; Established 2023
               </p>
             </div>
@@ -302,8 +342,8 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
         >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold" style={headingStyle}>Why feedaily matters?</h2>
-              <p className="text-gray-600 mt-2">our features</p>
+              <h2 className={`text-3xl font-bold ${themeClasses.activeText}`} style={headingStyle}>Why feedaily matters?</h2>
+              <p className={`${themeClasses.inactiveText} mt-2`}>our features</p>
             </div>
 
             {/* Feature display */}
@@ -315,21 +355,21 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
                     key={index}
                     className={`p-3 rounded-xl border transition-all duration-300 cursor-pointer ${
                       activeFeature === index
-                        ? `${grayColors.activeBg} ${grayColors.border} shadow-lg`
-                        : `${grayColors.inactiveBg} border-gray-200 opacity-60`
+                        ? `${themeClasses.activeBg} ${themeClasses.border} shadow-lg`
+                        : `${themeClasses.inactiveBg} ${themeClasses.border} opacity-60`
                     }`}
                     onClick={() => setActiveFeature(index)}
                   >
                     <div className="flex items-center gap-3">
                       {/* Minimalist icon without colored background */}
                       <div className={`w-8 h-8 flex items-center justify-center ${
-                        activeFeature === index ? grayColors.activeIconColor : grayColors.iconColor
+                        activeFeature === index ? themeClasses.activeIconColor : themeClasses.iconColor
                       }`}>
                         {feature.icon}
                       </div>
                       <div className="flex-1">
-                        <h3 className={`font-semibold text-base ${activeFeature === index ? grayColors.activeText : grayColors.inactiveText}`} style={headingStyle}>{feature.title}</h3>
-                        <p className="text-xs text-gray-500">{feature.desc}</p>
+                        <h3 className={`font-semibold text-base ${activeFeature === index ? themeClasses.activeText : themeClasses.inactiveText}`} style={headingStyle}>{feature.title}</h3>
+                        <p className={`text-xs ${themeClasses.inactiveText}`}>{feature.desc}</p>
                       </div>
                     </div>
                   </div>
@@ -340,11 +380,11 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
               <div className="rounded-3xl h-[420px] flex flex-col justify-end relative overflow-hidden">
                 {/* Loading indicator with dashes */}
                 {imageLoading && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-gray-50">
+                  <div className={`absolute inset-0 flex items-center justify-center ${themeClasses.inactiveBg}`}>
                     <div className="flex gap-2">
-                      <div className="w-8 h-1 bg-gray-300 rounded animate-pulse" style={{ animationDelay: '0ms' }}></div>
-                      <div className="w-8 h-1 bg-gray-300 rounded animate-pulse" style={{ animationDelay: '150ms' }}></div>
-                      <div className="w-8 h-1 bg-gray-300 rounded animate-pulse" style={{ animationDelay: '300ms' }}></div>
+                      <div className={`w-8 h-1 ${theme === 'dark' ? 'bg-gray-600' : 'bg-gray-300'} rounded animate-pulse`} style={{ animationDelay: '0ms' }}></div>
+                      <div className={`w-8 h-1 ${theme === 'dark' ? 'bg-gray-600' : 'bg-gray-300'} rounded animate-pulse`} style={{ animationDelay: '150ms' }}></div>
+                      <div className={`w-8 h-1 ${theme === 'dark' ? 'bg-gray-600' : 'bg-gray-300'} rounded animate-pulse`} style={{ animationDelay: '300ms' }}></div>
                     </div>
                   </div>
                 )}
@@ -369,7 +409,9 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
                     <div
                       key={index}
                       className={`h-0.5 w-8 rounded transition-all duration-500 ${
-                        index === activeFeature ? 'bg-gray-900 w-12' : 'bg-gray-400'
+                        index === activeFeature 
+                          ? `${theme === 'dark' ? 'bg-yellow-400' : 'bg-gray-900'} w-12` 
+                          : theme === 'dark' ? 'bg-gray-600' : 'bg-gray-400'
                       }`}
                     />
                   ))}
@@ -381,10 +423,10 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
 
         {/* Partners Section */}
         <section className="partners-section max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-          <h3 className="text-lg font-semibold text-center mb-6" style={headingStyle}>Our Trusted Partners</h3>
+          <h3 className={`text-lg font-semibold text-center mb-6 ${themeClasses.activeText}`} style={headingStyle}>Our Trusted Partners</h3>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 items-center">
             {partners.map((partner, i) => (
-              <div key={i} className="flex items-center justify-center py-4 px-3 bg-white rounded-lg border border-gray-200 shadow-sm text-sm text-gray-700">
+              <div key={i} className={`flex items-center justify-center py-4 px-3 rounded-lg border ${themeClasses.card} shadow-sm text-sm`}>
                 {partner}
               </div>
             ))}
@@ -392,26 +434,26 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
         </section>
 
         {/* Stats Section */}
-        <section ref={statsRef} className="stats-section bg-gray-50">
+        <section ref={statsRef} className={theme === 'dark' ? 'bg-gray-800' : 'bg-gray-50'}>
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold" style={headingStyle}>Our Impact</h2>
-              <p className="text-gray-600 mt-2">making a difference together</p>
+              <h2 className={`text-3xl font-bold ${themeClasses.activeText}`} style={headingStyle}>Our Impact</h2>
+              <p className={`${themeClasses.inactiveText} mt-2`}>making a difference together</p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
               {stats.map((stat, idx) => (
                 <div 
                   key={idx} 
-                  className="bg-white rounded-xl p-6 flex flex-col items-center justify-center min-h-[110px] shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-300"
+                  className={`${themeClasses.card} rounded-xl p-6 flex flex-col items-center justify-center min-h-[110px] shadow-sm border ${themeClasses.cardHover} transition-shadow duration-300`}
                 >
-                  <div className="text-3xl sm:text-4xl font-extrabold text-gray-900" style={headingStyle}>
+                  <div className={`text-3xl sm:text-4xl font-extrabold ${themeClasses.activeText}`} style={headingStyle}>
                     {statsInView ? (
                       idx === 0 ? `${(animatedStats[idx] / 1000).toFixed(1)}K+` :
                       idx === 1 ? `${(animatedStats[idx] / 1000).toFixed(1)}K+` :
                       `${animatedStats[idx]}+`
                     ) : '0'}
                   </div>
-                  <div className="text-sm text-gray-600 mt-2">{stat.label}</div>
+                  <div className={`text-sm mt-2 ${themeClasses.inactiveText}`}>{stat.label}</div>
                 </div>
               ))}
             </div>
@@ -419,14 +461,14 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
         </section>
 
         {/* CTA Section */}
-        <section className="cta-section bg-gray-900">
+        <section className={themeClasses.ctaBg}>
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 text-center">
-            <h2 className="text-2xl font-semibold text-white" style={headingStyle}>Ready to make a difference?</h2>
-            <p className="text-gray-300 mt-2">Join thousands of volunteers and partners — rescue food and help communities.</p>
+            <h2 className={`text-2xl font-semibold ${themeClasses.ctaText}`} style={headingStyle}>Ready to make a difference?</h2>
+            <p className={`${theme === 'dark' ? 'text-gray-300' : 'text-gray-300'} mt-2`}>Join thousands of volunteers and partners — rescue food and help communities.</p>
             <div className="mt-4">
               <button 
                 onClick={onGetStartedClick} 
-                className="inline-flex items-center gap-2 px-5 py-3 rounded-md bg-white text-gray-900 font-medium hover:bg-gray-100 transition"
+                className={`inline-flex items-center gap-2 px-5 py-3 rounded-md ${theme === 'dark' ? 'bg-gray-700 text-white hover:bg-gray-600' : 'bg-white text-gray-900 hover:bg-gray-100'} font-medium transition`}
                 style={{ cursor: 'pointer' }}
               >
                 Start Your Journey <FiArrowRight />
@@ -438,34 +480,44 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
         {/* Contact details */}
         <section className="contact-section">
           <div className="max-w-4xl mx-auto px-6 py-6">
-            <h3 className="text-center text-xl font-semibold mb-4" style={headingStyle}>Contact Details</h3>
+            <h3 className={`text-center text-xl font-semibold mb-4 ${themeClasses.activeText}`} style={headingStyle}>Contact Details</h3>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
-              <div className="bg-white p-3 rounded-lg">
-                <FiMail className="mx-auto text-xl text-gray-900 mb-2" />
-                <div className="text-sm text-gray-700">contact@feedaily.org</div>
+              <div className={`${themeClasses.card} p-3 rounded-lg`}>
+                <FiMail className={`mx-auto text-xl ${themeClasses.activeText} mb-2`} />
+                <div className={`text-sm ${themeClasses.activeText}`}>contact@feedaily.org</div>
               </div>
-              <div className="bg-white p-3 rounded-lg">
-                <FiPhone className="mx-auto text-xl text-gray-900 mb-2" />
-                <div className="text-sm text-gray-700">+91 98765 43210</div>
+              <div className={`${themeClasses.card} p-3 rounded-lg`}>
+                <FiPhone className={`mx-auto text-xl ${themeClasses.activeText} mb-2`} />
+                <div className={`text-sm ${themeClasses.activeText}`}>+91 98765 43210</div>
               </div>
-              <div className="bg-white p-3 rounded-lg">
-                <FiMapPin className="mx-auto text-xl text-gray-900 mb-2" />
-                <div className="text-sm text-gray-700">Feedaily NGO, Bengaluru, India</div>
+              <div className={`${themeClasses.card} p-3 rounded-lg`}>
+                <FiMapPin className={`mx-auto text-xl ${themeClasses.activeText} mb-2`} />
+                <div className={`text-sm ${themeClasses.activeText}`}>Feedaily NGO, Bengaluru, India</div>
               </div>
             </div>
 
-            <div className="text-center mt-4 text-sm text-gray-500">
+            <div className={`text-center mt-4 text-sm ${themeClasses.inactiveText}`}>
               Follow us: <a href="#" className="underline">Instagram</a> &nbsp;|&nbsp; <a href="#" className="underline">Twitter</a> &nbsp;|&nbsp; <a href="#" className="underline">Facebook</a>
             </div>
           </div>
         </section>
 
         {/* Footer */}
-        <footer className="landing-footer bg-white border-t border-gray-200">
+<footer className={`landing-footer ${themeClasses.footer} flex items-center justify-between`}>
           <div className="max-w-6xl mx-auto px-6 py-8 text-center">
-            <p className="text-sm text-gray-600">© 2025 Feedaily. Making a difference, one meal at a time.</p>
-            <p className="text-xs text-gray-400 mt-1">Registered NGO | All donations eligible for tax exemption under Section 80G, Government of India.</p>
+            <div>
+              <p className="text-sm">{theme === "dark" ? "© 2025 Feedaily. Making a difference, one meal at a time." : "© 2025 Feedaily. Making a difference, one meal at a time."}</p>
+              <p className="text-xs mt-1">Registered NGO | All donations eligible for tax exemption under Section 80G, Government of India.</p>
+            </div>
+            <button
+              onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+              className={`ml-auto flex items-center gap-2 px-4 py-2 rounded-md border ${themeClasses.border} ${themeClasses.cardHover} transition`}
+              style={{ cursor: 'pointer' }}
+              aria-label="Toggle theme"
+            >
+              {theme === "light" ? <FiMoon className="text-xl" /> : <FiSun className="text-xl text-yellow-400" />}
+            </button>
           </div>
         </footer>
       </div>
