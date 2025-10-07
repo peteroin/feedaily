@@ -14,6 +14,7 @@ import AdminDeliveryRequestsPage from "./pages/AdminDeliveryRequestsPage";
 import AdminLoginPage from "./pages/AdminLoginPage";
 import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import { ImpactPage } from "./pages/ImpactPage";
 // Wrapper for LandingPage (to use navigation)
 function LandingPageWrapper() {
   const navigate = useNavigate();
@@ -89,6 +90,14 @@ function App() {
           element={
             <DashboardLayout>
               <DeliveryPage />
+            </DashboardLayout>
+          }
+        />
+        <Route
+          path="/impact"
+          element={
+            <DashboardLayout>
+              <ImpactPage />
             </DashboardLayout>
           }
         />
