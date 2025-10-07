@@ -24,10 +24,10 @@ export default function CollaborationFormPage() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name === "Purpose" && value.length > 250) {
+    if (name === "Purpose" && value.length > 500) {
       setErrors((prev) => ({
         ...prev,
-        Purpose: "Cannot exceed 250 characters",
+        Purpose: "Cannot exceed 500 characters",
       }));
       return;
     }
@@ -89,45 +89,98 @@ export default function CollaborationFormPage() {
     setStep((prev) => prev - 1);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const compressToTargetSize = (base64Str, targetKB = 70, maxWidth = 800, maxHeight = 800) => {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.src = base64Str;
 
-    // Convert file to base64 string
-    let base64Image = null;
-    if (file) {
-      base64Image = await new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = (err) => reject(err);
-      });
-    }
+    img.onload = () => {
+      let { width, height } = img;
 
-    // Prepare JSON body
-    const body = {
-      ...formData,
-      type,
-      file: base64Image, // will be null if no file
+      // Scale down proportionally if bigger than maxWidth/maxHeight
+      if (width > maxWidth || height > maxHeight) {
+        const ratio = Math.min(maxWidth / width, maxHeight / height);
+        width = width * ratio;
+        height = height * ratio;
+      }
+
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      canvas.width = width;
+      canvas.height = height;
+      ctx.drawImage(img, 0, 0, width, height);
+
+      let quality = 0.8; // start compression quality
+      let compressed = canvas.toDataURL("image/jpeg", quality);
+
+      // Iteratively reduce quality until size <= targetKB
+      const targetBytes = targetKB * 1024;
+      while ((compressed.length * 0.75) > targetBytes && quality > 0.1) {
+        quality -= 0.05;
+        compressed = canvas.toDataURL("image/jpeg", quality);
+      }
+
+      resolve(compressed);
     };
 
-    try {
-      const res = await fetch("http://localhost:5000/api/collaborate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        alert("Collaboration submitted successfully!");
-        navigate("/");
-      } else {
-        alert(data.message || "Submission failed!");
-      }
-    } catch (err) {
-      console.error("Error submitting form:", err);
-      alert("An error occurred while submitting.");
-    }
+    img.onerror = () => {
+      console.warn("Image load failed, returning original");
+      resolve(base64Str);
+    };
+  });
+};
+
+// Example usage
+// const compressedBase64 = await compressToTargetSize(originalBase64, 70);
+
+
+
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  let base64Image = null;
+  if (file) {
+    base64Image = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (err) => reject(err);
+    });
+  }
+
+  const body = { ...formData, type, file: base64Image };
+
+  const submitBody = async (bodyToSend) => {
+    const res = await fetch("http://localhost:5000/api/collaborate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(bodyToSend),
+    });
+    return res;
   };
+
+  try {
+    // Try sending first
+    let res = await submitBody(body);
+    if (!res.ok && base64Image) {
+      // If failed, resize and try again
+      const resizedImage = await compressToTargetSize(base64Image, 70);
+      const newBody = { ...formData, type, file: resizedImage };
+      res = await submitBody(newBody);
+    }
+
+    const data = await res.json();
+    if (res.ok) {
+      alert("Collaboration submitted successfully!");
+      navigate("/");
+    } else {
+      alert(data.message || "Submission failed!");
+    }
+  } catch (err) {
+    console.error("Error submitting form:", err);
+    alert("An error occurred while submitting.");
+  }
+};
 
   // Progress bar width based on step
   const progress = type === "ngo" ? (step / 3) * 100 : (step / 3) * 100;
