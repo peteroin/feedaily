@@ -66,6 +66,21 @@ db.run(`
   )
 `);
 
+// Ensure collaborations table exists at server start
+db.run(
+  `CREATE TABLE IF NOT EXISTS collaborations (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    type TEXT,
+    formData TEXT,
+    filePath TEXT,
+    acceptedByAdmin TEXT DEFAULT NULL,
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
+  )`,
+  (err) => {
+    if (err) console.error("Failed to create collaborations table:", err);
+    else console.log("Collaborations table ready");
+  }
+);
 
 
 // db.serialize(() => {

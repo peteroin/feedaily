@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
-import { 
-  FiArrowRight, 
-  FiUsers, 
-  FiHeart, 
-  FiGlobe, 
+import {
+  FiArrowRight,
+  FiUsers,
+  FiHeart,
+  FiGlobe,
   FiAward,
   FiShield,
   FiTrendingUp,
@@ -13,7 +13,8 @@ import {
   FiSun,
   FiMoon
 } from "react-icons/fi";
-
+import { useNavigate } from "react-router-dom";
+import UpcomingEvents from "./UpcomingEvents.jsx";
 export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, onGetStartedClick }) {
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem("theme") || "light";
@@ -25,6 +26,12 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
   const [animatedStats, setAnimatedStats] = useState([0, 0, 0, 0]);
   const featuresContainerRef = useRef(null);
   const statsRef = useRef(null);
+  const [showCollabModal, setShowCollabModal] = useState(false);
+  const navigate = useNavigate();
+  const [events, setEvents] = useState([]);
+  const onCollaborationClick = () => {
+    setShowCollabModal(true);
+  };
 
   useEffect(() => {
     document.body.classList.toggle("dark", theme === "dark");
@@ -36,14 +43,16 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
   useEffect(() => {
     const handleScroll = () => {
       setScrollY(window.scrollY);
-      
+
       if (featuresContainerRef.current) {
         const rect = featuresContainerRef.current.getBoundingClientRect();
         const containerTop = rect.top;
         const containerHeight = rect.height;
         const windowHeight = window.innerHeight;
-        
-        const scrollProgress = Math.max(0, Math.min(1, (windowHeight / 2 - containerTop) / (containerHeight / 2)));
+        const scrollProgress = Math.max(
+          0,
+          Math.min(1, (windowHeight / 2 - containerTop) / (containerHeight / 2))
+        );
         const featureIndex = Math.min(5, Math.floor(scrollProgress * 6));
         setActiveFeature(featureIndex);
       }
@@ -80,7 +89,11 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
         currentStep++;
         const progress = currentStep / steps;
         const easeOutQuad = 1 - Math.pow(1 - progress, 3);
-        setAnimatedStats(targets.map(target => Math.floor(target * easeOutQuad)));
+
+        setAnimatedStats(
+          targets.map((target) => Math.floor(target * easeOutQuad))
+        );
+
 
         if (currentStep >= steps) {
           setAnimatedStats(targets);
@@ -95,7 +108,8 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
   // Load Google Fonts
   useEffect(() => {
     const link = document.createElement("link");
-    link.href = "https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Sora:wght@400;600;700&display=swap";
+    link.href =
+      "https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Sora:wght@400;600;700&display=swap";
     link.rel = "stylesheet";
     document.head.appendChild(link);
     return () => {
@@ -229,8 +243,20 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
           <div className={`brand-name text-2xl sm:text-3xl font-bold tracking-wide ${themeClasses.activeText}`}>
             feedaily
           </div>
-          {/* Login/logout and Get started buttons */}
+
           <div className="nav-buttons flex items-center gap-4">
+            {/* Collaboration button (always visible) */}
+            <button
+              onClick={onCollaborationClick}
+              className={`text-sm sm:text-base cursor-pointer mr-4 ${
+                theme === "dark" ? "text-white" : "text-black"
+              } hover:underline`}
+              style={{ background: "none", border: "none", padding: 0 }}
+            >
+              Collaboration
+            </button>
+
+            {/* Login/logout and Get started buttons */}
             {isLoggedIn ? (
               <>
                 <button
@@ -501,7 +527,9 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
             </div>
           </div>
         </section>
-
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+          <UpcomingEvents events={events} />
+        </section>
         {/* CTA */}
         <section className={themeClasses.ctaBg}>
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 text-center">
@@ -583,6 +611,78 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
           </div>
         </footer>
       </div>
+
+      {/* Collaboration Modal */}
+      {showCollabModal && (
+      <div
+        className={`fixed inset-0 z-[100] flex items-center justify-center ${
+          theme === "dark" ? "bg-black/70" : "bg-black/50"
+        } backdrop-blur-sm`}
+      >
+        <div
+          className={`rounded-2xl shadow-lg max-w-md w-full mx-4 p-6 relative ${
+            theme === "dark" ? "bg-gray-800 text-gray-100" : "bg-white text-gray-900"
+          }`}
+        >
+          {/* Close Button */}
+          <button
+            onClick={() => setShowCollabModal(false)}
+            className={`absolute top-3 right-3 ${
+              theme === "dark" ? "text-gray-400 hover:text-gray-200" : "text-gray-500 hover:text-gray-700"
+            }`}
+            aria-label="Close modal"
+            style={{ cursor: "pointer" }}
+          >
+            ✕
+          </button>
+
+          {/* Header */}
+          <h2 className="text-2xl font-semibold text-center mb-4">
+            Collaboration Options
+          </h2>
+          <p className={`text-center mb-6 text-sm ${theme === "dark" ? "text-gray-300" : "text-gray-600"}`}>
+            Choose how you’d like to collaborate with Feedaily.
+          </p>
+
+          {/* Collaborator Option Buttons */}
+          <div className="flex flex-col gap-4">
+            <button
+              onClick={() => {
+                setShowCollabModal(false);
+                navigate("/collaboration?type=ngo");
+              }}
+              className={`w-full px-5 py-3 rounded-md border transition font-medium ${
+                theme === "dark"
+                  ? "border-gray-600 bg-gray-700 hover:bg-gray-900 hover:text-white text-gray-100"
+                  : "border-gray-300 bg-gray-100 hover:bg-gray-900 hover:text-white text-gray-900"
+              }`}
+              style={{ cursor: "pointer" }}
+            >
+              Collaborate as NGO / Partner
+            </button>
+
+            <button
+              onClick={() => {
+                setShowCollabModal(false);
+                navigate("/collaboration?type=event");
+              }}
+              className={`w-full px-5 py-3 rounded-md border transition font-medium ${
+                theme === "dark"
+                  ? "border-gray-600 bg-gray-700 hover:bg-gray-900 hover:text-white text-gray-100"
+                  : "border-gray-300 bg-gray-100 hover:bg-gray-900 hover:text-white text-gray-900"
+              }`}
+              style={{ cursor: "pointer" }}
+            >
+              Request a Social Event (Office / Premises)
+            </button>
+          </div>
+
+          <p className={`text-xs text-center mt-6 ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
+            Feedaily | Building partnerships for a better tomorrow
+          </p>
+        </div>
+      </div>
+    )}
     </div>
   );
 }
