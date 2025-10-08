@@ -3,15 +3,15 @@
   position: relative;
   min-height: 100vh;
   font-family: "Poppins", sans-serif;
-  color: #222;
+  color: #1e293b; /* Dark slate instead of harsh black */
   overflow: hidden;
 }
 
 .collab-bg {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
-  filter: brightness(1.05);
+  background: linear-gradient(135deg, #fefefe 0%, #f7f7f7 100%); /* Softer neutral background */
+  filter: brightness(1);
   z-index: 0;
 }
 
@@ -27,14 +27,14 @@
 
 /* === Card === */
 .collab-card {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(10px);
-  border-radius: 20px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  background: #fff;
+  border-radius: 12px; /* Match dashboard style */
+  box-shadow: 0 4px 12px rgba(30, 41, 59, 0.06); /* Softer slate shadow */
   max-width: 480px;
   width: 100%;
   padding: 2.5rem;
   animation: fadeIn 0.6s ease-in-out;
+  color: #1e293b;
 }
 
 /* === Header === */
@@ -50,17 +50,18 @@
   gap: 6px;
   font-size: 1.2rem;
   font-weight: 600;
+  color: #334155; /* Medium slate */
 }
 
 .collab-header h2 {
   margin-top: 0.5rem;
-  font-size: 1.5rem;
-  color: #333;
+  font-size: 1.25rem;
+  color: #1e293b; /* Dark slate */
 }
 
 .collab-header p {
-  color: #555;
-  font-size: 0.9rem;
+  color: #475569; /* Slate gray for muted text */
+  font-size: 0.875rem;
 }
 
 /* === Form === */
@@ -73,19 +74,29 @@
 .collab-form input,
 .collab-form textarea {
   width: 100%;
-  padding: 0.9rem 1rem;
-  border-radius: 10px;
-  border: 1px solid #ddd;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  border: 1px solid rgba(100, 116, 139, 0.3); /* Slate border */
   outline: none;
-  font-size: 0.95rem;
-  transition: 0.2s ease;
-  background-color: #fff;
+  font-size: 0.938rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  background-color: #f9fafb; /* Very light slate background */
+  color: #1e293b;
+  box-shadow: inset 0 0 8px rgba(255, 255, 255, 0.5);
+}
+
+.collab-form input::placeholder,
+.collab-form textarea::placeholder {
+  color: rgba(30, 41, 59, 0.5);
+  font-style: italic;
 }
 
 .collab-form input:focus,
 .collab-form textarea:focus {
-  border-color: #ff8c42;
-  box-shadow: 0 0 0 3px rgba(255, 140, 66, 0.2);
+  border-color: #fb923c; /* Warm accent tone */
+  background-color: #fff7ed;
+  box-shadow: 0 0 10px rgba(251, 146, 60, 0.5);
+  color: #1e293b;
 }
 
 textarea {
@@ -95,8 +106,8 @@ textarea {
 .file-upload {
   display: flex;
   flex-direction: column;
-  font-size: 0.9rem;
-  color: #444;
+  font-size: 0.875rem;
+  color: #475569;
   gap: 6px;
 }
 
@@ -111,32 +122,23 @@ textarea {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  background: linear-gradient(135deg, #ff9966, #ff5e62);
-  color: #fff;
-  font-size: 1rem;
+  background-color: #334155; /* Dark slate button */
+  color: #f9fafb; /* Almost white text */
+  font-size: 0.938rem;
   font-weight: 500;
   border: none;
-  border-radius: 10px;
-  padding: 0.9rem;
+  border-radius: 12px;
+  padding: 0.75rem 1.25rem;
   cursor: pointer;
-  transition: 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+  width: 100%;
+  box-shadow: 0 6px 20px rgba(51, 65, 85, 0.35);
 }
 
 .collab-btn:hover {
+  background-color: #475569; /* Lighter slate hover */
   transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(255, 94, 98, 0.3);
-}
-
-/* === Animations === */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  box-shadow: 0 12px 34px rgba(71, 85, 105, 0.45);
 }
 
 /* === Responsive === */
@@ -145,24 +147,25 @@ textarea {
     padding: 1.8rem;
   }
   .collab-header h2 {
-    font-size: 1.3rem;
+    font-size: 1.125rem;
   }
 }
-
 
 /* === Progress Bar === */
 .progress-bar {
   height: 6px;
-  background: rgba(0, 0, 0, 0.1);
-  border-radius: 4px;
+  background: rgba(100, 116, 139, 0.1);
+  border-radius: 8px;
   overflow: hidden;
   margin-top: 10px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .progress-fill {
-  height: 6px;
-  background: linear-gradient(90deg, #ff9966, #ff5e62);
-  transition: width 0.4s ease;
+  height: 100%;
+  background-color: #334155;
+  transition: width 0.5s ease;
+  border-radius: 8px;
 }
 
 /* === Step Buttons === */
@@ -174,28 +177,40 @@ textarea {
 }
 
 .collab-btn.back {
-  background: #ccc;
-  color: #333;
-}
-
-.collab-btn.next {
-  background: linear-gradient(135deg, #ff9966, #ff5e62);
-}
-
-.collab-btn.submit {
-  background: linear-gradient(135deg, #ff9966, #ff5e62);
-  width: 100%;
+  background-color: #f1f5f9; /* Light slate */
+  color: #334155;
+  border: 1px solid rgba(100, 116, 139, 0.3);
+  border-radius: 12px;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
 }
 
 .collab-btn.back:hover {
-  background: #bbb;
+  background-color: #e2e8f0;
+  color: #475569;
+}
+
+.collab-btn.next,
+.collab-btn.submit {
+  background-color: #334155;
+  color: #f9fafb;
+  border: none;
+  border-radius: 12px;
+  padding: 0.75rem 2.5rem;
+  font-weight: 700;
+}
+
+.collab-btn.next:hover,
+.collab-btn.submit:hover {
+  filter: brightness(1.1);
+  box-shadow: 0 14px 30px rgba(51, 65, 85, 0.45);
 }
 
 /* Center next button */
 .step-controls.center {
-  display: flex;
   justify-content: center;
-  gap: 10px;
+  gap: 15px;
   margin-top: 1rem;
 }
 
@@ -208,14 +223,27 @@ textarea {
   margin-left: auto;
 }
 
-/* Error message below input */
+/* === Error message */
 .input-wrapper {
   margin-bottom: 1rem;
   position: relative;
 }
 
 .error-msg {
-  color: #ff4d4d;
+  color: #b91c1c; /* Robust red */
   font-size: 0.85rem;
   margin-top: 3px;
+  font-weight: 600;
+}
+
+/* === Animations === */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
