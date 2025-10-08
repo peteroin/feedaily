@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   FiHome,
@@ -7,14 +7,11 @@ import {
   FiAward,
   FiTruck,
   FiLogOut,
-  FiSun,
-  FiMoon,
+  FiHeart,
 } from "react-icons/fi";
 import "./DashboardLayout.css";
-import useTheme from "../hooks/useTheme";
 
 export default function DashboardLayout({ children }) {
-  const { theme, setTheme, themeClasses } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
@@ -23,6 +20,7 @@ export default function DashboardLayout({ children }) {
     { path: "/dashboard", label: "Dashboard", icon: <FiHome /> },
     { path: "/stats", label: "Stats", icon: <FiBarChart2 /> },
     { path: "/profile", label: "Profile", icon: <FiUser /> },
+    { path: "/impact", label: "Impact", icon: <FiHeart /> },
     { path: "/sender-rankings", label: "Rankings", icon: <FiAward /> },
     { path: "/delivery", label: "Delivery", icon: <FiTruck /> },
   ];
@@ -34,29 +32,6 @@ export default function DashboardLayout({ children }) {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  // Only allow dark/light toggling on the dashboard and stats pages.
-  const savedThemeRef = useRef(null);
-  useEffect(() => {
-    const path = location.pathname || "/";
-    const isThemeable = path === "/dashboard" || path === "/stats" || path.startsWith("/dashboard/");
-
-    if (!isThemeable) {
-      // leaving a themeable page: save current theme and force light
-      if (theme === "dark") {
-        savedThemeRef.current = "dark";
-      }
-      if (theme !== "light") {
-        setTheme("light");
-      }
-    } else {
-      // entering a themeable page: restore saved theme if any
-      if (savedThemeRef.current) {
-        setTheme(savedThemeRef.current);
-        savedThemeRef.current = null;
-      }
-    }
-  }, [location.pathname]);
 
   const handleLogout = () => {
     localStorage.removeItem("user");
@@ -72,7 +47,7 @@ export default function DashboardLayout({ children }) {
   };
 
   return (
-    <div className={`dashboard-container ${themeClasses.page}`}>
+    <div className="dashboard-container">
       <header className={`dashboard-header${scrolled ? " header-scrolled" : ""}`}>
         <div className="header-content">
           <Link to="/" className="logo">
@@ -87,6 +62,16 @@ export default function DashboardLayout({ children }) {
                   key={path}
                   to={path}
                   className={`nav-link${isActive ? " nav-link-active" : ""}`}
+                  onMouseEnter={(e) => {
+                    if (!isActive) {
+                      e.currentTarget.style.color = '#000';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive) {
+                      e.currentTarget.style.color = '#666';
+                    }
+                  }}
                 >
                   <span className="nav-icon">{icon}</span>
                   <span className="nav-label">{label}</span>
@@ -94,24 +79,21 @@ export default function DashboardLayout({ children }) {
               );
             })}
           </nav>
-          <div className="flex items-center gap-2">
-            <button 
-              className="logout-btn"
-              onClick={handleLogout}
-            >
-              <FiLogOut />
-            </button>
-          {(location.pathname === "/dashboard" || location.pathname === "/stats") && (
-          <button
-              onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-              className={`theme-toggle-btn px-2 py-2 rounded transition border ${themeClasses.border}`}
-              aria-label="Toggle theme"
-              style={{cursor:'pointer', background: "none", color: theme === "dark" ? "#fff" : "#222" }}
-            >
-              {theme === "light" ? <FiMoon className="text-lg" /> : <FiSun className="text-lg text-yellow-400" />}
-            </button>
-          )}
-          </div>
+          
+          <button 
+            className="logout-btn"
+            onClick={handleLogout}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = '#000';
+              e.currentTarget.style.transform = 'translateX(2px)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = '#666';
+              e.currentTarget.style.transform = 'translateX(0)';
+            }}
+          >
+            <FiLogOut />
+          </button>
         </div>
       </header>
 
