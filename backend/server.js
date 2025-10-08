@@ -14,7 +14,7 @@ import collaborationRoutes from "./collaborationRoutes.js";
 
 const app = express();
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '5mb' }));
 
 //registering for payment 
 app.use("/api", createCheckoutSession);
