@@ -10,6 +10,7 @@ import nodemailer from "nodemailer";
 import { sendEmail } from './emailService.js';
 import createCheckoutSession from "./createCheckoutSession.js";
 import impactAPI from './impactAPI.js';
+import calendarAPI from './calendarAPI.js';
 
 const app = express();
 app.use(cors());
@@ -20,6 +21,8 @@ app.use("/api", createCheckoutSession);
 
 // Register environmental impact API routes
 app.use("/api", impactAPI);
+// Register calendar API routes
+app.use("/api", calendarAPI);
 
 // REGISTER endpoint
 app.post("/api/register", async (req, res) => {
