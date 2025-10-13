@@ -19,6 +19,9 @@ import CollaborationFormPage from "./pages/CollaborationFormPage";
 import MerchandisePage from "./pages/MerchandisePage";
 import MerchandiseCheckoutPage from "./pages/MerchandiseCheckoutPage";
 import MerchandiseSuccessPage from "./pages/MerchandiseSuccessPage";
+import ComplaintsPage from "./pages/ComplaintsPage";
+import ComplaintTrackingPage from "./pages/ComplaintTrackingPage";
+import AdminComplaintsPage from "./pages/AdminComplaintsPage";
 
 // Wrapper for LandingPage (to use navigation)
 function LandingPageWrapper() {
@@ -127,6 +130,32 @@ function App() {
         <Route
           path="/merchandise/success"
           element={<MerchandiseSuccessPage />}
+        />
+
+        {/* Complaints routes */}
+        <Route
+          path="/complaints"
+          element={
+            <DashboardLayout>
+              <ComplaintsPage />
+            </DashboardLayout>
+          }
+        />
+        <Route
+          path="/complaints/track"
+          element={
+            <DashboardLayout>
+              <ComplaintTrackingPage />
+            </DashboardLayout>
+          }
+        />
+        <Route
+          path="/admin/complaints"
+          element={
+            <ProtectedAdminRoute>
+              <AdminComplaintsPage />
+            </ProtectedAdminRoute>
+          }
         />
       </Routes>
     </main>
