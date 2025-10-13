@@ -1000,6 +1000,234 @@ app.put("/api/merchandise/orders/:orderId", (req, res) => {
   });
 });
 
+// ======================== COMPLAINTS ENDPOINTS ========================
+
+// Create complaints table if not exists
+db.run(
+  `
+  CREATE TABLE IF NOT EXISTS complaints (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    userId INTEGER NOT NULL,
+    complaintNumber TEXT UNIQUE NOT NULL,
+    complaintType TEXT NOT NULL,
+    againstPerson INTEGER,
+    details TEXT NOT NULL,
+    proof TEXT,
+    status TEXT DEFAULT 'initiated',
+    adminResponse TEXT,
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    resolvedAt DATETIME,
+    FOREIGN KEY (userId) REFERENCES users(id),
+    FOREIGN KEY (againstPerson) REFERENCES users(id)
+  )
+`,
+  (err) => {
+    if (err) {
+      console.error("Error creating complaints table:", err);
+    } else {
+      console.log("✅ complaints table ready");
+    }
+  }
+);
+
+// Generate unique complaint number
+function generateComplaintNumber() {
+  const year = new Date().getFullYear();
+  const random = Math.floor(Math.random() * 10000)
+    .toString()
+    .padStart(4, "0");
+  return `CMP-${year}-${random}`;
+}
+
+// Get donors who donated to a user
+app.get("/api/complaints/donors/:userId", (req, res) => {
+  const { userId } = req.params;
+
+  const query = `
+    SELECT DISTINCT u.id, u.name, u.contact,
+           d.foodType || ' (' || DATE(d.createdAt) || ')' as donationInfo
+    FROM donations d
+    JOIN users u ON d.userId = u.id
+    WHERE d.requesterId = ? AND d.status IN ('Requested', 'Delivering', 'Completed')
+    ORDER BY d.createdAt DESC
+  `;
+
+  db.all(query, [userId], (err, rows) => {
+    if (err) {
+      console.error("Error fetching donors:", err);
+      return res.status(500).json({ message: "Database error" });
+    }
+    res.json(rows);
+  });
+});
+
+// Get delivery buddies who delivered to a user
+app.get("/api/complaints/delivery-buddies/:userId", (req, res) => {
+  const { userId } = req.params;
+
+  // For now, we'll use the same logic as donors since delivery buddies
+  // would be the donors themselves who delivered the food
+  const query = `
+    SELECT DISTINCT u.id, u.name, u.contact,
+           'Delivered ' || d.foodType || ' (' || DATE(d.createdAt) || ')' as donationInfo
+    FROM donations d
+    JOIN users u ON d.userId = u.id
+    WHERE d.requesterId = ? 
+      AND d.status IN ('Delivering', 'Completed')
+      AND d.deliveryMethod = 'delivery'
+    ORDER BY d.createdAt DESC
+  `;
+
+  db.all(query, [userId], (err, rows) => {
+    if (err) {
+      console.error("Error fetching delivery buddies:", err);
+      return res.status(500).json({ message: "Database error" });
+    }
+    res.json(rows);
+  });
+});
+
+// Create a new complaint
+app.post("/api/complaints", (req, res) => {
+  const { userId, complaintType, againstPerson, details, proof } = req.body;
+
+  if (!userId || !complaintType || !details) {
+    return res.status(400).json({ message: "Missing required fields" });
+  }
+
+  const complaintNumber = generateComplaintNumber();
+
+  const query = `
+    INSERT INTO complaints (userId, complaintNumber, complaintType, againstPerson, details, proof, status)
+    VALUES (?, ?, ?, ?, ?, ?, 'initiated')
+  `;
+
+  db.run(
+    query,
+    [userId, complaintNumber, complaintType, againstPerson, details, proof],
+    function (err) {
+      if (err) {
+        console.error("Error creating complaint:", err);
+        return res.status(500).json({ message: "Database error" });
+      }
+      res.json({
+        message: "Complaint submitted successfully",
+        complaintNumber,
+        complaintId: this.lastID,
+      });
+    }
+  );
+});
+
+// Get user's complaints
+app.get("/api/complaints/user/:userId", (req, res) => {
+  const { userId } = req.params;
+
+  const query = `
+    SELECT c.*, 
+           u.name as againstPersonName
+    FROM complaints c
+    LEFT JOIN users u ON c.againstPerson = u.id
+    WHERE c.userId = ?
+    ORDER BY c.createdAt DESC
+  `;
+
+  db.all(query, [userId], (err, rows) => {
+    if (err) {
+      console.error("Error fetching user complaints:", err);
+      return res.status(500).json({ message: "Database error" });
+    }
+    res.json(rows);
+  });
+});
+
+// Track complaint by complaint number
+app.get("/api/complaints/track/:complaintNumber", (req, res) => {
+  const { complaintNumber } = req.params;
+
+  const query = `
+    SELECT c.*, 
+           u1.name as userName,
+           u2.name as againstPersonName
+    FROM complaints c
+    JOIN users u1 ON c.userId = u1.id
+    LEFT JOIN users u2 ON c.againstPerson = u2.id
+    WHERE c.complaintNumber = ?
+  `;
+
+  db.get(query, [complaintNumber], (err, row) => {
+    if (err) {
+      console.error("Error tracking complaint:", err);
+      return res.status(500).json({ message: "Database error" });
+    }
+    if (!row) {
+      return res.status(404).json({ message: "Complaint not found" });
+    }
+    res.json(row);
+  });
+});
+
+// Get all complaints (Admin)
+app.get("/api/complaints", (req, res) => {
+  const query = `
+    SELECT c.*, 
+           u1.name as userName,
+           u1.email as userEmail,
+           u1.contact as userContact,
+           u2.name as againstPersonName
+    FROM complaints c
+    JOIN users u1 ON c.userId = u1.id
+    LEFT JOIN users u2 ON c.againstPerson = u2.id
+    ORDER BY c.createdAt DESC
+  `;
+
+  db.all(query, [], (err, rows) => {
+    if (err) {
+      console.error("Error fetching complaints:", err);
+      return res.status(500).json({ message: "Database error" });
+    }
+    res.json(rows);
+  });
+});
+
+// Update complaint status (Admin)
+app.put("/api/complaints/:complaintId", (req, res) => {
+  const { complaintId } = req.params;
+  const { status, adminResponse } = req.body;
+
+  if (!status) {
+    return res.status(400).json({ message: "Status is required" });
+  }
+
+  const resolvedAt =
+    status === "resolved" || status === "rejected"
+      ? new Date().toISOString()
+      : null;
+
+  const query = `
+    UPDATE complaints
+    SET status = ?,
+        adminResponse = ?,
+        resolvedAt = ?
+    WHERE id = ?
+  `;
+
+  db.run(
+    query,
+    [status, adminResponse, resolvedAt, complaintId],
+    function (err) {
+      if (err) {
+        console.error("Error updating complaint:", err);
+        return res.status(500).json({ message: "Database error" });
+      }
+      if (this.changes === 0) {
+        return res.status(404).json({ message: "Complaint not found" });
+      }
+      res.json({ message: "Complaint updated successfully" });
+    }
+  );
+});
+
 const PORT = 5000;
 app.listen(PORT, () =>
   console.log(`Backend running on http://localhost:${PORT}`)

@@ -298,6 +298,13 @@ export default function LandingPage({
             {isLoggedIn ? (
               <>
                 <button
+                  onClick={() => (window.location.href = "/complaints")}
+                  className={`text-sm sm:text-base px-4 sm:px-5 py-2 sm:py-2.5 rounded-md border ${themeClasses.border} ${themeClasses.btnSecondary} transition`}
+                  style={{ cursor: "pointer" }}
+                >
+                  Complaints
+                </button>
+                <button
                   onClick={onLogoutClick}
                   className={`text-sm sm:text-base px-4 sm:px-5 py-2 sm:py-2.5 rounded-md border ${themeClasses.border} ${themeClasses.btnSecondary} transition`}
                   style={{ cursor: "pointer" }}
