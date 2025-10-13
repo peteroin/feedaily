@@ -108,6 +108,7 @@ export default function DashboardPage() {
           setUpcomingEvents(data.events || []);
         }
       } catch (e) {
+        console.error("Error fetching calendar events:", e);
         // silent fail; banner won't show
       }
     };
