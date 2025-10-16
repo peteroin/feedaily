@@ -82,6 +82,27 @@ db.run(
   }
 );
 
+// Ensure pro_subscriptions table exists at server start
+db.run(
+  `CREATE TABLE IF NOT EXISTS pro_subscriptions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    userId INTEGER NOT NULL,
+    contact TEXT NOT NULL,
+    subscriptionType TEXT DEFAULT 'whatsapp_pro',
+    status TEXT DEFAULT 'active',
+    stripeSessionId TEXT,
+    stripeCustomerId TEXT,
+    subscriptionStartDate DATETIME DEFAULT CURRENT_TIMESTAMP,
+    subscriptionEndDate DATETIME,
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (userId) REFERENCES users(id)
+  )`,
+  (err) => {
+    if (err) console.error("Failed to create pro_subscriptions table:", err);
+    else console.log("Pro subscriptions table ready");
+  }
+);
+
 
 // db.serialize(() => {
 //   db.run(`DROP TABLE IF EXISTS users;`);
@@ -89,5 +110,5 @@ db.run(
 //   db.run(`DROP TABLE IF EXISTS deliveries;`);
 //   console.log('Both tables dropped ');
 //   db.close();});
-  
+
 export default db;
