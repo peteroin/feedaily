@@ -9,7 +9,8 @@ import { generateOtp, validateOtp } from "./otpService.js";
 import nodemailer from "nodemailer";
 import { sendEmail } from "./emailService.js";
 import createCheckoutSession from "./createCheckoutSession.js";
-import impactAPI from "./impactAPI.js";
+import impactAPI from './impactAPI.js';
+import calendarAPI from './calendarAPI.js';
 import collaborationRoutes from "./collaborationRoutes.js";
 
 const app = express();
@@ -21,6 +22,8 @@ app.use("/api", createCheckoutSession);
 
 // Register environmental impact API routes
 app.use("/api", impactAPI);
+// Register calendar API routes
+app.use("/api", calendarAPI);
 
 //Collaboration routes
 app.use("/api", collaborationRoutes);
