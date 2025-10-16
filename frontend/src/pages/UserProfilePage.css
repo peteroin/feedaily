@@ -3,7 +3,7 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 0;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 /* Header Section */
@@ -514,8 +514,12 @@
 
 /* Animation */
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .spin {
@@ -527,11 +531,11 @@
   .profile-content {
     grid-template-columns: 1fr;
   }
-  
+
   .donation-content {
     grid-template-columns: 1fr;
   }
-  
+
   .donation-image {
     width: 100%;
     height: 200px;
@@ -542,40 +546,202 @@
   .profile-header {
     padding: 1.5rem;
   }
-  
+
   .header-content {
     flex-direction: column;
     gap: 1rem;
   }
-  
+
   .profile-header h1 {
     font-size: 1.25rem;
   }
-  
+
   .tab-navigation {
     flex-direction: column;
   }
-  
+
   .impact-stats {
     grid-template-columns: 1fr;
   }
-  
+
   .user-avatar {
     flex-direction: column;
     text-align: center;
   }
-  
+
   .avatar-info {
     margin-left: 0;
     margin-top: 1rem;
   }
-  
+
   .otp-form {
     flex-direction: column;
     align-items: stretch;
   }
-  
+
   .otp-input {
     width: 100%;
   }
+}
+
+/* Pro Subscription Styles */
+.pro-upgrade-card,
+.pro-status-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin-top: 1.5rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.pro-upgrade-card::before,
+.pro-status-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  pointer-events: none;
+}
+
+.pro-icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.pro-upgrade-card h3,
+.pro-status-card h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  color: white;
+}
+
+.pro-upgrade-card p,
+.pro-status-card p {
+  font-size: 0.875rem;
+  margin: 0 0 1rem 0;
+  opacity: 0.9;
+  color: white;
+}
+
+.pro-benefits {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem 0;
+  text-align: left;
+}
+
+.pro-benefits li {
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+  opacity: 0.9;
+  color: white;
+}
+
+.pro-upgrade-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 0.938rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  position: relative;
+  z-index: 1;
+}
+
+.pro-upgrade-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.pro-status-badge {
+  background: rgba(34, 197, 94, 0.2);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  display: inline-block;
+  backdrop-filter: blur(10px);
+  position: relative;
+  z-index: 1;
+  margin-bottom: 1rem;
+}
+
+/* Pro Member Features and Management */
+.pro-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.pro-title-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.pro-management-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.pro-renew-btn {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.25rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.pro-renew-btn:hover {
+  background: linear-gradient(135deg, #059669, #047857);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+}
+
+.pro-cancel-btn {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.25rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.pro-cancel-btn:hover {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(239, 68, 68, 0.4);
 }

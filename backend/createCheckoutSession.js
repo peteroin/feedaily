@@ -62,7 +62,8 @@ router.post("/create-checkout-session", async (req, res) => {
 
 router.post("/payment-success", async (req, res) => {
   const { sessionId } = req.body;
-  console.log("[payment-success] API called, got sessionId:", sessionId);
+  console.log("🚀 [payment-success] API called, got sessionId:", sessionId);
+  console.log("🚀 Request body:", req.body);
 
   if (!sessionId) {
     console.error("ERROR: No sessionId in body");
@@ -72,6 +73,72 @@ router.post("/payment-success", async (req, res) => {
   try {
     const session = await stripe.checkout.sessions.retrieve(sessionId);
     console.log("Stripe session object received", session);
+
+    // Check if this is a Pro subscription payment
+    if (session.metadata?.type === "pro_subscription") {
+      console.log("🚀 Pro subscription payment detected, handling directly");
+      console.log("🚀 Session metadata:", session.metadata);
+      const { userId, contact } = session.metadata;
+
+      if (!userId || !contact) {
+        console.error("ERROR: No userId or contact in Pro subscription metadata");
+        return res.status(400).json({ message: "No userId or contact in payment metadata" });
+      }
+
+      // Check if user already has an active Pro subscription
+      db.get(
+        "SELECT * FROM pro_subscriptions WHERE userId = ? AND status = 'active'",
+        [userId],
+        (err, existingSubscription) => {
+          if (err) {
+            console.error("DB error checking existing Pro subscription:", err);
+            return res.status(500).json({ message: "Database error" });
+          }
+
+          if (existingSubscription) {
+            console.log("User already has active Pro subscription");
+            return res.status(200).json({ message: "Pro subscription already active" });
+          }
+
+          // Add user to Pro subscriptions table
+          console.log("Creating Pro subscription for user:", userId, "contact:", contact);
+          db.run(
+            `INSERT INTO pro_subscriptions (userId, contact, stripeSessionId, status) VALUES (?, ?, ?, 'active')`,
+            [userId, contact, sessionId],
+            (err) => {
+              if (err) {
+                console.error("Failed to create Pro subscription:", err);
+                return res.status(500).json({ message: "Database error" });
+              }
+
+              console.log("✅ Pro subscription created successfully for user:", userId);
+              console.log("✅ Database insert completed, sending response...");
+
+              // Verify the insert worked by checking the database
+              db.get(
+                "SELECT * FROM pro_subscriptions WHERE userId = ? AND status = 'active'",
+                [userId],
+                (verifyErr, verifyRow) => {
+                  if (verifyErr) {
+                    console.error("Error verifying Pro subscription:", verifyErr);
+                  } else {
+                    console.log("🔍 Verification - Pro subscription in DB:", verifyRow);
+                  }
+                }
+              );
+
+              res.json({
+                message: "Pro subscription activated successfully",
+                isPro: true,
+                userId: userId
+              });
+            }
+          );
+        }
+      );
+      return;
+    }
+
     const donationId = session.metadata?.donationId;
 
     if (!donationId) {

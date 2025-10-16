@@ -4,13 +4,14 @@ import fetch from "node-fetch";
 import db from "./database.js";
 import bcrypt from "bcrypt";
 import { getPlaceNameFromCoords } from "./geocodeHelper.js";
-import { sendWhatsAppNotification } from "./twilioService.mjs";
+import { sendWhatsAppNotification, sendWhatsAppToProUsers } from "./twilioService.mjs";
 import { generateOtp, validateOtp } from "./otpService.js";
 import nodemailer from "nodemailer";
 import { sendEmail } from "./emailService.js";
 import createCheckoutSession from "./createCheckoutSession.js";
 import impactAPI from "./impactAPI.js";
 import collaborationRoutes from "./collaborationRoutes.js";
+import proSubscriptionRoutes from "./proSubscriptionRoutes.js";
 
 const app = express();
 app.use(cors());
@@ -24,6 +25,24 @@ app.use("/api", impactAPI);
 
 //Collaboration routes
 app.use("/api", collaborationRoutes);
+
+//Pro subscription routes
+console.log("Registering Pro subscription routes...");
+app.use("/api", proSubscriptionRoutes);
+console.log("✅ Pro subscription routes registered successfully");
+console.log("   Available endpoints:");
+console.log("   - POST /api/pro-subscription/create-checkout");
+console.log("   - POST /api/pro-subscription/success");
+console.log("   - GET  /api/pro-subscriptions/check");
+console.log("   - GET  /api/pro-subscriptions/details");
+console.log("   - GET  /api/pro-subscriptions");
+console.log("   - GET  /api/pro-subscriptions/debug");
+console.log("   - POST /api/pro-subscription/cancel");
+
+// Test route to verify server is working
+app.get("/api/test", (req, res) => {
+  res.json({ message: "Server is running!", timestamp: new Date().toISOString() });
+});
 
 // REGISTER endpoint
 app.post("/api/register", async (req, res) => {
@@ -200,8 +219,8 @@ app.post("/api/donate-food", (req, res) => {
         Contact: ${contact}
         Location: ${locationText}`;
 
-      // Change number to one that has joined your Twilio sandbox
-      sendWhatsAppNotification("+919060268964", notificationMessage);
+      // Send WhatsApp notification to Pro users
+      sendWhatsAppToProUsers(notificationMessage);
 
       res.json({
         message: "Food donation recorded successfully",
@@ -277,8 +296,7 @@ const expireOldDonations = () => {
           createdAtUTC.getTime() + row.freshness * 60 * 60 * 1000
         );
         console.log(
-          `Donation ID ${
-            row.id
+          `Donation ID ${row.id
           } - Donated At: ${createdAtUTC.toISOString()} - Expires At: ${expiryTimeUTC.toISOString()}`
         );
       }
