@@ -7,7 +7,6 @@ const SIGNATURE_BASE64 ="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAVIAAABUC
 const CertificateGenerator = ({
   user,
   overall,
-  totalReceived,
   unlockedBadges,
 }) => {
   const handleGenerate = async () => {
@@ -240,10 +239,14 @@ const CertificateGenerator = ({
       : `https://feedaily.example/certificate`;
 
     try {
-      const qrDataUrl = await QRCode.toDataURL(qrContent, { margin: 1, width: 70 });
+      const qrDataUrl = await QRCode.toDataURL(qrContent, {
+        margin: 1,
+        width: 70,
+      });
       doc.addImage(qrDataUrl, "PNG", pageWidth - 60, pageHeight - 150, 34, 34);
-    } catch (e) {
+    } catch (error) {
       // ignore QR generation failures
+      console.error(error);
     }
 
     // Achievement badge text with palette color
