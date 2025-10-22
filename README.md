@@ -175,7 +175,7 @@ We use labels to organize issues:
 <p align="center">
   <strong>Maintainers</strong>  
   <br>
-  <a href="https://github.com/peteroin">Peter</a> • <a href="https://github.com/ictorv">Victor</a>
+  <a href="https://github.com/peteroin">Peter</a> • <a href="https://github.com/ictorv">Victor</a> • <a href="https://github.com/k-eran">Keran</a> • <a href="https://github.com/tanya-1109">Tanya</a>
 </p>
 
 
