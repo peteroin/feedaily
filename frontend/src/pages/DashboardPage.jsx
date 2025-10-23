@@ -320,13 +320,22 @@ export default function DashboardPage() {
     <div className="dashboard-page">
       {/* Upcoming Events Banner */}
       {!hideEventBanner && upcomingEvents && upcomingEvents.length > 0 && (
-        <div className="alert alert-warning" style={{marginBottom: '16px'}}>
-          <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-            <div>
-              <strong>Upcoming events this week:</strong> {upcomingEvents.slice(0, 3).map(e => e.summary).join(', ')}
-              {upcomingEvents.length > 3 ? ` and ${upcomingEvents.length - 3} more` : ''}. Potential high food surplus — plan donations!
+        <div className="events-banner">
+          <div className="events-banner-content">
+            <div className="events-banner-icon">
+              <FiClock />
             </div>
-            <button className="btn btn-ghost btn-sm" onClick={() => setHideEventBanner(true)}>Dismiss</button>
+            <div className="events-banner-text">
+              <div className="events-banner-title">Upcoming events this week</div>
+              <div className="events-banner-events">
+                {upcomingEvents.slice(0, 3).map(e => e.summary).join(', ')}
+                {upcomingEvents.length > 3 && ` and ${upcomingEvents.length - 3} more`}
+              </div>
+              <div className="events-banner-subtitle">Potential high food surplus — plan donations!</div>
+            </div>
+            <button className="events-banner-dismiss" onClick={() => setHideEventBanner(true)}>
+              <FiX />
+            </button>
           </div>
         </div>
       )}
