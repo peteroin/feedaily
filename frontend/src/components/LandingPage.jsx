@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
-import { 
-  FiArrowRight, 
-  FiUsers, 
-  FiHeart, 
-  FiGlobe, 
+import {
+  FiArrowRight,
+  FiUsers,
+  FiHeart,
+  FiGlobe,
   FiAward,
   FiShield,
   FiTrendingUp,
@@ -11,10 +11,16 @@ import {
   FiPhone,
   FiMapPin,
   FiSun,
-  FiMoon
+  FiMoon,
 } from "react-icons/fi";
-
-export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, onGetStartedClick }) {
+import { useNavigate } from "react-router-dom";
+import UpcomingEvents from "./UpcomingEvents.jsx";
+export default function LandingPage({
+  isLoggedIn,
+  onLoginClick,
+  onLogoutClick,
+  onGetStartedClick,
+}) {
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem("theme") || "light";
   });
@@ -25,10 +31,17 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
   const [animatedStats, setAnimatedStats] = useState([0, 0, 0, 0]);
   const featuresContainerRef = useRef(null);
   const statsRef = useRef(null);
+  const [showCollabModal, setShowCollabModal] = useState(false);
+  const navigate = useNavigate();
+  const [events, setEvents] = useState([]);
+  const onCollaborationClick = () => {
+    setShowCollabModal(true);
+  };
 
   useEffect(() => {
     document.body.classList.toggle("dark", theme === "dark");
-    document.body.style.backgroundColor = theme === "dark" ? "#1a202c" : "#ffffff";
+    document.body.style.backgroundColor =
+      theme === "dark" ? "#1a202c" : "#ffffff";
     localStorage.setItem("theme", theme);
   }, [theme]);
 
@@ -36,14 +49,16 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
   useEffect(() => {
     const handleScroll = () => {
       setScrollY(window.scrollY);
-      
+
       if (featuresContainerRef.current) {
         const rect = featuresContainerRef.current.getBoundingClientRect();
         const containerTop = rect.top;
         const containerHeight = rect.height;
         const windowHeight = window.innerHeight;
-        
-        const scrollProgress = Math.max(0, Math.min(1, (windowHeight / 2 - containerTop) / (containerHeight / 2)));
+        const scrollProgress = Math.max(
+          0,
+          Math.min(1, (windowHeight / 2 - containerTop) / (containerHeight / 2))
+        );
         const featureIndex = Math.min(5, Math.floor(scrollProgress * 6));
         setActiveFeature(featureIndex);
       }
@@ -80,7 +95,10 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
         currentStep++;
         const progress = currentStep / steps;
         const easeOutQuad = 1 - Math.pow(1 - progress, 3);
-        setAnimatedStats(targets.map(target => Math.floor(target * easeOutQuad)));
+
+        setAnimatedStats(
+          targets.map((target) => Math.floor(target * easeOutQuad))
+        );
 
         if (currentStep >= steps) {
           setAnimatedStats(targets);
@@ -95,7 +113,8 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
   // Load Google Fonts
   useEffect(() => {
     const link = document.createElement("link");
-    link.href = "https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Sora:wght@400;600;700&display=swap";
+    link.href =
+      "https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Sora:wght@400;600;700&display=swap";
     link.rel = "stylesheet";
     document.head.appendChild(link);
     return () => {
@@ -108,50 +127,56 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
     setTheme(theme === "light" ? "dark" : "light");
   };
 
-  const headingStyle = { fontFamily: "'Sora', 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif" };
+  const headingStyle = {
+    fontFamily:
+      "'Sora', 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif",
+  };
 
   // Theme-based color classes
-  const themeClasses = theme === "dark"
-    ? {
-        page: "bg-gray-900 text-gray-100",
-        nav: "bg-gray-900/95 text-gray-100",
-        border: "border-gray-700",
-        card: "bg-gray-800 border-gray-700 text-gray-100",
-        cardHover: "hover:bg-gray-700",
-        activeBg: "bg-gray-800",
-        inactiveBg: "bg-gray-800",
-        activeText: "text-white",
-        inactiveText: "text-gray-400",
-        iconColor: "text-gray-300",
-        activeIconColor: "text-yellow-400",
-        statBg: "bg-gray-800 border-gray-700",
-        statText: "text-gray-100",
-        ctaBg: "bg-gray-800",
-        ctaText: "text-gray-100",
-        footer: "bg-gray-900 border-gray-700 text-gray-400",
-        btnPrimary: "bg-gray-700 text-white hover:bg-gray-600",
-        btnSecondary: "bg-gray-800 text-white hover:bg-gray-700 border-gray-600",
-      }
-    : {
-        page: "bg-white text-gray-900",
-        nav: "bg-white/95 text-gray-900",
-        border: "border-gray-300",
-        card: "bg-white border-gray-200 text-gray-900",
-        cardHover: "hover:bg-gray-100",
-        activeBg: "bg-white",
-        inactiveBg: "bg-gray-50",
-        activeText: "text-gray-900",
-        inactiveText: "text-gray-500",
-        iconColor: "text-gray-700",
-        activeIconColor: "text-gray-900",
-        statBg: "bg-white border-gray-200",
-        statText: "text-gray-900",
-        ctaBg: "bg-gray-900",
-        ctaText: "text-white",
-        footer: "bg-white border-gray-200 text-gray-600",
-        btnPrimary: "bg-gray-900 text-white hover:bg-gray-700",
-        btnSecondary: "bg-white text-gray-900 hover:bg-gray-900 hover:text-white border-gray-300",
-      };
+  const themeClasses =
+    theme === "dark"
+      ? {
+          page: "bg-gray-900 text-gray-100",
+          nav: "bg-gray-900/95 text-gray-100",
+          border: "border-gray-700",
+          card: "bg-gray-800 border-gray-700 text-gray-100",
+          cardHover: "hover:bg-gray-700",
+          activeBg: "bg-gray-800",
+          inactiveBg: "bg-gray-800",
+          activeText: "text-white",
+          inactiveText: "text-gray-400",
+          iconColor: "text-gray-300",
+          activeIconColor: "text-yellow-400",
+          statBg: "bg-gray-800 border-gray-700",
+          statText: "text-gray-100",
+          ctaBg: "bg-gray-800",
+          ctaText: "text-gray-100",
+          footer: "bg-gray-900 border-gray-700 text-gray-400",
+          btnPrimary: "bg-gray-700 text-white hover:bg-gray-600",
+          btnSecondary:
+            "bg-gray-800 text-white hover:bg-gray-700 border-gray-600",
+        }
+      : {
+          page: "bg-white text-gray-900",
+          nav: "bg-white/95 text-gray-900",
+          border: "border-gray-300",
+          card: "bg-white border-gray-200 text-gray-900",
+          cardHover: "hover:bg-gray-100",
+          activeBg: "bg-white",
+          inactiveBg: "bg-gray-50",
+          activeText: "text-gray-900",
+          inactiveText: "text-gray-500",
+          iconColor: "text-gray-700",
+          activeIconColor: "text-gray-900",
+          statBg: "bg-white border-gray-200",
+          statText: "text-gray-900",
+          ctaBg: "bg-gray-900",
+          ctaText: "text-white",
+          footer: "bg-white border-gray-200 text-gray-600",
+          btnPrimary: "bg-gray-900 text-white hover:bg-gray-700",
+          btnSecondary:
+            "bg-white text-gray-900 hover:bg-gray-900 hover:text-white border-gray-300",
+        };
 
   const featureImages = [
     "/features/community.png",
@@ -163,42 +188,48 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
   ];
 
   const features = [
-    { 
-      icon: <FiUsers className="w-6 h-6" />, 
-      title: "Community Driven", 
+    {
+      icon: <FiUsers className="w-6 h-6" />,
+      title: "Community Driven",
       desc: "Join thousands fighting food waste",
-      detailDesc: "Connect with a vibrant community of volunteers, donors, and partners committed to eliminating food waste. Share experiences, organize events, and create lasting impact together.",
+      detailDesc:
+        "Connect with a vibrant community of volunteers, donors, and partners committed to eliminating food waste. Share experiences, organize events, and create lasting impact together.",
     },
-    { 
-      icon: <FiHeart className="w-6 h-6" />, 
-      title: "Make an Impact", 
+    {
+      icon: <FiHeart className="w-6 h-6" />,
+      title: "Make an Impact",
       desc: "Every meal saved makes a difference",
-      detailDesc: "Track your contributions in real-time and see how every meal rescued helps feed families in need. Your actions create ripples of positive change in communities.",
+      detailDesc:
+        "Track your contributions in real-time and see how every meal rescued helps feed families in need. Your actions create ripples of positive change in communities.",
     },
-    { 
-      icon: <FiGlobe className="w-6 h-6" />, 
-      title: "Eco Friendly", 
+    {
+      icon: <FiGlobe className="w-6 h-6" />,
+      title: "Eco Friendly",
       desc: "Reduce your carbon footprint",
-      detailDesc: "Food waste is a major contributor to climate change. By rescuing surplus food, you're not just feeding people—you're protecting our planet for future generations.",
+      detailDesc:
+        "Food waste is a major contributor to climate change. By rescuing surplus food, you're not just feeding people—you're protecting our planet for future generations.",
     },
-    { 
-      icon: <FiAward className="w-6 h-6" />, 
-      title: "Earn Recognition", 
+    {
+      icon: <FiAward className="w-6 h-6" />,
+      title: "Earn Recognition",
       desc: "Climb the leaderboards",
-      detailDesc: "Get rewarded for your contributions with badges, certificates, and public recognition. Top contributors gain special privileges and leadership opportunities.",
+      detailDesc:
+        "Get rewarded for your contributions with badges, certificates, and public recognition. Top contributors gain special privileges and leadership opportunities.",
     },
-    { 
-      icon: <FiShield className="w-6 h-6" />, 
-      title: "Safe & Verified", 
+    {
+      icon: <FiShield className="w-6 h-6" />,
+      title: "Safe & Verified",
       desc: "Quality assured donations",
-      detailDesc: "All food donations go through strict quality checks and safety protocols. We ensure that every meal meets health standards before distribution.",
+      detailDesc:
+        "All food donations go through strict quality checks and safety protocols. We ensure that every meal meets health standards before distribution.",
     },
-    { 
-      icon: <FiTrendingUp className="w-6 h-6" />, 
-      title: "Track Progress", 
+    {
+      icon: <FiTrendingUp className="w-6 h-6" />,
+      title: "Track Progress",
       desc: "Monitor your impact in real-time",
-      detailDesc: "View detailed analytics of your contributions, see trends over time, and measure your environmental impact with comprehensive dashboards and reports.",
-    }
+      detailDesc:
+        "View detailed analytics of your contributions, see trends over time, and measure your environmental impact with comprehensive dashboards and reports.",
+    },
   ];
 
   const stats = [
@@ -218,19 +249,52 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
   return (
     <div
       className={`landing-page ${themeClasses.page}`}
-      style={{ fontFamily: "'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif" }}
+      style={{
+        fontFamily:
+          "'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif",
+      }}
     >
       {/* Navigation */}
       <nav
-        className={`fixed w-full z-50 ${themeClasses.nav} backdrop-blur-sm ${scrollY > 50 ? "shadow-sm" : ""}`}
-        style={{ borderBottom: theme === "dark" ? "1px solid #374151" : "1px solid #e5e7eb" }}
+        className={`fixed w-full z-50 ${themeClasses.nav} backdrop-blur-sm ${
+          scrollY > 50 ? "shadow-sm" : ""
+        }`}
+        style={{
+          borderBottom:
+            theme === "dark" ? "1px solid #374151" : "1px solid #e5e7eb",
+        }}
       >
         <div className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-2">
-          <div className={`brand-name text-2xl sm:text-3xl font-bold tracking-wide ${themeClasses.activeText}`}>
+          <div
+            className={`brand-name text-2xl sm:text-3xl font-bold tracking-wide ${themeClasses.activeText}`}
+          >
             feedaily
           </div>
-          {/* Login/logout and Get started buttons */}
+
           <div className="nav-buttons flex items-center gap-4">
+            {/* Collaboration button (always visible) */}
+            <button
+              onClick={onCollaborationClick}
+              className={`text-sm sm:text-base cursor-pointer mr-4 ${
+                theme === "dark" ? "text-white" : "text-black"
+              } hover:underline`}
+              style={{ background: "none", border: "none", padding: 0 }}
+            >
+              Collaboration
+            </button>
+
+            {/* Our Products button */}
+            <button
+              onClick={() => navigate("/merchandise")}
+              className={`text-sm sm:text-base cursor-pointer mr-4 ${
+                theme === "dark" ? "text-white" : "text-black"
+              } hover:underline`}
+              style={{ background: "none", border: "none", padding: 0 }}
+            >
+              Our Products
+            </button>
+
+            {/* Login/logout and Get started buttons */}
             {isLoggedIn ? (
               <>
                 <button
@@ -280,12 +344,19 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
                 className={`hero-title text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight ${themeClasses.activeText}`}
                 style={headingStyle}
               >
-                Rescue food,<br />
-                <span className={`hero-highlight ${themeClasses.activeText}`}>reduce waste</span>
+                Rescue food,
+                <br />
+                <span className={`hero-highlight ${themeClasses.activeText}`}>
+                  reduce waste
+                </span>
               </h1>
 
-              <p className={`hero-description mt-4 max-w-xl ${themeClasses.inactiveText}`}>
-                Join the movement to eliminate food waste and feed communities in need. Every plate matters in our mission to create a sustainable future.
+              <p
+                className={`hero-description mt-4 max-w-xl ${themeClasses.inactiveText}`}
+              >
+                Join the movement to eliminate food waste and feed communities
+                in need. Every plate matters in our mission to create a
+                sustainable future.
               </p>
 
               <div className="hero-buttons mt-6 flex flex-wrap gap-3">
@@ -312,14 +383,19 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
               <div
                 className="hero-image-wrapper w-64 sm:w-80 lg:w-96 transition-all duration-300"
                 style={{
-                  transform: `translateY(${scrollY * 0.3}px) scale(${Math.max(0.85, 1 - scrollY * 0.0003)})`,
+                  transform: `translateY(${scrollY * 0.3}px) scale(${Math.max(
+                    0.85,
+                    1 - scrollY * 0.0003
+                  )})`,
                   opacity: Math.max(0.3, 1 - scrollY * 0.002),
                 }}
               >
                 <img
                   src="https://static.vecteezy.com/system/resources/thumbnails/016/733/232/small_2x/hand-drawn-fried-chicken-rice-or-thai-food-illustration-png.png"
                   alt="Food illustration"
-                  className={`w-full h-full object-contain ${theme === "dark" ? "filter invert" : ""}`}
+                  className={`w-full h-full object-contain ${
+                    theme === "dark" ? "filter invert" : ""
+                  }`}
                 />
               </div>
             </div>
@@ -329,15 +405,27 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
         {/* About Us */}
         <section className="about-section max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="about-container">
-            <h2 className={`text-2xl font-semibold ${themeClasses.activeText}`} style={headingStyle}>
+            <h2
+              className={`text-2xl font-semibold ${themeClasses.activeText}`}
+              style={headingStyle}
+            >
               About Feedaily
             </h2>
             <div className="about-content mt-4">
-              <p className={`about-text max-w-3xl ${themeClasses.inactiveText}`}>
-                Feedaily is a registered NGO dedicated to rescuing surplus food and redistributing it to those in need. Our mission is to build a sustainable ecosystem by connecting communities, donors, and partners, and making a lasting impact on hunger and the environment.
+              <p
+                className={`about-text max-w-3xl ${themeClasses.inactiveText}`}
+              >
+                Feedaily is a registered NGO dedicated to rescuing surplus food
+                and redistributing it to those in need. Our mission is to build
+                a sustainable ecosystem by connecting communities, donors, and
+                partners, and making a lasting impact on hunger and the
+                environment.
               </p>
-              <p className={`about-meta mt-3 text-sm ${themeClasses.inactiveText}`}>
-                Registration No: NGO/2023/IND/09845 &nbsp; | &nbsp; Established 2023
+              <p
+                className={`about-meta mt-3 text-sm ${themeClasses.inactiveText}`}
+              >
+                Registration No: NGO/2023/IND/09845 &nbsp; | &nbsp; Established
+                2023
               </p>
             </div>
           </div>
@@ -351,10 +439,15 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
         >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-8">
-              <h2 className={`text-3xl font-bold ${themeClasses.activeText}`} style={headingStyle}>
-                 Why feedaily matters?
+              <h2
+                className={`text-3xl font-bold ${themeClasses.activeText}`}
+                style={headingStyle}
+              >
+                Why feedaily matters?
               </h2>
-              <p className={`${themeClasses.inactiveText} mt-2`}>our features</p>
+              <p className={`${themeClasses.inactiveText} mt-2`}>
+                our features
+              </p>
             </div>
 
             {/* Feature display */}
@@ -375,7 +468,9 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
                       {/* Minimalist icon without colored background */}
                       <div
                         className={`w-8 h-8 flex items-center justify-center ${
-                          activeFeature === index ? themeClasses.activeIconColor : themeClasses.iconColor
+                          activeFeature === index
+                            ? themeClasses.activeIconColor
+                            : themeClasses.iconColor
                         }`}
                       >
                         {feature.icon}
@@ -383,13 +478,17 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
                       <div className="flex-1">
                         <h3
                           className={`font-semibold text-base ${
-                            activeFeature === index ? themeClasses.activeText : themeClasses.inactiveText
+                            activeFeature === index
+                              ? themeClasses.activeText
+                              : themeClasses.inactiveText
                           }`}
                           style={headingStyle}
                         >
                           {feature.title}
                         </h3>
-                        <p className={`text-xs ${themeClasses.inactiveText}`}>{feature.desc}</p>
+                        <p className={`text-xs ${themeClasses.inactiveText}`}>
+                          {feature.desc}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -400,18 +499,26 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
               <div className="rounded-3xl h-[420px] flex flex-col justify-end relative overflow-hidden">
                 {/* Loading indicator */}
                 {imageLoading && (
-                  <div className={`absolute inset-0 flex items-center justify-center ${themeClasses.inactiveBg}`}>
+                  <div
+                    className={`absolute inset-0 flex items-center justify-center ${themeClasses.inactiveBg}`}
+                  >
                     <div className="flex gap-2">
                       <div
-                        className={`w-8 h-1 ${theme === "dark" ? "bg-gray-600" : "bg-gray-300"} rounded animate-pulse`}
+                        className={`w-8 h-1 ${
+                          theme === "dark" ? "bg-gray-600" : "bg-gray-300"
+                        } rounded animate-pulse`}
                         style={{ animationDelay: "0ms" }}
                       ></div>
                       <div
-                        className={`w-8 h-1 ${theme === "dark" ? "bg-gray-600" : "bg-gray-300"} rounded animate-pulse`}
+                        className={`w-8 h-1 ${
+                          theme === "dark" ? "bg-gray-600" : "bg-gray-300"
+                        } rounded animate-pulse`}
                         style={{ animationDelay: "150ms" }}
                       ></div>
                       <div
-                        className={`w-8 h-1 ${theme === "dark" ? "bg-gray-600" : "bg-gray-300"} rounded animate-pulse`}
+                        className={`w-8 h-1 ${
+                          theme === "dark" ? "bg-gray-600" : "bg-gray-300"
+                        } rounded animate-pulse`}
                         style={{ animationDelay: "300ms" }}
                       ></div>
                     </div>
@@ -440,7 +547,9 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
                       key={index}
                       className={`h-0.5 w-8 rounded transition-all duration-500 ${
                         index === activeFeature
-                          ? `${theme === "dark" ? "bg-yellow-400" : "bg-gray-900"} w-12`
+                          ? `${
+                              theme === "dark" ? "bg-yellow-400" : "bg-gray-900"
+                            } w-12`
                           : theme === "dark"
                           ? "bg-gray-600"
                           : "bg-gray-400"
@@ -455,7 +564,10 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
 
         {/* Partners Section */}
         <section className="partners-section max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-          <h3 className={`text-lg font-semibold text-center mb-6 ${themeClasses.activeText}`} style={headingStyle}>
+          <h3
+            className={`text-lg font-semibold text-center mb-6 ${themeClasses.activeText}`}
+            style={headingStyle}
+          >
             Our Trusted Partners
           </h3>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 items-center">
@@ -471,13 +583,21 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
         </section>
 
         {/* Impact Stats */}
-        <section ref={statsRef} className={theme === "dark" ? "bg-gray-800" : "bg-gray-50"}>
+        <section
+          ref={statsRef}
+          className={theme === "dark" ? "bg-gray-800" : "bg-gray-50"}
+        >
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div className="text-center mb-8">
-              <h2 className={`text-3xl font-bold ${themeClasses.activeText}`} style={headingStyle}>
+              <h2
+                className={`text-3xl font-bold ${themeClasses.activeText}`}
+                style={headingStyle}
+              >
                 Our Impact
               </h2>
-              <p className={`${themeClasses.inactiveText} mt-2`}>making a difference together</p>
+              <p className={`${themeClasses.inactiveText} mt-2`}>
+                making a difference together
+              </p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
               {stats.map((stat, idx) => (
@@ -495,27 +615,120 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
                         : `${animatedStats[idx]}+`
                       : "0"}
                   </div>
-                  <div className={`text-sm mt-2 ${themeClasses.inactiveText}`}>{stat.label}</div>
+                  <div className={`text-sm mt-2 ${themeClasses.inactiveText}`}>
+                    {stat.label}
+                  </div>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
+        {/* Featured Products Section */}
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="text-center mb-8">
+            <h2
+              className={`text-3xl font-bold ${themeClasses.activeText}`}
+              style={headingStyle}
+            >
+              Our Products
+            </h2>
+            <p className={`${themeClasses.inactiveText} mt-2`}>
+              Support our mission with branded merchandise
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-6">
+            {[
+              {
+                name: "Feedaily T-Shirt",
+                price: 599,
+                image:
+                  "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=400&fit=crop",
+              },
+              {
+                name: "Eco Canvas Bag",
+                price: 399,
+                image:
+                  "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=400&h=400&fit=crop",
+              },
+              {
+                name: "Minimalist Poster",
+                price: 299,
+                image:
+                  "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400&h=400&fit=crop",
+              },
+              {
+                name: "Water Bottle",
+                price: 499,
+                image:
+                  "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=400&h=400&fit=crop",
+              },
+            ].map((product, idx) => (
+              <div
+                key={idx}
+                className={`${themeClasses.card} rounded-xl overflow-hidden shadow-sm border transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer`}
+                onClick={() => navigate("/merchandise")}
+              >
+                <div className="relative h-48 overflow-hidden bg-gray-100">
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                  />
+                </div>
+                <div className="p-4">
+                  <h3
+                    className={`font-semibold ${themeClasses.activeText} mb-1`}
+                  >
+                    {product.name}
+                  </h3>
+                  <p className={`text-lg font-bold ${themeClasses.activeText}`}>
+                    ₹{product.price}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="text-center">
+            <button
+              onClick={() => navigate("/merchandise")}
+              className={`inline-flex items-center gap-2 px-6 py-3 rounded-md ${themeClasses.btnPrimary} font-medium transition`}
+              style={{ cursor: "pointer" }}
+            >
+              View All Products <FiArrowRight />
+            </button>
+          </div>
+        </section>
+
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+          <UpcomingEvents events={events} />
+        </section>
         {/* CTA */}
         <section className={themeClasses.ctaBg}>
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 text-center">
-            <h2 className={`text-2xl font-semibold ${themeClasses.ctaText}`} style={headingStyle}>
+            <h2
+              className={`text-2xl font-semibold ${themeClasses.ctaText}`}
+              style={headingStyle}
+            >
               Ready to make a difference?
             </h2>
-            <p className={`${theme === "dark" ? "text-gray-300" : "text-gray-300"} mt-2`}>
-              Join thousands of volunteers and partners — rescue food and help communities.
+            <p
+              className={`${
+                theme === "dark" ? "text-gray-300" : "text-gray-300"
+              } mt-2`}
+            >
+              Join thousands of volunteers and partners — rescue food and help
+              communities.
             </p>
             <div className="mt-4">
               <button
                 onClick={onGetStartedClick}
                 className={`inline-flex items-center gap-2 px-5 py-3 rounded-md ${
-                  theme === "dark" ? "bg-gray-700 text-white hover:bg-gray-600" : "bg-white text-gray-900 hover:bg-gray-100"
+                  theme === "dark"
+                    ? "bg-gray-700 text-white hover:bg-gray-600"
+                    : "bg-white text-gray-900 hover:bg-gray-100"
                 } font-medium transition`}
                 style={{ cursor: "pointer" }}
               >
@@ -528,24 +741,41 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
         {/* Contact Details */}
         <section className="contact-section">
           <div className="max-w-4xl mx-auto px-6 py-6">
-            <h3 className={`text-center text-xl font-semibold mb-4 ${themeClasses.activeText}`} style={headingStyle}>
+            <h3
+              className={`text-center text-xl font-semibold mb-4 ${themeClasses.activeText}`}
+              style={headingStyle}
+            >
               Contact Details
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
               <div className={`${themeClasses.card} p-3 rounded-lg`}>
-                <FiMail className={`mx-auto text-xl ${themeClasses.activeText} mb-2`} />
-                <div className={`text-sm ${themeClasses.activeText}`}>contact@feedaily.org</div>
+                <FiMail
+                  className={`mx-auto text-xl ${themeClasses.activeText} mb-2`}
+                />
+                <div className={`text-sm ${themeClasses.activeText}`}>
+                  contact@feedaily.org
+                </div>
               </div>
               <div className={`${themeClasses.card} p-3 rounded-lg`}>
-                <FiPhone className={`mx-auto text-xl ${themeClasses.activeText} mb-2`} />
-                <div className={`text-sm ${themeClasses.activeText}`}>+91 98765 43210</div>
+                <FiPhone
+                  className={`mx-auto text-xl ${themeClasses.activeText} mb-2`}
+                />
+                <div className={`text-sm ${themeClasses.activeText}`}>
+                  +91 98765 43210
+                </div>
               </div>
               <div className={`${themeClasses.card} p-3 rounded-lg`}>
-                <FiMapPin className={`mx-auto text-xl ${themeClasses.activeText} mb-2`} />
-                <div className={`text-sm ${themeClasses.activeText}`}>Feedaily NGO, Bengaluru, India</div>
+                <FiMapPin
+                  className={`mx-auto text-xl ${themeClasses.activeText} mb-2`}
+                />
+                <div className={`text-sm ${themeClasses.activeText}`}>
+                  Feedaily NGO, Bengaluru, India
+                </div>
               </div>
             </div>
-            <div className={`text-center mt-4 text-sm ${themeClasses.inactiveText}`}>
+            <div
+              className={`text-center mt-4 text-sm ${themeClasses.inactiveText}`}
+            >
               Follow us:{" "}
               <a href="#" className="underline">
                 Instagram
@@ -566,10 +796,12 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
         <footer className={`landing-footer ${themeClasses.footer}`}>
           <div className="max-w-6xl mx-auto px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="text-center sm:text-left">
-              <p className="text-sm">© 2025 Feedaily. Making a difference, one meal at a time.</p>
+              <p className="text-sm">
+                © 2025 Feedaily. Making a difference, one meal at a time.
+              </p>
               <p className="text-xs mt-1">
-                Registered NGO | All donations eligible for tax exemption under Section 80G, Government of
-                India.
+                Registered NGO | All donations eligible for tax exemption under
+                Section 80G, Government of India.
               </p>
             </div>
             <button
@@ -578,11 +810,99 @@ export default function LandingPage({ isLoggedIn, onLoginClick, onLogoutClick, o
               style={{ cursor: "pointer" }}
               aria-label="Toggle theme"
             >
-              {theme === "light" ? <FiMoon className="text-lg" /> : <FiSun className="text-lg text-yellow-400" />}
+              {theme === "light" ? (
+                <FiMoon className="text-lg" />
+              ) : (
+                <FiSun className="text-lg text-yellow-400" />
+              )}
             </button>
           </div>
         </footer>
       </div>
+
+      {/* Collaboration Modal */}
+      {showCollabModal && (
+        <div
+          className={`fixed inset-0 z-[100] flex items-center justify-center ${
+            theme === "dark" ? "bg-black/70" : "bg-black/50"
+          } backdrop-blur-sm`}
+        >
+          <div
+            className={`rounded-2xl shadow-lg max-w-md w-full mx-4 p-6 relative ${
+              theme === "dark"
+                ? "bg-gray-800 text-gray-100"
+                : "bg-white text-gray-900"
+            }`}
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setShowCollabModal(false)}
+              className={`absolute top-3 right-3 ${
+                theme === "dark"
+                  ? "text-gray-400 hover:text-gray-200"
+                  : "text-gray-500 hover:text-gray-700"
+              }`}
+              aria-label="Close modal"
+              style={{ cursor: "pointer" }}
+            >
+              ✕
+            </button>
+
+            {/* Header */}
+            <h2 className="text-2xl font-semibold text-center mb-4">
+              Collaboration Options
+            </h2>
+            <p
+              className={`text-center mb-6 text-sm ${
+                theme === "dark" ? "text-gray-300" : "text-gray-600"
+              }`}
+            >
+              Choose how you’d like to collaborate with Feedaily.
+            </p>
+
+            {/* Collaborator Option Buttons */}
+            <div className="flex flex-col gap-4">
+              <button
+                onClick={() => {
+                  setShowCollabModal(false);
+                  navigate("/collaboration?type=ngo");
+                }}
+                className={`w-full px-5 py-3 rounded-md border transition font-medium ${
+                  theme === "dark"
+                    ? "border-gray-600 bg-gray-700 hover:bg-gray-900 hover:text-white text-gray-100"
+                    : "border-gray-300 bg-gray-100 hover:bg-gray-900 hover:text-white text-gray-900"
+                }`}
+                style={{ cursor: "pointer" }}
+              >
+                Collaborate as NGO / Partner
+              </button>
+
+              <button
+                onClick={() => {
+                  setShowCollabModal(false);
+                  navigate("/collaboration?type=event");
+                }}
+                className={`w-full px-5 py-3 rounded-md border transition font-medium ${
+                  theme === "dark"
+                    ? "border-gray-600 bg-gray-700 hover:bg-gray-900 hover:text-white text-gray-100"
+                    : "border-gray-300 bg-gray-100 hover:bg-gray-900 hover:text-white text-gray-900"
+                }`}
+                style={{ cursor: "pointer" }}
+              >
+                Request a Social Event (Office / Premises)
+              </button>
+            </div>
+
+            <p
+              className={`text-xs text-center mt-6 ${
+                theme === "dark" ? "text-gray-400" : "text-gray-600"
+              }`}
+            >
+              Feedaily | Building partnerships for a better tomorrow
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

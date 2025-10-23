@@ -46,6 +46,7 @@ export default function DashboardPage() {
   const [location, setLocation] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
+  const [foodCheckState, setFoodCheckState] = useState({ loading: false, done: false, isFood: true, confidence: 1, skipped: true });
 
   // Delivery/payment states
   const [deliveryMethodChoice, setDeliveryMethodChoice] = useState(null);
@@ -127,6 +128,20 @@ export default function DashboardPage() {
       if (currentStep === 2 && (!foodType || !quantity || !freshness)) {
         setMessage("Please fill all required fields.");
         return;
+      }
+      if (currentStep === 3) {
+        if (!capturedImage) {
+          setMessage("Please capture a food image to continue.");
+          return;
+        }
+        if (foodCheckState.loading) {
+          setMessage("Please wait, verifying the image is food...");
+          return;
+        }
+        if (foodCheckState.done && foodCheckState.isFood === false) {
+          setMessage("The image doesn't appear to be food. Please retake a clearer food photo.");
+          return;
+        }
       }
       // Move to next step
       setCurrentStep(currentStep + 1);
@@ -511,7 +526,10 @@ export default function DashboardPage() {
                         </div>
                       )}
                     </div>
-                    <TMImagePredictor imageSrc={capturedImage} />
+                    <TMImagePredictor 
+                      imageSrc={capturedImage} 
+                      onFoodCheck={(state) => setFoodCheckState(prev => ({ ...prev, ...state }))}
+                    />
                   </div>
                 </div>
               )}
@@ -582,7 +600,7 @@ export default function DashboardPage() {
                 <button 
                   type="submit" 
                   className="btn btn-primary"
-                  disabled={isLoading}
+                  disabled={isLoading || (currentStep === 3 && ((foodCheckState.loading) || (foodCheckState.done && foodCheckState.isFood === false)))}
                 >
                   {isLoading ? (
                     <div className="spinner"></div>

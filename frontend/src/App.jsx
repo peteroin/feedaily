@@ -15,27 +15,32 @@ import AdminLoginPage from "./pages/AdminLoginPage";
 import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import { ImpactPage } from "./pages/ImpactPage";
+import CollaborationFormPage from "./pages/CollaborationFormPage";
+import MerchandisePage from "./pages/MerchandisePage";
+import MerchandiseCheckoutPage from "./pages/MerchandiseCheckoutPage";
+import MerchandiseSuccessPage from "./pages/MerchandiseSuccessPage";
+
 // Wrapper for LandingPage (to use navigation)
 function LandingPageWrapper() {
   const navigate = useNavigate();
   const isLoggedIn = !!localStorage.getItem("user");
 
-    const goToLogin = () => navigate("/login");
-    const goToGetStarted = () => {
-          if (isLoggedIn) navigate("/dashboard");
-          else navigate("/register");
-    };
-    const handleLogout = () => {
-          localStorage.removeItem("user");
-          navigate("/");
-    };
+  const goToLogin = () => navigate("/login");
+  const goToGetStarted = () => {
+    if (isLoggedIn) navigate("/dashboard");
+    else navigate("/register");
+  };
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    navigate("/");
+  };
 
   return (
     <LandingPage
-        isLoggedIn={isLoggedIn}
-        onLoginClick={goToLogin}
-        onLogoutClick={handleLogout}
-        onGetStartedClick={goToGetStarted}
+      isLoggedIn={isLoggedIn}
+      onLoginClick={goToLogin}
+      onLogoutClick={handleLogout}
+      onGetStartedClick={goToGetStarted}
     />
   );
 }
@@ -45,12 +50,13 @@ function App() {
     <main className="relative min-h-screen w-screen overflow-x-hidden">
       <Routes>
         <Route path="/" element={<LandingPageWrapper />} />
+        <Route path="/collaboration" element={<CollaborationFormPage />} />
 
         {/* Auth pages */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/admin-login" element={<AdminLoginPage />} />
-          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
         {/* Dashboard & sub-pages with layout */}
         <Route
@@ -103,12 +109,25 @@ function App() {
         />
 
         <Route path="/success" element={<PaymentSuccess />} />
-        <Route path="/admin/delivery-requests" element={
-          <ProtectedAdminRoute>
-            <AdminDeliveryRequestsPage />
-          </ProtectedAdminRoute>
-        } />
+        <Route
+          path="/admin/delivery-requests"
+          element={
+            <ProtectedAdminRoute>
+              <AdminDeliveryRequestsPage />
+            </ProtectedAdminRoute>
+          }
+        />
 
+        {/* Merchandise routes */}
+        <Route path="/merchandise" element={<MerchandisePage />} />
+        <Route
+          path="/merchandise/checkout"
+          element={<MerchandiseCheckoutPage />}
+        />
+        <Route
+          path="/merchandise/success"
+          element={<MerchandiseSuccessPage />}
+        />
       </Routes>
     </main>
   );
