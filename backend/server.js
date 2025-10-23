@@ -14,6 +14,7 @@ import calendarAPI from './calendarAPI.js';
 import collaborationRoutes from "./collaborationRoutes.js";
 import eventNotificationRoutes from "./eventNotificationRoutes.js";
 import { scheduledJobs } from "./scheduledJobs.js";
+import testInterface from "./testInterface.js";
 
 const app = express();
 app.use(cors());
@@ -32,6 +33,9 @@ app.use("/api", collaborationRoutes);
 
 //Event notification routes
 app.use("/api/event-notifications", eventNotificationRoutes);
+
+//Test interface routes
+app.use("/api", testInterface);
 
 // REGISTER endpoint
 app.post("/api/register", async (req, res) => {
