@@ -11,6 +11,7 @@ import DeliveryPage from "./pages/DeliveryPage";
 import DashboardLayout from "./components/DashboardLayout";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import AdminDeliveryRequestsPage from "./pages/AdminDeliveryRequestsPage";
+import AdminEventNotificationsPage from "./pages/AdminEventNotificationsPage";
 import AdminLoginPage from "./pages/AdminLoginPage";
 import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
@@ -114,6 +115,14 @@ function App() {
           element={
             <ProtectedAdminRoute>
               <AdminDeliveryRequestsPage />
+            </ProtectedAdminRoute>
+          }
+        />
+        <Route
+          path="/admin/event-notifications"
+          element={
+            <ProtectedAdminRoute>
+              <AdminEventNotificationsPage />
             </ProtectedAdminRoute>
           }
         />

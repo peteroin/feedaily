@@ -241,7 +241,13 @@ export default function AdminDeliveryRequestsPage() {
     <div className="admin-delivery-container">
       {/* Header */}
       <div className="admin-header">
-        <h1>📋 Admin: Delivery Requests</h1>
+        <div className="admin-header-left">
+          <h1>📋 Admin: Delivery Requests</h1>
+          <div className="admin-nav-links">
+            <a href="/admin/delivery-requests" className="nav-link active">Delivery Requests</a>
+            <a href="/admin/event-notifications" className="nav-link">Event Notifications</a>
+          </div>
+        </div>
         <button onClick={handleLogout} className="admin-logout-btn">
           <FiLogOut size={20} />
         </button>

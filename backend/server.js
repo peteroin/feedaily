@@ -12,6 +12,8 @@ import createCheckoutSession from "./createCheckoutSession.js";
 import impactAPI from './impactAPI.js';
 import calendarAPI from './calendarAPI.js';
 import collaborationRoutes from "./collaborationRoutes.js";
+import eventNotificationRoutes from "./eventNotificationRoutes.js";
+import { scheduledJobs } from "./scheduledJobs.js";
 
 const app = express();
 app.use(cors());
@@ -27,6 +29,9 @@ app.use("/api", calendarAPI);
 
 //Collaboration routes
 app.use("/api", collaborationRoutes);
+
+//Event notification routes
+app.use("/api/event-notifications", eventNotificationRoutes);
 
 // REGISTER endpoint
 app.post("/api/register", async (req, res) => {
@@ -1004,6 +1009,10 @@ app.put("/api/merchandise/orders/:orderId", (req, res) => {
 });
 
 const PORT = 5000;
-app.listen(PORT, () =>
-  console.log(`Backend running on http://localhost:${PORT}`)
-);
+app.listen(PORT, () => {
+  console.log(`Backend running on http://localhost:${PORT}`);
+  
+  // Start scheduled jobs for event notifications
+  console.log("🚀 Starting event notification scheduled jobs...");
+  scheduledJobs.start();
+});
