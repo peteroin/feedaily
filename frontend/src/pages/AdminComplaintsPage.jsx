@@ -159,13 +159,13 @@ export default function AdminComplaintsPage() {
   const getStatusClass = (status) => {
     switch (status) {
       case "initiated":
-        return "status-initiated";
+        return "acp-status-initiated";
       case "in_progress":
-        return "status-progress";
+        return "acp-status-progress";
       case "resolved":
-        return "status-resolved";
+        return "acp-status-resolved";
       case "rejected":
-        return "status-rejected";
+        return "acp-status-rejected";
       default:
         return "";
     }
@@ -225,8 +225,8 @@ export default function AdminComplaintsPage() {
   const stats = getStats();
 
   return (
-    <div className="admin-complaints-page">
-      <div className="admin-header">
+    <div className="acp-page">
+      <div className="acp-header">
         <div>
           <h1>
             <FiAlertCircle /> Complaint Management
@@ -235,63 +235,63 @@ export default function AdminComplaintsPage() {
         </div>
         <button
           onClick={() => navigate("/admin/delivery-requests")}
-          className="back-btn"
+          className="acp-action-btn"
         >
           Back to Admin Dashboard
         </button>
       </div>
 
       {/* Stats Cards */}
-      <div className="stats-grid">
-        <div className="stat-card">
-          <div className="stat-icon all">
+      <div className="acp-stats-grid">
+        <div className="acp-stat-card">
+          <div className="acp-stat-icon all">
             <FiFileText />
           </div>
-          <div className="stat-info">
-            <p className="stat-label">Total Complaints</p>
-            <p className="stat-value">{stats.total}</p>
+          <div className="acp-stat-info">
+            <p className="acp-stat-label">Total Complaints</p>
+            <p className="acp-stat-value">{stats.total}</p>
           </div>
         </div>
 
-        <div className="stat-card">
-          <div className="stat-icon initiated">
+        <div className="acp-stat-card">
+          <div className="acp-stat-icon initiated">
             <FiClock />
           </div>
-          <div className="stat-info">
-            <p className="stat-label">Initiated</p>
-            <p className="stat-value">{stats.initiated}</p>
+          <div className="acp-stat-info">
+            <p className="acp-stat-label">Initiated</p>
+            <p className="acp-stat-value">{stats.initiated}</p>
           </div>
         </div>
 
-        <div className="stat-card">
-          <div className="stat-icon progress">
+        <div className="acp-stat-card">
+          <div className="acp-stat-icon progress">
             <FiAlertCircle />
           </div>
-          <div className="stat-info">
-            <p className="stat-label">In Progress</p>
-            <p className="stat-value">{stats.inProgress}</p>
+          <div className="acp-stat-info">
+            <p className="acp-stat-label">In Progress</p>
+            <p className="acp-stat-value">{stats.inProgress}</p>
           </div>
         </div>
 
-        <div className="stat-card">
-          <div className="stat-icon resolved">
+        <div className="acp-stat-card">
+          <div className="acp-stat-icon resolved">
             <FiCheckCircle />
           </div>
-          <div className="stat-info">
-            <p className="stat-label">Resolved</p>
-            <p className="stat-value">{stats.resolved}</p>
+          <div className="acp-stat-info">
+            <p className="acp-stat-label">Resolved</p>
+            <p className="acp-stat-value">{stats.resolved}</p>
           </div>
         </div>
       </div>
 
       {/* Filters and Search */}
-      <div className="controls-section">
-        <div className="filter-group">
+      <div className="acp-controls-section">
+        <div className="acp-filter-group">
           <FiFilter />
           <select
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}
-            className="filter-select"
+            className="acp-filter-select"
           >
             <option value="all">All Complaints</option>
             <option value="initiated">Initiated</option>
@@ -301,33 +301,33 @@ export default function AdminComplaintsPage() {
           </select>
         </div>
 
-        <div className="search-group">
+        <div className="acp-search-group">
           <FiSearch />
           <input
             type="text"
             placeholder="Search by complaint number, user name, or details..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="search-input"
+            className="acp-search-input"
           />
         </div>
       </div>
 
       {/* Complaints Table */}
-      <div className="complaints-table-container">
+      <div className="acp-complaints-table-container">
         {loading ? (
-          <div className="loading-state">
-            <div className="spinner"></div>
+          <div className="acp-loading-state">
+            <div className="acp-spinner"></div>
             <p>Loading complaints...</p>
           </div>
         ) : filteredComplaints.length === 0 ? (
-          <div className="empty-state">
-            <FiFileText className="empty-icon" />
+          <div className="acp-empty-state">
+            <FiFileText className="acp-empty-icon" />
             <h3>No Complaints Found</h3>
             <p>There are no complaints matching your filters</p>
           </div>
         ) : (
-          <table className="complaints-table">
+          <table className="acp-complaints-table">
             <thead>
               <tr>
                 <th>Complaint #</th>
@@ -342,29 +342,27 @@ export default function AdminComplaintsPage() {
             <tbody>
               {filteredComplaints.map((complaint) => (
                 <tr key={complaint.id}>
-                  <td className="complaint-num">{complaint.complaintNumber}</td>
+                  <td className="acp-complaint-num">{complaint.complaintNumber}</td>
                   <td>
-                    <div className="user-cell">
+                    <div className="acp-user-cell">
                       <FiUser />
                       <div>
-                        <p className="user-name">{complaint.userName}</p>
-                        <p className="user-email">{complaint.userEmail}</p>
+                        <p className="acp-user-name">{complaint.userName}</p>
+                        <p className="acp-user-email">{complaint.userEmail}</p>
                       </div>
                     </div>
                   </td>
                   <td>{getComplaintTypeText(complaint.complaintType)}</td>
                   <td>{complaint.againstPersonName || "-"}</td>
                   <td>
-                    <div className="date-cell">
+                    <div className="acp-date-cell">
                       <FiCalendar />
                       {formatDate(complaint.createdAt)}
                     </div>
                   </td>
                   <td>
                     <span
-                      className={`status-badge ${getStatusClass(
-                        complaint.status
-                      )}`}
+                      className={`acp-status-badge ${getStatusClass(complaint.status)}`}
                     >
                       {getStatusIcon(complaint.status)}
                       {getStatusText(complaint.status)}
@@ -373,7 +371,7 @@ export default function AdminComplaintsPage() {
                   <td>
                     <button
                       onClick={() => openUpdateModal(complaint)}
-                      className="action-btn"
+                      className="acp-action-btn"
                     >
                       Review
                     </button>
@@ -387,61 +385,61 @@ export default function AdminComplaintsPage() {
 
       {/* Update Modal */}
       {showModal && selectedComplaint && (
-        <div className="modal-overlay" onClick={() => setShowModal(false)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
+        <div className="acp-modal-overlay" onClick={() => setShowModal(false)}>
+          <div className="acp-modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="acp-modal-header">
               <h2>Review Complaint</h2>
-              <button onClick={() => setShowModal(false)} className="close-btn">
+              <button onClick={() => setShowModal(false)} className="acp-close-btn">
                 <FiXCircle />
               </button>
             </div>
 
-            <div className="modal-body">
+            <div className="acp-modal-body">
               {/* Complaint Details */}
-              <div className="complaint-info">
-                <div className="info-row">
+              <div className="acp-complaint-info">
+                <div className="acp-info-row">
                   <label>Complaint Number</label>
-                  <p className="complaint-num">
+                  <p className="acp-complaint-num">
                     {selectedComplaint.complaintNumber}
                   </p>
                 </div>
 
-                <div className="info-row">
+                <div className="acp-info-row">
                   <label>User</label>
                   <p>
                     {selectedComplaint.userName} ({selectedComplaint.userEmail})
                   </p>
                 </div>
 
-                <div className="info-row">
+                <div className="acp-info-row">
                   <label>Type</label>
                   <p>{getComplaintTypeText(selectedComplaint.complaintType)}</p>
                 </div>
 
                 {selectedComplaint.againstPersonName && (
-                  <div className="info-row">
+                  <div className="acp-info-row">
                     <label>Against</label>
                     <p>{selectedComplaint.againstPersonName}</p>
                   </div>
                 )}
 
-                <div className="info-row">
+                <div className="acp-info-row">
                   <label>Filed On</label>
                   <p>{formatDate(selectedComplaint.createdAt)}</p>
                 </div>
 
-                <div className="info-row full-width">
+                <div className="acp-info-row full-width">
                   <label>Details</label>
-                  <p className="detail-text">{selectedComplaint.details}</p>
+                  <p className="acp-detail-text">{selectedComplaint.details}</p>
                 </div>
 
                 {selectedComplaint.proof && (
-                  <div className="info-row full-width">
+                  <div className="acp-info-row full-width">
                     <label>Proof</label>
                     <img
                       src={selectedComplaint.proof}
                       alt="Proof"
-                      className="proof-image"
+                      className="acp-proof-image"
                       onClick={() =>
                         window.open(selectedComplaint.proof, "_blank")
                       }
@@ -451,15 +449,15 @@ export default function AdminComplaintsPage() {
               </div>
 
               {/* Update Form */}
-              <div className="update-form">
-                <div className="form-group">
+              <div className="acp-update-form">
+                <div className="acp-form-group">
                   <label>Update Status *</label>
                   <select
                     value={modalData.status}
                     onChange={(e) =>
                       setModalData({ ...modalData, status: e.target.value })
                     }
-                    className="status-select"
+                    className="acp-status-select"
                   >
                     <option value="initiated">Initiated</option>
                     <option value="in_progress">In Progress</option>
@@ -468,7 +466,7 @@ export default function AdminComplaintsPage() {
                   </select>
                 </div>
 
-                <div className="form-group">
+                <div className="acp-form-group">
                   <label>
                     Admin Response{" "}
                     {(modalData.status === "resolved" ||
@@ -482,28 +480,28 @@ export default function AdminComplaintsPage() {
                     }
                     placeholder="Provide a detailed response to the user..."
                     rows="4"
-                    className="response-textarea"
+                    className="acp-response-textarea"
                   />
                 </div>
               </div>
             </div>
 
-            <div className="modal-footer">
+            <div className="acp-modal-footer">
               <button
                 onClick={() => setShowModal(false)}
-                className="btn-secondary"
+                className="acp-btn-secondary"
                 disabled={isUpdating}
               >
                 Cancel
               </button>
               <button
                 onClick={handleUpdateComplaint}
-                className="btn-primary"
+                className="acp-btn-primary"
                 disabled={isUpdating}
               >
                 {isUpdating ? (
                   <>
-                    <span className="spinner"></span>
+                    <span className="acp-spinner"></span>
                     Updating...
                   </>
                 ) : (
