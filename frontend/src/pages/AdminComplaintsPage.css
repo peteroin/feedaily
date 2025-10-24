@@ -1,18 +1,18 @@
 /* Admin Complaints Page Styles */
-.admin-complaints-page {
+.acp-page {
   min-height: 100vh;
   background: #f9fafb;
   padding: 2rem;
 }
 
-.admin-header {
+.acp-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 2rem;
 }
 
-.admin-header h1 {
+.acp-header h1 {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -23,20 +23,20 @@
   font-family: "Sora", "Poppins", sans-serif;
 }
 
-.admin-header p {
+.acp-header p {
   color: #6b7280;
   font-size: 0.9rem;
 }
 
 /* Stats Grid */
-.stats-grid {
+.acp-stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 1.5rem;
   margin-bottom: 2rem;
 }
 
-.stat-card {
+.acp-stat-card {
   background: white;
   border-radius: 0.75rem;
   padding: 1.5rem;
@@ -46,7 +46,7 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-.stat-icon {
+.acp-stat-icon {
   width: 3rem;
   height: 3rem;
   display: flex;
@@ -57,51 +57,51 @@
   flex-shrink: 0;
 }
 
-.stat-icon.all {
+.acp-stat-icon.all {
   background: #e0e7ff;
   color: #3730a3;
 }
 
-.stat-icon.initiated {
+.acp-stat-icon.initiated {
   background: #fef3c7;
   color: #92400e;
 }
 
-.stat-icon.progress {
+.acp-stat-icon.progress {
   background: #dbeafe;
   color: #1e40af;
 }
 
-.stat-icon.resolved {
+.acp-stat-icon.resolved {
   background: #d1fae5;
   color: #065f46;
 }
 
-.stat-info {
+.acp-stat-info {
   flex: 1;
 }
 
-.stat-label {
+.acp-stat-label {
   font-size: 0.85rem;
   color: #6b7280;
   margin-bottom: 0.25rem;
 }
 
-.stat-value {
+.acp-stat-value {
   font-size: 1.75rem;
   font-weight: 700;
   color: #111827;
 }
 
 /* Controls Section */
-.controls-section {
+.acp-controls-section {
   display: flex;
   gap: 1rem;
   margin-bottom: 2rem;
 }
 
-.filter-group,
-.search-group {
+.acp-filter-group,
+.acp-search-group {
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -111,16 +111,16 @@
   border: 2px solid #e5e7eb;
 }
 
-.filter-group {
+.acp-filter-group {
   min-width: 200px;
 }
 
-.search-group {
+.acp-search-group {
   flex: 1;
 }
 
-.filter-select,
-.search-input {
+.acp-filter-select,
+.acp-search-input {
   border: none;
   outline: none;
   flex: 1;
@@ -128,24 +128,24 @@
 }
 
 /* Complaints Table */
-.complaints-table-container {
+.acp-complaints-table-container {
   background: white;
   border-radius: 1rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   overflow: hidden;
 }
 
-.complaints-table {
+.acp-complaints-table {
   width: 100%;
   border-collapse: collapse;
 }
 
-.complaints-table thead {
+.acp-complaints-table thead {
   background: #f9fafb;
   border-bottom: 2px solid #e5e7eb;
 }
 
-.complaints-table th {
+.acp-complaints-table th {
   padding: 1rem;
   text-align: left;
   font-weight: 600;
@@ -155,44 +155,44 @@
   letter-spacing: 0.05em;
 }
 
-.complaints-table td {
+.acp-complaints-table td {
   padding: 1rem;
   border-bottom: 1px solid #e5e7eb;
 }
 
-.complaints-table tbody tr:hover {
+.acp-complaints-table tbody tr:hover {
   background: #f9fafb;
 }
 
-.complaint-num {
+.acp-complaint-num {
   font-family: "Courier New", monospace;
   font-weight: 600;
   color: #111827;
 }
 
-.user-cell {
+.acp-user-cell {
   display: flex;
   align-items: center;
   gap: 0.75rem;
 }
 
-.user-cell svg {
+.acp-user-cell svg {
   color: #9ca3af;
   flex-shrink: 0;
 }
 
-.user-name {
+.acp-user-name {
   font-weight: 600;
   color: #111827;
   margin-bottom: 0.125rem;
 }
 
-.user-email {
+.acp-user-email {
   font-size: 0.85rem;
   color: #6b7280;
 }
 
-.date-cell {
+.acp-date-cell {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -200,7 +200,7 @@
   font-size: 0.9rem;
 }
 
-.action-btn {
+.acp-action-btn {
   padding: 0.5rem 1rem;
   background: #111827;
   color: white;
@@ -211,12 +211,12 @@
   transition: all 0.2s;
 }
 
-.action-btn:hover {
+.acp-action-btn:hover {
   background: #1f2937;
 }
 
 /* Modal */
-.modal-overlay {
+.acp-modal-overlay {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.6);
@@ -228,7 +228,7 @@
   padding: 1rem;
 }
 
-.modal-content {
+.acp-modal-content {
   background: white;
   border-radius: 1rem;
   max-width: 800px;
@@ -238,7 +238,7 @@
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
 }
 
-.modal-header {
+.acp-modal-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -246,14 +246,14 @@
   border-bottom: 2px solid #e5e7eb;
 }
 
-.modal-header h2 {
+.acp-modal-header h2 {
   font-size: 1.5rem;
   font-weight: 700;
   color: #111827;
   font-family: "Sora", "Poppins", sans-serif;
 }
 
-.close-btn {
+.acp-close-btn {
   width: 2.5rem;
   height: 2.5rem;
   display: flex;
@@ -268,12 +268,12 @@
   font-size: 1.5rem;
 }
 
-.close-btn:hover {
+.acp-close-btn:hover {
   background: #f3f4f6;
   color: #111827;
 }
 
-.modal-body {
+.acp-modal-body {
   padding: 2rem;
   display: flex;
   flex-direction: column;
@@ -281,7 +281,7 @@
 }
 
 /* Complaint Info */
-.complaint-info {
+.acp-complaint-info {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1.5rem;
@@ -290,17 +290,17 @@
   border-radius: 0.75rem;
 }
 
-.info-row {
+.acp-info-row {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
 
-.info-row.full-width {
+.acp-info-row.full-width {
   grid-column: 1 / -1;
 }
 
-.info-row label {
+.acp-info-row label {
   font-size: 0.85rem;
   font-weight: 600;
   color: #6b7280;
@@ -308,17 +308,17 @@
   letter-spacing: 0.05em;
 }
 
-.info-row p {
+.acp-info-row p {
   color: #111827;
   font-size: 1rem;
 }
 
-.detail-text {
+.acp-detail-text {
   line-height: 1.6;
   color: #374151;
 }
 
-.proof-image {
+.acp-proof-image {
   max-width: 100%;
   max-height: 300px;
   border-radius: 0.5rem;
@@ -327,30 +327,30 @@
   transition: all 0.2s;
 }
 
-.proof-image:hover {
+.acp-proof-image:hover {
   border-color: #111827;
 }
 
 /* Update Form */
-.update-form {
+.acp-update-form {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
 
-.form-group {
+.acp-form-group {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
 
-.form-group label {
+.acp-form-group label {
   font-weight: 600;
   color: #374151;
 }
 
-.status-select,
-.response-textarea {
+.acp-status-select,
+.acp-response-textarea {
   padding: 0.75rem;
   border: 2px solid #e5e7eb;
   border-radius: 0.5rem;
@@ -359,19 +359,19 @@
   font-family: inherit;
 }
 
-.status-select:focus,
-.response-textarea:focus {
+.acp-status-select:focus,
+.acp-response-textarea:focus {
   outline: none;
   border-color: #111827;
 }
 
-.response-textarea {
+.acp-response-textarea {
   resize: vertical;
   min-height: 100px;
 }
 
 /* Modal Footer */
-.modal-footer {
+.acp-modal-footer {
   display: flex;
   gap: 1rem;
   justify-content: flex-end;
@@ -379,8 +379,8 @@
   border-top: 2px solid #e5e7eb;
 }
 
-.btn-primary,
-.btn-secondary {
+.acp-btn-primary,
+.acp-btn-secondary {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -393,49 +393,49 @@
   transition: all 0.2s;
 }
 
-.btn-primary {
+.acp-btn-primary {
   background: #111827;
   color: white;
 }
 
-.btn-primary:hover:not(:disabled) {
+.acp-btn-primary:hover:not(:disabled) {
   background: #1f2937;
 }
 
-.btn-primary:disabled {
+.acp-btn-primary:disabled {
   background: #9ca3af;
   cursor: not-allowed;
 }
 
-.btn-secondary {
+.acp-btn-secondary {
   background: white;
   color: #374151;
   border: 2px solid #e5e7eb;
 }
 
-.btn-secondary:hover:not(:disabled) {
+.acp-btn-secondary:hover:not(:disabled) {
   background: #f9fafb;
 }
 
 /* Loading & Empty States */
-.loading-state,
-.empty-state {
+.acp-loading-state,
+.acp-empty-state {
   text-align: center;
   padding: 4rem 2rem;
 }
 
-.loading-state p {
+.acp-loading-state p {
   color: #6b7280;
   margin-top: 1rem;
 }
 
-.empty-icon {
+.acp-empty-icon {
   font-size: 4rem;
   color: #d1d5db;
   margin-bottom: 1rem;
 }
 
-.empty-state h3 {
+.acp-empty-state h3 {
   font-size: 1.5rem;
   font-weight: 700;
   color: #111827;
@@ -443,33 +443,33 @@
   font-family: "Sora", "Poppins", sans-serif;
 }
 
-.empty-state p {
+.acp-empty-state p {
   color: #6b7280;
 }
 
-.spinner {
+.acp-spinner {
   width: 1.5rem;
   height: 1.5rem;
   border: 3px solid rgba(255, 255, 255, 0.3);
   border-top-color: white;
   border-radius: 50%;
-  animation: spin 0.8s linear infinite;
+  animation: acp-spin 0.8s linear infinite;
 }
 
-.loading-state .spinner {
+.acp-loading-state .acp-spinner {
   border-color: rgba(0, 0, 0, 0.1);
   border-top-color: #111827;
   margin: 0 auto;
 }
 
-@keyframes spin {
+@keyframes acp-spin {
   to {
     transform: rotate(360deg);
   }
 }
 
 /* Status Badge */
-.status-badge {
+.acp-status-badge {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -479,78 +479,78 @@
   font-size: 0.85rem;
 }
 
-.status-initiated {
+.acp-status-initiated {
   background: #fef3c7;
   color: #92400e;
 }
 
-.status-progress {
+.acp-status-progress {
   background: #dbeafe;
   color: #1e40af;
 }
 
-.status-resolved {
+.acp-status-resolved {
   background: #d1fae5;
   color: #065f46;
 }
 
-.status-rejected {
+.acp-status-rejected {
   background: #fee2e2;
   color: #991b1b;
 }
 
 /* Responsive Design */
 @media (max-width: 1024px) {
-  .complaints-table {
+  .acp-complaints-table {
     font-size: 0.9rem;
   }
 
-  .complaints-table th,
-  .complaints-table td {
+  .acp-complaints-table th,
+  .acp-complaints-table td {
     padding: 0.75rem 0.5rem;
   }
 }
 
 @media (max-width: 768px) {
-  .admin-complaints-page {
+  .acp-page {
     padding: 1rem;
   }
 
-  .admin-header {
+  .acp-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
   }
 
-  .admin-header h1 {
+  .acp-header h1 {
     font-size: 1.5rem;
   }
 
-  .stats-grid {
+  .acp-stats-grid {
     grid-template-columns: 1fr;
   }
 
-  .controls-section {
+  .acp-controls-section {
     flex-direction: column;
   }
 
-  .complaints-table-container {
+  .acp-complaints-table-container {
     overflow-x: auto;
   }
 
-  .complaints-table {
+  .acp-complaints-table {
     min-width: 800px;
   }
 
-  .complaint-info {
+  .acp-complaint-info {
     grid-template-columns: 1fr;
   }
 
-  .modal-footer {
+  .acp-modal-footer {
     flex-direction: column;
   }
 
-  .modal-footer button {
+  .acp-modal-footer button {
     width: 100%;
   }
 }
