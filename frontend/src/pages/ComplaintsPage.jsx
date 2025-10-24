@@ -58,7 +58,6 @@ export default function ComplaintsPage() {
 
   const fetchDonorsAndDeliveryBuddies = async (userId) => {
     try {
-      // Fetch donors who donated to this user
       const donorsRes = await fetch(
         `http://localhost:5000/api/complaints/donors/${userId}`
       );
@@ -67,7 +66,6 @@ export default function ComplaintsPage() {
         setDonors(donorsData);
       }
 
-      // Fetch delivery buddies who delivered to this user
       const deliveryRes = await fetch(
         `http://localhost:5000/api/complaints/delivery-buddies/${userId}`
       );
@@ -84,12 +82,10 @@ export default function ComplaintsPage() {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
 
-    // Clear error when user types
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
 
-    // Reset againstPerson when complaint type changes
     if (name === "complaintType") {
       setFormData((prev) => ({ ...prev, againstPerson: "" }));
     }
@@ -98,7 +94,6 @@ export default function ComplaintsPage() {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      // Validate file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
         setErrors((prev) => ({
           ...prev,
@@ -107,7 +102,6 @@ export default function ComplaintsPage() {
         return;
       }
 
-      // Validate file type
       const allowedTypes = [
         "image/jpeg",
         "image/jpg",
@@ -122,12 +116,9 @@ export default function ComplaintsPage() {
         return;
       }
 
-      // Convert to base64
       const reader = new FileReader();
       reader.onloadend = () => {
         setFormData((prev) => ({ ...prev, proof: reader.result }));
-
-        // Set preview for images
         if (file.type.startsWith("image/")) {
           setPreviewImage(reader.result);
         } else {
@@ -228,38 +219,35 @@ export default function ComplaintsPage() {
 
   if (showSuccess) {
     return (
-      <div className="complaints-page">
-        <div className="success-container">
-          <div className="success-icon">
+      <div className="cp-page">
+        <div className="cp-success-container">
+          <div className="cp-success-icon">
             <FiCheck />
           </div>
           <h1>Complaint Submitted Successfully!</h1>
-          <div className="complaint-number-box">
-            <p className="complaint-label">Your Complaint Number</p>
-            <p className="complaint-number">{complaintNumber}</p>
-            <p className="complaint-note">
-              Please save this number for tracking
-            </p>
+          <div className="cp-complaint-number-box">
+            <p className="cp-complaint-label">Your Complaint Number</p>
+            <p className="cp-complaint-number">{complaintNumber}</p>
+            <p className="cp-complaint-note">Please save this number for tracking</p>
           </div>
-          <div className="status-badge initiated">
+          <div className="cp-status-badge cp-initiated">
             <FiAlertCircle />
             <span>Status: Complaint Initiated</span>
           </div>
-          <p className="success-message">
-            Your complaint has been registered and sent to our admin team. You
-            will receive updates via email.
+          <p className="cp-success-message">
+            Your complaint has been registered and sent to our admin team. You will receive updates via email.
           </p>
-          <div className="success-actions">
-            <button onClick={handleNewComplaint} className="btn-secondary">
+          <div className="cp-success-actions">
+            <button onClick={handleNewComplaint} className="cp-btn-secondary">
               Submit Another Complaint
             </button>
             <button
               onClick={() => navigate("/complaints/track")}
-              className="btn-primary"
+              className="cp-btn-primary"
             >
               <FiSearch /> Track Complaint
             </button>
-            <button onClick={() => navigate("/")} className="btn-ghost">
+            <button onClick={() => navigate("/")} className="cp-btn-ghost">
               Go to Home
             </button>
           </div>
@@ -269,34 +257,32 @@ export default function ComplaintsPage() {
   }
 
   return (
-    <div className="complaints-page">
-      <div className="complaints-container">
-        <div className="complaints-header">
-          <button onClick={() => navigate("/")} className="back-btn">
+    <div className="cp-page">
+      <div className="cp-container">
+        <div className="cp-header">
+          <button onClick={() => navigate("/")} className="cp-back-btn">
             <FiX /> Close
           </button>
           <div>
             <h1>
               <FiAlertCircle /> File a Complaint
             </h1>
-            <p>
-              We take your concerns seriously and will address them promptly
-            </p>
+            <p>We take your concerns seriously and will address them promptly</p>
           </div>
           <button
             onClick={() => navigate("/complaints/track")}
-            className="track-btn"
+            className="cp-track-btn"
           >
             <FiSearch /> Track Complaint
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="complaints-form">
+        <form onSubmit={handleSubmit} className="cp-complaints-form">
           {/* User Information (Read-only) */}
-          <div className="form-section">
+          <div className="cp-form-section">
             <h2>Your Information</h2>
-            <div className="form-grid">
-              <div className="form-group">
+            <div className="cp-form-grid">
+              <div className="cp-form-group">
                 <label>
                   <FiUser /> Name
                 </label>
@@ -304,11 +290,11 @@ export default function ComplaintsPage() {
                   type="text"
                   value={formData.name}
                   readOnly
-                  className="readonly-input"
+                  className="cp-readonly-input"
                 />
               </div>
 
-              <div className="form-group">
+              <div className="cp-form-group">
                 <label>
                   <FiMail /> Email
                 </label>
@@ -316,11 +302,11 @@ export default function ComplaintsPage() {
                   type="email"
                   value={formData.email}
                   readOnly
-                  className="readonly-input"
+                  className="cp-readonly-input"
                 />
               </div>
 
-              <div className="form-group">
+              <div className="cp-form-group">
                 <label>
                   <FiPhone /> Contact
                 </label>
@@ -328,21 +314,21 @@ export default function ComplaintsPage() {
                   type="text"
                   value={formData.contact}
                   readOnly
-                  className="readonly-input"
+                  className="cp-readonly-input"
                 />
               </div>
             </div>
           </div>
 
           {/* Complaint Type Selection */}
-          <div className="form-section">
+          <div className="cp-form-section">
             <h2>Complaint Type *</h2>
-            <p className="section-subtitle">What is your complaint about?</p>
+            <p className="cp-section-subtitle">What is your complaint about?</p>
 
-            <div className="complaint-type-grid">
+            <div className="cp-complaint-type-grid">
               <label
-                className={`complaint-type-card ${
-                  formData.complaintType === "donor" ? "selected" : ""
+                className={`cp-complaint-type-card ${
+                  formData.complaintType === "donor" ? "cp-selected" : ""
                 }`}
               >
                 <input
@@ -352,16 +338,16 @@ export default function ComplaintsPage() {
                   checked={formData.complaintType === "donor"}
                   onChange={handleInputChange}
                 />
-                <div className="card-content">
-                  <FiUser className="card-icon" />
+                <div className="cp-card-content">
+                  <FiUser className="cp-card-icon" />
                   <h3>Donor</h3>
                   <p>Issue with food donor</p>
                 </div>
               </label>
 
               <label
-                className={`complaint-type-card ${
-                  formData.complaintType === "delivery_buddy" ? "selected" : ""
+                className={`cp-complaint-type-card ${
+                  formData.complaintType === "delivery_buddy" ? "cp-selected" : ""
                 }`}
               >
                 <input
@@ -371,16 +357,16 @@ export default function ComplaintsPage() {
                   checked={formData.complaintType === "delivery_buddy"}
                   onChange={handleInputChange}
                 />
-                <div className="card-content">
-                  <FiUser className="card-icon" />
+                <div className="cp-card-content">
+                  <FiUser className="cp-card-icon" />
                   <h3>Delivery Buddy</h3>
                   <p>Issue with delivery person</p>
                 </div>
               </label>
 
               <label
-                className={`complaint-type-card ${
-                  formData.complaintType === "platform" ? "selected" : ""
+                className={`cp-complaint-type-card ${
+                  formData.complaintType === "platform" ? "cp-selected" : ""
                 }`}
               >
                 <input
@@ -390,16 +376,16 @@ export default function ComplaintsPage() {
                   checked={formData.complaintType === "platform"}
                   onChange={handleInputChange}
                 />
-                <div className="card-content">
-                  <FiAlertCircle className="card-icon" />
+                <div className="cp-card-content">
+                  <FiAlertCircle className="cp-card-icon" />
                   <h3>Platform</h3>
                   <p>Technical or service issue</p>
                 </div>
               </label>
 
               <label
-                className={`complaint-type-card ${
-                  formData.complaintType === "other" ? "selected" : ""
+                className={`cp-complaint-type-card ${
+                  formData.complaintType === "other" ? "cp-selected" : ""
                 }`}
               >
                 <input
@@ -409,31 +395,31 @@ export default function ComplaintsPage() {
                   checked={formData.complaintType === "other"}
                   onChange={handleInputChange}
                 />
-                <div className="card-content">
-                  <FiFileText className="card-icon" />
+                <div className="cp-card-content">
+                  <FiFileText className="cp-card-icon" />
                   <h3>Other</h3>
                   <p>Any other concern</p>
                 </div>
               </label>
             </div>
             {errors.complaintType && (
-              <span className="error-message">{errors.complaintType}</span>
+              <span className="cp-error-message">{errors.complaintType}</span>
             )}
           </div>
 
           {/* Select Person (for Donor or Delivery Buddy) */}
           {(formData.complaintType === "donor" ||
             formData.complaintType === "delivery_buddy") && (
-            <div className="form-section">
+            <div className="cp-form-section">
               <h2>Select Person *</h2>
-              <p className="section-subtitle">
+              <p className="cp-section-subtitle">
                 {formData.complaintType === "donor"
                   ? "Select the donor you want to complain about"
                   : "Select the delivery buddy you want to complain about"}
               </p>
 
               {getPersonList().length === 0 ? (
-                <div className="empty-state">
+                <div className="cp-empty-state">
                   <p>
                     No{" "}
                     {formData.complaintType === "donor"
@@ -443,13 +429,13 @@ export default function ComplaintsPage() {
                   </p>
                 </div>
               ) : (
-                <div className="person-list">
+                <div className="cp-person-list">
                   {getPersonList().map((person) => (
                     <label
                       key={person.id}
-                      className={`person-card ${
+                      className={`cp-person-card ${
                         formData.againstPerson === person.id.toString()
-                          ? "selected"
+                          ? "cp-selected"
                           : ""
                       }`}
                     >
@@ -457,16 +443,14 @@ export default function ComplaintsPage() {
                         type="radio"
                         name="againstPerson"
                         value={person.id}
-                        checked={
-                          formData.againstPerson === person.id.toString()
-                        }
+                        checked={formData.againstPerson === person.id.toString()}
                         onChange={handleInputChange}
                       />
-                      <div className="person-info">
+                      <div className="cp-person-info">
                         <h4>{person.name}</h4>
                         <p>{person.contact}</p>
                         {person.donationInfo && (
-                          <span className="donation-info">
+                          <span className="cp-donation-info">
                             {person.donationInfo}
                           </span>
                         )}
@@ -476,62 +460,60 @@ export default function ComplaintsPage() {
                 </div>
               )}
               {errors.againstPerson && (
-                <span className="error-message">{errors.againstPerson}</span>
+                <span className="cp-error-message">{errors.againstPerson}</span>
               )}
             </div>
           )}
 
           {/* Complaint Details */}
-          <div className="form-section">
+          <div className="cp-form-section">
             <h2>Complaint Details *</h2>
-            <p className="section-subtitle">
+            <p className="cp-section-subtitle">
               Please provide detailed information about your complaint
             </p>
 
-            <div className="form-group">
+            <div className="cp-form-group">
               <textarea
                 name="details"
                 value={formData.details}
                 onChange={handleInputChange}
                 placeholder="Describe your complaint in detail (minimum 20 characters)..."
                 rows="6"
-                className={errors.details ? "error" : ""}
+                className={errors.details ? "cp-error" : ""}
               />
-              <div className="char-count">
-                {formData.details.length} characters
-              </div>
+              <div className="cp-char-count">{formData.details.length} characters</div>
               {errors.details && (
-                <span className="error-message">{errors.details}</span>
+                <span className="cp-error-message">{errors.details}</span>
               )}
             </div>
           </div>
 
           {/* Upload Proof */}
-          <div className="form-section">
+          <div className="cp-form-section">
             <h2>Upload Proof (Optional)</h2>
-            <p className="section-subtitle">
+            <p className="cp-section-subtitle">
               Upload any supporting documents or images (Max 5MB, JPG/PNG/PDF)
             </p>
 
-            <div className="upload-container">
+            <div className="cp-upload-container">
               <input
                 type="file"
                 id="proof-upload"
                 accept="image/jpeg,image/jpg,image/png,application/pdf"
                 onChange={handleFileChange}
-                className="file-input"
+                className="cp-file-input"
               />
-              <label htmlFor="proof-upload" className="upload-btn">
+              <label htmlFor="proof-upload" className="cp-upload-btn">
                 <FiUpload />
                 <span>Choose File</span>
               </label>
 
               {previewImage && (
-                <div className="preview-container">
+                <div className="cp-preview-container">
                   <img
                     src={previewImage}
                     alt="Preview"
-                    className="preview-image"
+                    className="cp-preview-image"
                   />
                   <button
                     type="button"
@@ -539,7 +521,7 @@ export default function ComplaintsPage() {
                       setFormData((prev) => ({ ...prev, proof: null }));
                       setPreviewImage(null);
                     }}
-                    className="remove-preview"
+                    className="cp-remove-preview"
                   >
                     <FiX />
                   </button>
@@ -547,42 +529,42 @@ export default function ComplaintsPage() {
               )}
 
               {formData.proof && !previewImage && (
-                <div className="file-uploaded">
+                <div className="cp-file-uploaded">
                   <FiCheck /> File uploaded successfully
                 </div>
               )}
 
               {errors.proof && (
-                <span className="error-message">{errors.proof}</span>
+                <span className="cp-error-message">{errors.proof}</span>
               )}
             </div>
           </div>
 
           {/* Submit Error */}
           {errors.submit && (
-            <div className="submit-error">
+            <div className="cp-submit-error">
               <FiAlertCircle /> {errors.submit}
             </div>
           )}
 
           {/* Submit Button */}
-          <div className="form-actions">
+          <div className="cp-form-actions">
             <button
               type="button"
               onClick={() => navigate("/")}
-              className="btn-secondary"
+              className="cp-btn-secondary"
               disabled={isSubmitting}
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="btn-primary"
+              className="cp-btn-primary"
               disabled={isSubmitting}
             >
               {isSubmitting ? (
                 <>
-                  <span className="spinner"></span>
+                  <span className="cp-spinner"></span>
                   Submitting...
                 </>
               ) : (
