@@ -1,0 +1,472 @@
+/* Complaints Page Styles */
+.cp-page {
+  min-height: 100vh;
+  background: #f9fafb;
+  padding: 2rem 1rem;
+}
+
+.cp-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.cp-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  gap: 1rem;
+}
+
+.cp-header h1 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 0.25rem;
+  font-family: "Sora", "Poppins", sans-serif;
+}
+
+.cp-header p {
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.cp-back-btn,
+.cp-track-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.cp-back-btn:hover,
+.cp-track-btn:hover {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+/* Form Styles */
+.cp-complaints-form {
+  background: white;
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.cp-form-section {
+  margin-bottom: 2.5rem;
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.cp-form-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.cp-form-section h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 0.5rem;
+  font-family: "Sora", "Poppins", sans-serif;
+}
+
+.cp-section-subtitle {
+  color: #6b7280;
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+
+.cp-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.cp-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.cp-form-group label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  color: #374151;
+  font-size: 0.9rem;
+}
+
+.cp-form-group input,
+.cp-form-group textarea {
+  padding: 0.75rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.cp-form-group input:focus,
+.cp-form-group textarea:focus {
+  outline: none;
+  border-color: #111827;
+}
+
+.cp-form-group input.error,
+.cp-form-group textarea.error {
+  border-color: #ef4444;
+}
+
+.cp-readonly-input {
+  background: #f3f4f6;
+  cursor: not-allowed;
+  color: #6b7280;
+}
+
+.cp-error-message {
+  color: #ef4444;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* Complaint Type Grid */
+.cp-complaint-type-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.cp-complaint-type-card {
+  position: relative;
+  border: 2px solid #e5e7eb;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: white;
+}
+
+.cp-complaint-type-card:hover {
+  border-color: #9ca3af;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.cp-complaint-type-card.selected {
+  border-color: #111827;
+  background: #f9fafb;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.cp-complaint-type-card input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+}
+
+.cp-card-content {
+  text-align: center;
+}
+
+.cp-card-icon {
+  font-size: 2rem;
+  color: #6b7280;
+  margin-bottom: 0.75rem;
+}
+
+.cp-complaint-type-card.selected .cp-card-icon {
+  color: #111827;
+}
+
+.cp-card-content h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 0.25rem;
+}
+
+.cp-card-content p {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+/* Person List */
+.cp-person-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.cp-person-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cp-person-card:hover {
+  border-color: #9ca3af;
+  background: #f9fafb;
+}
+
+.cp-person-card.selected {
+  border-color: #111827;
+  background: #f9fafb;
+}
+
+.cp-person-card input[type="radio"] {
+  flex-shrink: 0;
+}
+
+.cp-person-info {
+  flex: 1;
+}
+
+.cp-person-info h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 0.25rem;
+}
+
+.cp-person-info p {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.cp-donation-info {
+  display: inline-block;
+  margin-top: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  background: #e0f2fe;
+  color: #075985;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.cp-empty-state {
+  text-align: center;
+  padding: 2rem;
+  color: #9ca3af;
+  background: #f9fafb;
+  border-radius: 0.5rem;
+}
+
+/* Char Count */
+.cp-char-count {
+  text-align: right;
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+
+/* Upload Container */
+.cp-upload-container {
+  margin-top: 1rem;
+}
+
+.cp-file-input {
+  display: none;
+}
+
+.cp-upload-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: white;
+  border: 2px dashed #d1d5db;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cp-upload-btn:hover {
+  border-color: #111827;
+  background: #f9fafb;
+}
+
+.cp-preview-container {
+  position: relative;
+  margin-top: 1rem;
+  display: inline-block;
+}
+
+.cp-preview-image {
+  max-width: 300px;
+  max-height: 300px;
+  border-radius: 0.5rem;
+  border: 2px solid #e5e7eb;
+}
+
+.cp-remove-preview {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cp-remove-preview:hover {
+  background: #dc2626;
+}
+
+/* Submit Error */
+.cp-submit-error {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: #fee2e2;
+  color: #991b1b;
+  border-radius: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Form Actions */
+.cp-form-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 2rem;
+}
+
+.cp-btn-primary,
+.cp-btn-secondary,
+.cp-btn-ghost {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 1rem;
+}
+
+.cp-btn-primary {
+  background: #111827;
+  color: white;
+}
+
+.cp-btn-primary:hover:not(:disabled) {
+  background: #1f2937;
+}
+
+.cp-btn-primary:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+.cp-btn-secondary {
+  background: white;
+  color: #374151;
+  border: 2px solid #e5e7eb;
+}
+
+.cp-btn-secondary:hover:not(:disabled) {
+  background: #f9fafb;
+  border-color: #d1d5db;
+}
+
+.cp-btn-ghost {
+  background: none;
+  color: #6b7280;
+  border: 1px solid #e5e7eb;
+}
+
+.cp-btn-ghost:hover {
+  background: #f9fafb;
+}
+
+/* Spinner animation */
+@keyframes cp-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.cp-spinner {
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: cp-spin 0.8s linear infinite;
+}
+
+/* Success Container (optional, depending on page) */
+.cp-success-container {
+  background: white;
+  border-radius: 1rem;
+  padding: 3rem 2rem;
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.cp-success-icon {
+  width: 80px;
+  height: 80px;
+  background: #10b981;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 2rem;
+  animation: scaleIn 0.5s ease-out;
+}
+
+.cp-success-icon svg {
+  font-size: 3rem;
+  color: white;
+}
+@keyframes cp-scaleIn {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.cp-success-container h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 2rem;
+  font-family: "Sora", "Poppins", sans-serif;
+}
