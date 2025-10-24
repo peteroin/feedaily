@@ -9,8 +9,12 @@ import { generateOtp, validateOtp } from "./otpService.js";
 import nodemailer from "nodemailer";
 import { sendEmail } from "./emailService.js";
 import createCheckoutSession from "./createCheckoutSession.js";
-import impactAPI from "./impactAPI.js";
+import impactAPI from './impactAPI.js';
+import calendarAPI from './calendarAPI.js';
 import collaborationRoutes from "./collaborationRoutes.js";
+import eventNotificationRoutes from "./eventNotificationRoutes.js";
+import { scheduledJobs } from "./scheduledJobs.js";
+import testInterface from "./testInterface.js";
 import proSubscriptionRoutes from "./proSubscriptionRoutes.js";
 
 const app = express();
@@ -22,9 +26,15 @@ app.use("/api", createCheckoutSession);
 
 // Register environmental impact API routes
 app.use("/api", impactAPI);
+// Register calendar API routes
+app.use("/api", calendarAPI);
 
 //Collaboration routes
 app.use("/api", collaborationRoutes);
+
+app.use("/api/event-notifications", eventNotificationRoutes);
+//Test interface routes
+app.use("/api", testInterface);
 
 //Pro subscription routes
 console.log("Registering Pro subscription routes...");
@@ -1247,6 +1257,10 @@ app.put("/api/complaints/:complaintId", (req, res) => {
 });
 
 const PORT = 5000;
-app.listen(PORT, () =>
-  console.log(`Backend running on http://localhost:${PORT}`)
-);
+app.listen(PORT, () => {
+  console.log(`Backend running on http://localhost:${PORT}`);
+  
+  // Start scheduled jobs for event notifications
+  console.log("🚀 Starting event notification scheduled jobs...");
+  scheduledJobs.start();
+});
