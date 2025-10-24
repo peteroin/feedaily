@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FiLogOut } from "react-icons/fi";
+import { FiLogOut, FiSearch, FiFilter, FiDownload, FiTrendingUp, FiPackage, FiTruck, FiCheckCircle } from "react-icons/fi";
 import MapModal from "../components/MapModal";
 import "./AdminDeliveryRequestsPage.css";
 
@@ -15,6 +15,11 @@ export default function AdminDeliveryRequestsPage() {
   const expirationReasons = ["Spoiled", "Not picked up", "Other"];
   const [collaborations, setCollaborations] = useState([]);
   const [collabActiveTab, setCollabActiveTab] = useState("Available");
+  
+  // New state for enhanced features
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState("date");
+  const [filterUrgency, setFilterUrgency] = useState("all");
 
   useEffect(() => {
     fetch("http://localhost:5000/api/collaborations")
@@ -22,6 +27,7 @@ export default function AdminDeliveryRequestsPage() {
       .then((data) => setCollaborations(data))
       .catch(() => console.error("Failed to fetch collaborations"));
   }, []);
+
   const collabAvailable = collaborations.filter(
     (c) => c.acceptedByAdmin === null
   );
@@ -51,7 +57,6 @@ export default function AdminDeliveryRequestsPage() {
     </thead>
   );
 
-  // Function to update status
   const updateCollabStatus = async (id, status) => {
     try {
       const res = await fetch(
@@ -66,7 +71,6 @@ export default function AdminDeliveryRequestsPage() {
         setCollaborations((prev) =>
           prev.map((r) => (r.id === id ? { ...r, acceptedByAdmin: status } : r))
         );
-        // Move it out of Available automatically
         setCollabActiveTab(status);
       } else alert("Failed to update status.");
     } catch (err) {
@@ -97,6 +101,19 @@ export default function AdminDeliveryRequestsPage() {
   const delivering = requests.filter((r) => r.status === "Delivering");
   const delivered = requests.filter((r) => r.status === "Delivered");
 
+  // Calculate stats
+  const todayDelivered = delivered.filter(d => {
+    if (!d.deliveredAt) return false;
+    const deliveredDate = new Date(d.deliveredAt);
+    const today = new Date();
+    return deliveredDate.toDateString() === today.toDateString();
+  }).length;
+
+  const totalFoodSaved = requests.reduce((sum, req) => {
+    const qty = parseInt(req.quantity) || 0;
+    return sum + qty;
+  }, 0);
+
   const tabs = [
     { label: "Available", data: requested },
     { label: "Delivering", data: delivering },
@@ -116,6 +133,55 @@ export default function AdminDeliveryRequestsPage() {
   const handleCloseMap = () => {
     setIsMapModalOpen(false);
     setMapModalUrl('');
+  };
+
+  // Filter and sort functionality
+  const getFilteredAndSortedData = (data) => {
+    let filtered = data;
+
+    // Search filter
+    if (searchTerm) {
+      filtered = filtered.filter(req =>
+        req.donorName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        req.foodType?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        req.requesterName?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    // Sort
+    if (sortBy === "date") {
+      filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    } else if (sortBy === "quantity") {
+      filtered.sort((a, b) => parseInt(b.quantity) - parseInt(a.quantity));
+    }
+
+    return filtered;
+  };
+
+  // Export to CSV
+  const exportToCSV = () => {
+    const currentData = tabs.find(t => t.label === activeTab)?.data || [];
+    const headers = ["ID", "Donor", "Food Type", "Quantity", "Status", "Date"];
+    const rows = currentData.map(req => [
+      req.id,
+      req.donorName,
+      req.foodType,
+      req.quantity,
+      req.status,
+      new Date(req.createdAt).toLocaleDateString()
+    ]);
+    
+    let csvContent = headers.join(",") + "\n";
+    rows.forEach(row => {
+      csvContent += row.join(",") + "\n";
+    });
+    
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `delivery-requests-${activeTab}-${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
   };
 
   const TableHeader = () => (
@@ -241,10 +307,78 @@ export default function AdminDeliveryRequestsPage() {
     <div className="admin-delivery-container">
       {/* Header */}
       <div className="admin-header">
-        <h1>📋 Admin: Delivery Requests</h1>
+        <h1>📋 Admin Dashboard</h1>
         <button onClick={handleLogout} className="admin-logout-btn">
           <FiLogOut size={20} />
         </button>
+      </div>
+
+      {/* Stats Dashboard */}
+      <div className="admin-stats-grid">
+        <div className="admin-stat-card">
+          <div className="stat-icon" style={{ background: "#e3f2fd" }}>
+            <FiPackage size={24} color="#1976d2" />
+          </div>
+          <div className="stat-content">
+            <h3>{requested.length}</h3>
+            <p>Available Donations</p>
+          </div>
+        </div>
+
+        <div className="admin-stat-card">
+          <div className="stat-icon" style={{ background: "#fff3e0" }}>
+            <FiTruck size={24} color="#f57c00" />
+          </div>
+          <div className="stat-content">
+            <h3>{delivering.length}</h3>
+            <p>In Delivery</p>
+          </div>
+        </div>
+
+        <div className="admin-stat-card">
+          <div className="stat-icon" style={{ background: "#e8f5e9" }}>
+            <FiCheckCircle size={24} color="#388e3c" />
+          </div>
+          <div className="stat-content">
+            <h3>{todayDelivered}</h3>
+            <p>Delivered Today</p>
+          </div>
+        </div>
+
+        <div className="admin-stat-card">
+          <div className="stat-icon" style={{ background: "#f3e5f5" }}>
+            <FiTrendingUp size={24} color="#7b1fa2" />
+          </div>
+          <div className="stat-content">
+            <h3>{totalFoodSaved} kg</h3>
+            <p>Food Saved</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Search and Filter Bar */}
+      <div className="admin-controls-bar">
+        <div className="admin-search-box">
+          <FiSearch size={18} />
+          <input
+            type="text"
+            placeholder="Search by donor, food type, or requester..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+
+        <div className="admin-filters">
+          <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+            <option value="date">Sort by Date</option>
+            <option value="quantity">Sort by Quantity</option>
+          </select>
+
+          <button className="admin-export-btn" onClick={exportToCSV}>
+            <FiDownload size={16} />
+            Export CSV
+          </button>
+        </div>
       </div>
 
       {/* Tabs */}
@@ -280,7 +414,7 @@ export default function AdminDeliveryRequestsPage() {
                 <div className="admin-table-container">
                   <table className="admin-table">
                     <TableHeader />
-                    <tbody>{renderRows(tab.data, tab.label)}</tbody>
+                    <tbody>{renderRows(getFilteredAndSortedData(tab.data), tab.label)}</tbody>
                   </table>
                 </div>
               ) : (
@@ -396,7 +530,6 @@ export default function AdminDeliveryRequestsPage() {
                         <td>{req.id}</td>
                         <td>{req.type}</td>
 
-                        {/* Structured Form Data */}
                         <td>
                           <table className="nested-table mx-auto">
                             <tbody>
@@ -428,7 +561,6 @@ export default function AdminDeliveryRequestsPage() {
                           </div>
                         </td>
 
-                        {/* Action or Status */}
                         {tab.label === "Available" ? (
                           <td>
                             <button
