@@ -1,0 +1,559 @@
+/* Admin Complaints Page Styles */
+.acp-page {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+/* ========= Page Header ========= */
+.admin-page-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.admin-page-header h1 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 0.5rem 0;
+  font-family: "Sora", "Poppins", sans-serif;
+}
+
+.admin-page-header p {
+  color: #6b7280;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+/* Stats Grid */
+.acp-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.acp-stat-card {
+  background: white;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.acp-stat-icon {
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.acp-stat-icon.all {
+  background: #e0e7ff;
+  color: #3730a3;
+}
+
+.acp-stat-icon.initiated {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.acp-stat-icon.progress {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.acp-stat-icon.resolved {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.acp-stat-info {
+  flex: 1;
+}
+
+.acp-stat-label {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin-bottom: 0.25rem;
+}
+
+.acp-stat-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* Controls Section */
+.acp-controls-section {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.acp-filter-group,
+.acp-search-group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: white;
+  border-radius: 0.5rem;
+  border: 2px solid #e5e7eb;
+}
+
+.acp-filter-group {
+  min-width: 200px;
+}
+
+.acp-search-group {
+  flex: 1;
+}
+
+.acp-filter-select,
+.acp-search-input {
+  border: none;
+  outline: none;
+  flex: 1;
+  font-size: 0.95rem;
+}
+
+/* Complaints Table */
+.acp-complaints-table-container {
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.acp-complaints-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.acp-complaints-table thead {
+  background: #f9fafb;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.acp-complaints-table th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #6b7280;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.acp-complaints-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.acp-complaints-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+.acp-complaint-num {
+  font-family: "Courier New", monospace;
+  font-weight: 600;
+  color: #111827;
+}
+
+.acp-user-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.acp-user-cell svg {
+  color: #9ca3af;
+  flex-shrink: 0;
+}
+
+.acp-user-name {
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 0.125rem;
+}
+
+.acp-user-email {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.acp-date-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.acp-action-btn {
+  padding: 0.5rem 1rem;
+  background: #111827;
+  color: white;
+  border: none;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.acp-action-btn:hover {
+  background: #1f2937;
+}
+
+/* Modal */
+.acp-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  padding: 1rem;
+}
+
+.acp-modal-content {
+  background: white;
+  border-radius: 1rem;
+  max-width: 800px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.acp-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 2rem;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.acp-modal-header h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+  font-family: "Sora", "Poppins", sans-serif;
+}
+
+.acp-close-btn {
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: #6b7280;
+  font-size: 1.5rem;
+}
+
+.acp-close-btn:hover {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.acp-modal-body {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Complaint Info */
+.acp-complaint-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background: #f9fafb;
+  border-radius: 0.75rem;
+}
+
+.acp-info-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.acp-info-row.full-width {
+  grid-column: 1 / -1;
+}
+
+.acp-info-row label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.acp-info-row p {
+  color: #111827;
+  font-size: 1rem;
+}
+
+.acp-detail-text {
+  line-height: 1.6;
+  color: #374151;
+}
+
+.acp-proof-image {
+  max-width: 100%;
+  max-height: 300px;
+  border-radius: 0.5rem;
+  border: 2px solid #e5e7eb;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.acp-proof-image:hover {
+  border-color: #111827;
+}
+
+/* Update Form */
+.acp-update-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.acp-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.acp-form-group label {
+  font-weight: 600;
+  color: #374151;
+}
+
+.acp-status-select,
+.acp-response-textarea {
+  padding: 0.75rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.acp-status-select:focus,
+.acp-response-textarea:focus {
+  outline: none;
+  border-color: #111827;
+}
+
+.acp-response-textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Modal Footer */
+.acp-modal-footer {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  padding: 1.5rem 2rem;
+  border-top: 2px solid #e5e7eb;
+}
+
+.acp-btn-primary,
+.acp-btn-secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.acp-btn-primary {
+  background: #111827;
+  color: white;
+}
+
+.acp-btn-primary:hover:not(:disabled) {
+  background: #1f2937;
+}
+
+.acp-btn-primary:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+.acp-btn-secondary {
+  background: white;
+  color: #374151;
+  border: 2px solid #e5e7eb;
+}
+
+.acp-btn-secondary:hover:not(:disabled) {
+  background: #f9fafb;
+}
+
+/* Loading & Empty States */
+.acp-loading-state,
+.acp-empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.acp-loading-state p {
+  color: #6b7280;
+  margin-top: 1rem;
+}
+
+.acp-empty-icon {
+  font-size: 4rem;
+  color: #d1d5db;
+  margin-bottom: 1rem;
+}
+
+.acp-empty-state h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 0.5rem;
+  font-family: "Sora", "Poppins", sans-serif;
+}
+
+.acp-empty-state p {
+  color: #6b7280;
+}
+
+.acp-spinner {
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: acp-spin 0.8s linear infinite;
+}
+
+.acp-loading-state .acp-spinner {
+  border-color: rgba(0, 0, 0, 0.1);
+  border-top-color: #111827;
+  margin: 0 auto;
+}
+
+@keyframes acp-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Status Badge */
+.acp-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.acp-status-initiated {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.acp-status-progress {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.acp-status-resolved {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.acp-status-rejected {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .acp-complaints-table {
+    font-size: 0.9rem;
+  }
+
+  .acp-complaints-table th,
+  .acp-complaints-table td {
+    padding: 0.75rem 0.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .acp-page {
+    padding: 1rem;
+  }
+
+  .acp-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .acp-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .acp-stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .acp-controls-section {
+    flex-direction: column;
+  }
+
+  .acp-complaints-table-container {
+    overflow-x: auto;
+  }
+
+  .acp-complaints-table {
+    min-width: 800px;
+  }
+
+  .acp-complaint-info {
+    grid-template-columns: 1fr;
+  }
+
+  .acp-modal-footer {
+    flex-direction: column;
+  }
+
+  .acp-modal-footer button {
+    width: 100%;
+  }
+}

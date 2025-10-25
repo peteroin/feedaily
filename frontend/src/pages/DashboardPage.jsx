@@ -30,6 +30,8 @@ const responsive = {
 export default function DashboardPage() {
   const [isMapModalOpen, setIsMapModalOpen] = useState(false);
   const [mapModalUrl, setMapModalUrl] = useState('');
+  const [upcomingEvents, setUpcomingEvents] = useState([]);
+  const [hideEventBanner, setHideEventBanner] = useState(false);
   const [donorName, setDonorName] = useState("");
   const [contact, setContact] = useState("");
   const [foodType, setFoodType] = useState("");
@@ -95,6 +97,23 @@ export default function DashboardPage() {
 
   useEffect(() => {
     fetchDonations();
+  }, []);
+
+  useEffect(() => {
+    // Fetch upcoming public holiday events for next 7 days
+    const fetchCalendar = async () => {
+      try {
+        const res = await fetch(`http://localhost:5000/api/calendar-events?region=IN&days=7`);
+        const data = await res.json();
+        if (data?.success) {
+          setUpcomingEvents(data.events || []);
+        }
+      } catch (e) {
+        console.error("Error fetching calendar events:", e);
+        // silent fail; banner won't show
+      }
+    };
+    fetchCalendar();
   }, []);
 
   const handleSubmit = async (e) => {
@@ -314,6 +333,27 @@ export default function DashboardPage() {
 
   return (
     <div className="dashboard-page">
+      {/* Upcoming Events Banner */}
+      {!hideEventBanner && upcomingEvents && upcomingEvents.length > 0 && (
+        <div className="events-banner">
+          <div className="events-banner-content">
+            <div className="events-banner-icon">
+              <FiClock />
+            </div>
+            <div className="events-banner-text">
+              <div className="events-banner-title">Upcoming events this week</div>
+              <div className="events-banner-events">
+                {upcomingEvents.slice(0, 3).map(e => e.summary).join(', ')}
+                {upcomingEvents.length > 3 && ` and ${upcomingEvents.length - 3} more`}
+              </div>
+              <div className="events-banner-subtitle">Potential high food surplus — plan donations!</div>
+            </div>
+            <button className="events-banner-dismiss" onClick={() => setHideEventBanner(true)}>
+              <FiX />
+            </button>
+          </div>
+        </div>
+      )}
       <div className="content-grid-swiper">
         {/* Form Section */}
         <div className="form-section-swiper">
