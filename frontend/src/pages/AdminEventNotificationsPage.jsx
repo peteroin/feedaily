@@ -84,10 +84,6 @@ export default function AdminEventNotificationsPage() {
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("adminUser");
-    window.location.href = "/admin-login";
-  };
 
   const getRiskLevelColor = (riskScore) => {
     if (riskScore >= 4) return "high-risk";
@@ -111,23 +107,10 @@ export default function AdminEventNotificationsPage() {
 
   return (
     <div className="admin-notifications-page">
-      {/* Header */}
-      <div className="admin-header">
-        <div className="admin-header-left">
-          <div className="admin-title">
-            <FiBell size={24} />
-            <h1>Event Notification Management</h1>
-          </div>
-          <div className="admin-nav-links">
-            <a href="/admin/delivery-requests" className="nav-link">Delivery Requests</a>
-            <a href="/admin/event-notifications" className="nav-link active">Event Notifications</a>
-          </div>
+        <div className="admin-page-header">
+          <h1>🔔 Event Notification Management</h1>
+          <p>Manage automated event notifications and email campaigns</p>
         </div>
-        <button onClick={handleLogout} className="logout-btn">
-          <FiLogOut size={20} />
-          Logout
-        </button>
-      </div>
 
       {error && <div className="error-message">{error}</div>}
 

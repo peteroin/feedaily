@@ -11,8 +11,10 @@ import DeliveryPage from "./pages/DeliveryPage";
 import DashboardLayout from "./components/DashboardLayout";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import AdminDeliveryRequestsPage from "./pages/AdminDeliveryRequestsPage";
+import AdminCollaborationRequestsPage from "./pages/AdminCollaborationRequestsPage";
 import AdminEventNotificationsPage from "./pages/AdminEventNotificationsPage";
 import AdminLoginPage from "./pages/AdminLoginPage";
+import AdminLayout from "./components/AdminLayout";
 import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import { ImpactPage } from "./pages/ImpactPage";
@@ -117,7 +119,19 @@ function App() {
           path="/admin/delivery-requests"
           element={
             <ProtectedAdminRoute>
-              <AdminDeliveryRequestsPage />
+              <AdminLayout>
+                <AdminDeliveryRequestsPage />
+              </AdminLayout>
+            </ProtectedAdminRoute>
+          }
+        />
+        <Route
+          path="/admin/collaboration-requests"
+          element={
+            <ProtectedAdminRoute>
+              <AdminLayout>
+                <AdminCollaborationRequestsPage />
+              </AdminLayout>
             </ProtectedAdminRoute>
           }
         />
@@ -125,7 +139,9 @@ function App() {
           path="/admin/event-notifications"
           element={
             <ProtectedAdminRoute>
-              <AdminEventNotificationsPage />
+              <AdminLayout>
+                <AdminEventNotificationsPage />
+              </AdminLayout>
             </ProtectedAdminRoute>
           }
         />
@@ -162,7 +178,9 @@ function App() {
           path="/admin/complaints"
           element={
             <ProtectedAdminRoute>
-              <AdminComplaintsPage />
+              <AdminLayout>
+                <AdminComplaintsPage />
+              </AdminLayout>
             </ProtectedAdminRoute>
           }
         />

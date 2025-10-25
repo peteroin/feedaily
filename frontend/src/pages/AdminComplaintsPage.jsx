@@ -31,15 +31,9 @@ export default function AdminComplaintsPage() {
 
   useEffect(() => {
     // Check admin authentication
-    const userData = localStorage.getItem("user");
-    if (!userData) {
+    const adminData = localStorage.getItem("adminUser");
+    if (!adminData) {
       navigate("/admin-login");
-      return;
-    }
-
-    const parsedUser = JSON.parse(userData);
-    if (parsedUser.type !== "Admin") {
-      navigate("/");
       return;
     }
 
@@ -226,20 +220,12 @@ export default function AdminComplaintsPage() {
 
   return (
     <div className="acp-page">
-      <div className="acp-header">
-        <div>
+        <div className="admin-page-header">
           <h1>
             <FiAlertCircle /> Complaint Management
           </h1>
           <p>Manage and resolve user complaints</p>
         </div>
-        <button
-          onClick={() => navigate("/admin/delivery-requests")}
-          className="acp-action-btn"
-        >
-          Back to Admin Dashboard
-        </button>
-      </div>
 
       {/* Stats Cards */}
       <div className="acp-stats-grid">

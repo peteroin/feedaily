@@ -1,78 +1,33 @@
 .admin-notifications-page {
-  padding: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
+  background: #fff;
+  padding: 2rem;
+  border-radius: 12px;
   font-family: 'Inter', sans-serif;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.06);
 }
 
-.admin-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 30px;
-  padding-bottom: 20px;
-  border-bottom: 2px solid #e5e7eb;
+/* ========= Page Header ========= */
+.admin-page-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e5e7eb;
 }
 
-.admin-header-left {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.admin-title {
+.admin-page-header h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 0.5rem 0;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 0.5rem;
 }
 
-.admin-title h1 {
+.admin-page-header p {
+  color: #6b7280;
+  font-size: 0.95rem;
   margin: 0;
-  color: #1f2937;
-  font-size: 28px;
-  font-weight: 600;
-}
-
-.admin-nav-links {
-  display: flex;
-  gap: 20px;
-}
-
-.nav-link {
-  padding: 8px 16px;
-  text-decoration: none;
-  color: #666;
-  border-radius: 6px;
-  font-weight: 500;
-  transition: all 0.2s;
-}
-
-.nav-link:hover {
-  background: #f5f5f5;
-  color: #333;
-}
-
-.nav-link.active {
-  background: #007bff;
-  color: white;
-}
-
-.logout-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 16px;
-  background: #dc2626;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: background-color 0.2s;
-}
-
-.logout-btn:hover {
-  background: #b91c1c;
 }
 
 .error-message {

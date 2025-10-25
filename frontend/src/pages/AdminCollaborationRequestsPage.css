@@ -1,5 +1,5 @@
-/* ========= General Layout ========= */
-.admin-delivery-container {
+/* Admin Collaboration Requests Page Styles */
+.admin-collaboration-page {
   background: #fff;
   padding: 2rem;
   border-radius: 12px;
@@ -59,14 +59,14 @@
   color: #007bff;
 }
 
-.admin-tab-btn.delivering.active {
-  border-color: #ffa500;
-  color: #ffa500;
-}
-
-.admin-tab-btn.delivered.active {
+.admin-tab-btn.accepted.active {
   border-color: #28a745;
   color: #28a745;
+}
+
+.admin-tab-btn.rejected.active {
+  border-color: #dc3545;
+  color: #dc3545;
 }
 
 /* ========= Table ========= */
@@ -103,10 +103,6 @@
   background-color: #f1f9ff;
 }
 
-.admin-table .delivered-row {
-  background-color: #e6ffe6;
-}
-
 /* ========= Buttons ========= */
 .admin-action-btn {
   background: #007bff;
@@ -117,101 +113,114 @@
   cursor: pointer;
   font-size: 0.9rem;
   transition: background 0.2s;
+  margin: 0 2px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .admin-action-btn:hover {
   background: #0069d9;
 }
 
-.admin-expire-btn {
-  background: #ff4d4f;
-}
-
-.admin-expire-btn:hover {
-  background: #d9363e;
-}
-
-/* ========= Modal ========= */
-.admin-expire-modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.admin-expire-modal {
-  background: #fff;
-  padding: 24px;
-  border-radius: 10px;
-  width: 340px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-.admin-expire-modal h3 {
-  margin-bottom: 12px;
-  font-size: 1.2rem;
-  color: #333;
-}
-
-.admin-expire-modal label {
-  display: block;
-  font-weight: 500;
-  margin-bottom: 6px;
-}
-
-.admin-expire-modal select {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-bottom: 16px;
-  outline: none;
-}
-
-.admin-expire-modal select:focus {
-  border-color: #007bff;
-}
-
-.admin-expire-modal-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-}
-
-.admin-confirm-btn {
+.accept-btn {
   background: #28a745;
-  color: white;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 4px;
-  cursor: pointer;
 }
 
-.admin-confirm-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+.accept-btn:hover {
+  background: #218838;
 }
 
-.admin-cancel-btn {
-  background: #ccc;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 4px;
-  cursor: pointer;
+.reject-btn {
+  background: #dc3545;
 }
 
-.admin-cancel-btn:hover {
-  background: #bbb;
+.reject-btn:hover {
+  background: #c82333;
 }
 
-/* ========= Utility Classes ========= */
-.capitalize {
-  text-transform: capitalize;
+/* ========= Nested Table ========= */
+.nested-table {
+  width: fit-content;
+  margin: 0 auto;
+  border-collapse: collapse;
+  max-height: 180px;
+  overflow-y: auto;
+  display: block;
+  background-color: #fafafa;
+  border: 1px solid #ddd;
+  border-radius: 6px;
 }
 
+.nested-table td {
+  padding: 4px 8px;
+  font-size: 13px;
+  word-break: break-word;
+  white-space: normal;
+  text-align: left;
+}
+
+.nested-table tr + tr td {
+  border-top: 1px solid #e0e0e0;
+}
+
+/* ========= Image Styling ========= */
+.admin-table img {
+  width: 120px;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.admin-table img:hover {
+  transform: scale(1.05);
+}
+
+/* ========= Error Message ========= */
+.error-message {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+/* ========= Loading ========= */
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+  font-size: 1.1rem;
+}
+
+/* ========= Responsive Design ========= */
+@media (max-width: 768px) {
+  .admin-collaboration-page {
+    padding: 1rem;
+  }
+
+  .admin-tabs {
+    flex-direction: column;
+  }
+
+  .admin-tab-btn {
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .admin-table-container {
+    font-size: 0.85rem;
+  }
+
+  .admin-table th,
+  .admin-table td {
+    padding: 6px;
+  }
+
+  .admin-action-btn {
+    padding: 4px 8px;
+    font-size: 0.8rem;
+  }
+}
