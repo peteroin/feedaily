@@ -1,31 +1,34 @@
 /* Admin Complaints Page Styles */
 .acp-page {
-  min-height: 100vh;
-  background: #f9fafb;
+  background: #fff;
   padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.06);
 }
 
-.acp-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+/* ========= Page Header ========= */
+.admin-page-header {
   margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e5e7eb;
 }
 
-.acp-header h1 {
+.admin-page-header h1 {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   font-size: 1.75rem;
   font-weight: 700;
   color: #111827;
-  margin-bottom: 0.25rem;
+  margin: 0 0 0.5rem 0;
   font-family: "Sora", "Poppins", sans-serif;
 }
 
-.acp-header p {
+.admin-page-header p {
   color: #6b7280;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
+  margin: 0;
 }
 
 /* Stats Grid */
