@@ -85,7 +85,7 @@ export default function AdminCollaborationRequestsPage() {
     return (
       <div className="admin-collaboration-page">
         <div className="admin-page-header">
-          <h1>🤝 Collaboration Requests Management</h1>
+          <h1>Collaboration Requests Management</h1>
           <p>Manage partnership and collaboration requests</p>
         </div>
         <div className="loading">Loading collaboration requests...</div>
@@ -96,7 +96,7 @@ export default function AdminCollaborationRequestsPage() {
   return (
     <div className="admin-collaboration-page">
       <div className="admin-page-header">
-        <h1>🤝 Collaboration Requests Management</h1>
+        <h1>Collaboration Requests Management</h1>
         <p>Manage partnership and collaboration requests</p>
       </div>
 

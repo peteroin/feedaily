@@ -176,7 +176,7 @@ export default function AdminDeliveryRequestsPage() {
   return (
     <div className="admin-delivery-container">
         <div className="admin-page-header">
-          <h1>📋 Delivery Requests Management</h1>
+          <h1>Delivery Requests Management</h1>
           <p>Manage and track food delivery requests</p>
         </div>
 
